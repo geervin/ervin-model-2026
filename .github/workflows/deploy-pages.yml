@@ -28,6 +28,7 @@ jobs:
         run: |
           node --check scripts/calibration_engine.js
           node --check scripts/backtest_calibration.js
+          node scripts/validate_calibration.js
           node scripts/backtest_calibration.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
