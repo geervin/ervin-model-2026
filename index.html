@@ -732,14 +732,36 @@ window.ERVIN_DATA = {
       "historical": [
         {
           "year": 2024,
+          "poll": -4.2,
+          "actual": -2.44,
+          "err": -1.76,
+          "url": "https://en.wikipedia.org/wiki/2024_United_States_House_of_Representatives_election_in_Alaska",
+          "kind": "Cygnal Oct 14–16 final-round RCV poll",
+          "notes": "Candidate-matched 2024 Peltola vs Nick Begich. Poll predicted Peltola 47.9–52.1 (D−4.2); certified final RCV 48.78–51.22 (D−2.44). One Republican-associated poll; both comparisons use final RCV round.",
+          "office": "House",
+          "weight": 0.8
+        },
+        {
+          "year": 2024,
           "poll": -8,
           "actual": -13.1,
           "err": 5.1,
           "url": "https://www.270towin.com/2024-presidential-election-polls/alaska",
-          "kind": "Single late poll",
-          "notes": "Oct. 27 Alaska Survey Research; 43% Harris, 51% Trump.",
+          "kind": "Single late presidential poll",
+          "notes": "Context only, not part of Peltola-specific correction: October Alaska Survey Research Harris 43, Trump 51.",
           "office": "President",
           "weight": 0.65
+        },
+        {
+          "year": 2022,
+          "poll": 6,
+          "actual": 9.92,
+          "err": -3.92,
+          "url": "https://alaskawatchman.com/wp-content/uploads/2022/09/aarp-alaska-2022-elections-voter-survey.doi_.10.26419-2Fres.00550.009.pdf",
+          "kind": "AARP Sept 2022 final-round RCV poll",
+          "notes": "Candidate-matched 2022 Peltola vs Sarah Palin November general election: modeled final runoff 53–47 (D+6); certified final RCV 54.96–45.04 (D+9.92). Survey precedes election by several weeks.",
+          "office": "House",
+          "weight": 0.72
         },
         {
           "year": 2020,
@@ -747,27 +769,16 @@ window.ERVIN_DATA = {
           "actual": -12.7,
           "err": 8,
           "url": "https://www.270towin.com/2020-senate-polls/alaska/",
-          "kind": "Aggregate",
-          "notes": "270toWin final average",
+          "kind": "270toWin Senate average",
+          "notes": "Context only: non-Peltola Sullivan-vs-Gross Senate comparison. Not used in Peltola-specific correction.",
           "office": "Senate",
           "weight": 0.8
-        },
-        {
-          "year": 2020,
-          "poll": -5.6,
-          "actual": -10.1,
-          "err": 4.5,
-          "url": "https://www.270towin.com/2020-polls-biden-trump/alaska/",
-          "kind": "270toWin final average",
-          "notes": "Statewide presidential result, same cycle as 2020 Senate: not an independent cycle.",
-          "office": "President",
-          "weight": 0.52
         }
       ],
-      "correction": 6.119,
-      "history_mode": "standard",
+      "correction": "-2.783",
+      "history_mode": "candidate_repeat",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Alaska",
-      "notes": "2026 Alaska uses ranked-choice voting. Two-candidate polling is not the same as final RCV round; confidence widened.",
+      "notes": "Candidate-specific correction uses Peltola's 2022 general and 2024 House ranked-choice final-round polling errors; older 2020 Senate and 2024 presidential comparisons remain audit context and are excluded from the applied correction. Both Peltola comparisons involve different Republican opponents and the 2022 survey predates election day by several weeks. 2026 Senate polls reported as 2-candidate or first-round margins may not be comparable to final RCV runoff results; interpret adjusted margins as a sensitivity scenario, not an estimated final-round outcome.",
       "special": false
     },
     {
@@ -1603,11 +1614,11 @@ function historical(r){const errs=r.historical.map(h=>h.err),n=errs.length,mae=n
  return {n,mae,mean,sd,grade};}
 function evaluate(r){const h=historical(r),poll=r.sources[state.source],orig=r.correction;
  const apply=r.history_mode!=='not_comparable';const candidateRepeat=r.history_mode==='candidate_repeat';
- const correction=apply?(state.biasMode==='shrink'?orig*(candidateRepeat?1/4:h.n/(h.n+3)):orig):0;
+ const correction=apply?(state.biasMode==='shrink'?orig*(candidateRepeat?(r.code==='AK'?2/5:1/4):h.n/(h.n+3)):orig):0;
  const adjusted=poll.value-correction;
  const proxyPenalty=poll.proxy?3:0;
  const variant=r.party==='I'?(r.code==='SD'?14.0:r.code==='NE'?6.0:4.0):0;
- const rcv=r.code==='AK'?2:0;
+ const rcv=r.code==='AK'?4:0;
  const sigmaBase=Math.max(4.7,h.sd);const sigma=Math.sqrt(sigmaBase*sigmaBase*(1+1/Math.max(h.n,1))+4+proxyPenalty*proxyPenalty+variant*variant+rcv*rcv);
  const z=state.level===90?1.645:1.282;const half=z*sigma,lo=adjusted-half,hi=adjusted+half;
  const crosses=lo<=0&&hi>=0;let support='Uncertain';if(!crosses)support=h.n>=3&&!poll.proxy&&r.party==='D'?'Directional signal':'Tentative direction';
@@ -1631,7 +1642,7 @@ function detail(){const r=selected(),v=evaluate(r),p=v.poll,baseline=r.sources.r
  $('historyJump').onclick=()=>{$('historyHeading').scrollIntoView({behavior:'smooth',block:'center'})};
  $('historyHeading').textContent=`${r.state} · historical polling errors`;
  $('histBars').innerHTML=r.historical.map(h=>{const ht=Math.min(92,Math.max(8,Math.abs(h.err)*6));return `<div class="hist-column"><b style="color:var(--text)">${h.err>=0?'R':'D'} +${Math.abs(h.err).toFixed(1)}</b><div class="vbar ${h.err<0?'neg':''}" style="height:${ht}px"></div><a href="${esc(h.url)}" target="_blank" rel="noopener noreferrer">${h.year} ${h.office==='President'?'PRES':'SEN'} ↗</a></div>`}).join('');
- $('historyExplanation').innerHTML=`Historical calibration shift <b>${r.correction>=0?'R':'D'} +${Math.abs(r.correction).toFixed(2)}</b> from ${r.historical.length} election comparison${r.historical.length===1?'':'s'}. ${r.history_mode==='candidate_repeat'?'The applied adjustment uses only this candidate’s last Senate-election polling error; other historical entries remain audit context.':''} Otherwise Senate events receive full weight; presidential events get 65% office weight; 2024 receives more weight than 2022, 2020, and 2018. MAE ${v.h.mae.toFixed(2)} pts; estimated historical dispersion ${Math.max(4.7,v.h.sd).toFixed(1)} pts (4.7-pt floor). ${errMode?'Not applied to this different-party matchup.':''} Each linked election shows the input source; Senate and presidential observations from the same year are correlated, not independent.`;
+ $('historyExplanation').innerHTML=`Historical calibration shift <b>${r.correction>=0?'R':'D'} +${Math.abs(r.correction).toFixed(2)}</b> from ${r.historical.length} election comparison${r.historical.length===1?'':'s'}. ${r.history_mode==='candidate_repeat'?'The applied adjustment uses only comparable races involving this candidate; unrelated historical entries remain audit context.':''} Otherwise Senate events receive full weight; presidential events get 65% office weight; 2024 receives more weight than 2022, 2020, and 2018. MAE ${v.h.mae.toFixed(2)} pts; estimated historical dispersion ${Math.max(4.7,v.h.sd).toFixed(1)} pts (4.7-pt floor). ${errMode?'Not applied to this different-party matchup.':''} Each linked election shows the input source; Senate and presidential observations from the same year are correlated, not independent.`;
 }
 function renderBars(){let items=states.map(evaluate).sort((a,b)=>a.adjusted-b.adjusted);$('bars').innerHTML=items.map(v=>{const value=v.adjusted,width=Math.min(Math.abs(value),25)/25*50,begin=value>=0?50:50-width;
  return `<div class="barrow ${state.selected===v.r.code?'active':''}" role="button" tabindex="0" data-code="${v.r.code}" aria-label="${esc(v.r.state)} ${esc(judge(value,v.r))}"><span class="barname">${esc(v.r.state)}</span><div class="bartrack"><div class="barfill ${value<0?'r':'d'}" style="left:${begin}%;width:${Math.max(.5,width)}%"></div></div><b style="text-align:right;color:var(--${value<0?'red':'blue'})">${esc(fmt(value,v.r,1))}</b></div>`}).join('');$('bars').querySelectorAll('.barrow').forEach(b=>{b.onclick=()=>focusRace(b.dataset.code);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();focusRace(b.dataset.code)}}});}
