@@ -1121,9 +1121,9 @@ window.ERVIN_DATA = {
         }
       ],
       "correction": 5.685,
-      "history_mode": "standard",
+      "history_mode": "not_comparable",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
-      "notes": "2024 same independent Dan Osborn matchup is the only direct state historical comparison. No Democratic nominee in 2026; positive means Osborn, not Democrat.",
+      "notes": "2024 same independent Dan Osborn matchup is the only direct state historical comparison. No Democratic nominee in 2026; positive means Osborn, not Democrat. Historical party D-vs-R presidential shifts are not transferred to this independent-vs-Republican matchup; its 2024 independent Senate match is presented separately for audit.",
       "special": false
     },
     {
@@ -1265,6 +1265,17 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
+          "year": 2024,
+          "poll": -13,
+          "actual": -25.62,
+          "err": 12.62,
+          "url": "https://elections2024.thehill.com/mississippi/",
+          "kind": "Single partisan poll",
+          "notes": "Change Research for Pinkins campaign, Sep.29–Oct.3 2024, Wicker 48 Pinkins 35 (R+13); official 2024 certified result R+25.62. Small-sample and partisan-poll limitation.",
+          "office": "Senate",
+          "weight": 1
+        },
+        {
           "year": 2020,
           "poll": -5.5,
           "actual": -9.97,
@@ -1285,20 +1296,9 @@ window.ERVIN_DATA = {
           "notes": "Hyde-Smith–Espy Nov. 27 runoff: Change Research R+5, JMC Analytics R+10. Mean R+7.5; certified R+7.26.",
           "office": "Senate",
           "weight": 0.7
-        },
-        {
-          "year": 2018,
-          "poll": -16,
-          "actual": -19.6,
-          "err": 3.6,
-          "url": "https://uselectionatlas.org/POLLS/SENATE/2018/polls.php?class=1&fips=28",
-          "kind": "Three-poll rolling average",
-          "notes": "Regular 2018 Wicker–Baria contest (NOT same race as the 2018 special runoff). Historical results shown by RCP.",
-          "office": "Senate",
-          "weight": 0.7
         }
       ],
-      "correction": 2.695,
+      "correction": 6.411,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Mississippi",
       "notes": "Few current polls; the source-specific tabs use explicitly labeled third-party polling proxies, not manufactured DDHQ/270/RCP series.",
@@ -1454,6 +1454,17 @@ window.ERVIN_DATA = {
           "weight": 0.65
         },
         {
+          "year": 2022,
+          "poll": -25,
+          "actual": -43.5,
+          "err": 18.5,
+          "url": "https://www.realclearpolling.com/polls/senate/general/2022/south-dakota/thune-vs-bengs",
+          "kind": "Single Senate poll",
+          "notes": "SDSU Oct 2022 poll of Democrat Brian Bengs (2026 independent) vs Thune, R+25 versus result R+43.5; label candidacy change.",
+          "office": "Senate",
+          "weight": 0.9
+        },
+        {
           "year": 2020,
           "poll": -17,
           "actual": -31.48,
@@ -1463,20 +1474,9 @@ window.ERVIN_DATA = {
           "notes": "Nielson Bros poll only; Democrat opponent in 2020, independent in 2026",
           "office": "Senate",
           "weight": 0.8
-        },
-        {
-          "year": 2020,
-          "poll": -10.5,
-          "actual": -26.2,
-          "err": 15.7,
-          "url": "https://www.270towin.com/2020-polls-biden-trump/south-dakota/",
-          "kind": "270toWin final average",
-          "notes": "2020 statewide; separate from Senate in same cycle.",
-          "office": "President",
-          "weight": 0.52
         }
       ],
-      "correction": 10.747,
+      "correction": 12.62,
       "history_mode": "not_comparable",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Dakota",
       "notes": "Independent candidate. Prior 2020 D-R error is shown for audit but NOT applied to Bengs vs Rounds; no comparable R-I calibration.",
