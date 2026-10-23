@@ -26,8 +26,8 @@ jobs:
           from pathlib import Path
           import re
           doc = Path('index.html').read_text(encoding='utf-8')
-          scripts = re.findall(r'<script(?:\\s[^>]*)?>([\\s\\S]*?)</script>', doc)
-          Path('/tmp/dashboard-script.js').write_text('\\n'.join(scripts),encoding='utf-8')
+          scripts = re.findall(r'<script[^>]*>(.*?)</script>', doc, flags=re.S)
+          assert len(scripts) >= 2, 'Expected dashboard scripts'\n          Path('/tmp/dashboard-script.js').write_text(chr(10).join(scripts),encoding='utf-8')
           PY
           node --check /tmp/dashboard-script.js
       - uses: actions/configure-pages@v5
