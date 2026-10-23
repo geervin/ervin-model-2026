@@ -1,5 +1,10 @@
 name: Refresh 2026 polling averages
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/refresh_polling.py'
+      - '.github/workflows/refresh-polling.yml'
   schedule:
     - cron: '17 */6 * * *'
   workflow_dispatch:
