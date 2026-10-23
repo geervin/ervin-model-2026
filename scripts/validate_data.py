@@ -24,9 +24,12 @@ for race in states:
         assert observation["kind"], (race["code"], observation)
     assert len(race["sources"]) == 5, race["code"]
     if race["party"] == "I":
-        assert race.get("history_mode") == "not_comparable", (
+        assert race.get("history_mode") in ("not_comparable", "candidate_repeat"), (
             race["code"], "Independent matchups should not import D/R error shifts"
         )
+    if race.get("history_mode") == "candidate_repeat":
+        assert any(x["office"] == "Senate" for x in history)
+        assert race["code"] in ("NE", "SD")
     total += len(history)
 with (site / "historical_error_audit.csv").open(encoding="utf-8", newline="") as file:
     audit = list(csv.DictReader(file))
