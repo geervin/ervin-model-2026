@@ -33,3 +33,6 @@ The historical polling audit is *not* refreshed by the live-polling checker. Ext
 
 ## Freshness
 The website contains a dated **Oct 23, 2026** research snapshot. Publication alone does **not** mean that any online poll source updates automatically; the six-hour polling refresh automation from the original standalone package is **not installed in this repo**. The UI will not claim a successful refresh that has not occurred.
+
+## Research lab additions (October 23, 2026)
+The dashboard now includes per-race side-by-side comparisons of all five publisher views (raw, full correction, shrunken correction), the spread among non-proxy publishers, deep links such as `?race=AK#researchLab`, and dated **Cook Political Report ratings from October 20, 2026**. These ratings are a static independently published qualitative benchmark, **not** added polling observations or statistical win probabilities. See https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1 for publisher context. The scheduled poll update leaves these dated ratings unchanged.
