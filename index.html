@@ -1093,7 +1093,7 @@ window.ERVIN_DATA = {
           "err": 5.07,
           "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Nebraska",
           "kind": "Aggregate",
-          "notes": "2024 Fischer vs Osborn independent matchup",
+          "notes": "2024 Fischer vs Osborn independent matchup Applied to 2026: candidate-specific polling correction; different Republican opponent.",
           "office": "Senate",
           "weight": 1
         },
@@ -1120,10 +1120,10 @@ window.ERVIN_DATA = {
           "weight": 0.52
         }
       ],
-      "correction": 5.685,
-      "history_mode": "not_comparable",
+      "correction": 5.07,
+      "history_mode": "candidate_repeat",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
-      "notes": "2024 same independent Dan Osborn matchup is the only direct state historical comparison. No Democratic nominee in 2026; positive means Osborn, not Democrat. Historical party D-vs-R presidential shifts are not transferred to this independent-vs-Republican matchup; its 2024 independent Senate match is presented separately for audit.",
+      "notes": "Dan Osborn ran as an independent in 2024 and again in 2026. Apply the candidate-specific 2024 Osborn–Fischer polling error (+5.07 R shift), rather than unrelated statewide Democratic-vs-Republican presidential corrections. Opponent changes from Fischer to Ricketts; inference is based on one comparable election.",
       "special": false
     },
     {
@@ -1460,7 +1460,7 @@ window.ERVIN_DATA = {
           "err": 18.5,
           "url": "https://www.realclearpolling.com/polls/senate/general/2022/south-dakota/thune-vs-bengs",
           "kind": "Single Senate poll",
-          "notes": "SDSU Oct 2022 poll of Democrat Brian Bengs (2026 independent) vs Thune, R+25 versus result R+43.5; label candidacy change.",
+          "notes": "SDSU Oct 2022 poll of Democrat Brian Bengs (2026 independent) vs Thune, R+25 versus result R+43.5; label candidacy change. Applied as a single-observation, candidate-specific 2026 correction; high uncertainty.",
           "office": "Senate",
           "weight": 0.9
         },
@@ -1476,10 +1476,10 @@ window.ERVIN_DATA = {
           "weight": 0.8
         }
       ],
-      "correction": 12.62,
-      "history_mode": "not_comparable",
+      "correction": 18.5,
+      "history_mode": "candidate_repeat",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Dakota",
-      "notes": "Independent candidate. Prior 2020 D-R error is shown for audit but NOT applied to Bengs vs Rounds; no comparable R-I calibration.",
+      "notes": "Brian Bengs was 2022 Democratic Senate nominee versus John Thune and returns in 2026 as an independent versus Mike Rounds. Apply the 2022 Bengs-specific late-poll polling error (+18.50 R points) as a scenario correction. WARNING: single 2022 poll, four years older, party label and Republican opponent changed; very weak calibration.",
       "special": false
     },
     {
@@ -1593,10 +1593,11 @@ function historical(r){const errs=r.historical.map(h=>h.err),n=errs.length,mae=n
  let grade='D';if(n>=4&&mae<=2.5)grade='A';else if(n>=3&&mae<=4)grade='B';else if(n>=2&&mae<=6)grade='C';else if(mae>8)grade='F';
  return {n,mae,mean,sd,grade};}
 function evaluate(r){const h=historical(r),poll=r.sources[state.source],orig=r.correction;
- const apply=r.history_mode!=='not_comparable';const correction=apply?(state.biasMode==='shrink'?orig*(h.n/(h.n+3)):orig):0;
+ const apply=r.history_mode!=='not_comparable';const candidateRepeat=r.history_mode==='candidate_repeat';
+ const correction=apply?(state.biasMode==='shrink'?orig*(candidateRepeat?1/4:h.n/(h.n+3)):orig):0;
  const adjusted=poll.value-correction;
  const proxyPenalty=poll.proxy?3:0;
- const variant=r.party==='I'?4.0:0;
+ const variant=r.party==='I'?(r.code==='SD'?14.0:r.code==='NE'?6.0:4.0):0;
  const rcv=r.code==='AK'?2:0;
  const sigmaBase=Math.max(4.7,h.sd);const sigma=Math.sqrt(sigmaBase*sigmaBase*(1+1/Math.max(h.n,1))+4+proxyPenalty*proxyPenalty+variant*variant+rcv*rcv);
  const z=state.level===90?1.645:1.282;const half=z*sigma,lo=adjusted-half,hi=adjusted+half;
@@ -1621,7 +1622,7 @@ function detail(){const r=selected(),v=evaluate(r),p=v.poll,baseline=r.sources.r
  $('historyJump').onclick=()=>{$('historyHeading').scrollIntoView({behavior:'smooth',block:'center'})};
  $('historyHeading').textContent=`${r.state} · historical polling errors`;
  $('histBars').innerHTML=r.historical.map(h=>{const ht=Math.min(92,Math.max(8,Math.abs(h.err)*6));return `<div class="hist-column"><b style="color:var(--text)">${h.err>=0?'R':'D'} +${Math.abs(h.err).toFixed(1)}</b><div class="vbar ${h.err<0?'neg':''}" style="height:${ht}px"></div><a href="${esc(h.url)}" target="_blank" rel="noopener noreferrer">${h.year} ${h.office==='President'?'PRES':'SEN'} ↗</a></div>`}).join('');
- $('historyExplanation').innerHTML=`Weighted historical R shift <b>${r.correction>=0?'R':'D'} +${Math.abs(r.correction).toFixed(2)}</b> from ${r.historical.length} election comparison${r.historical.length===1?'':'s'}. Senate events receive full weight; presidential events get 65% office weight; 2024 receives more weight than 2022, 2020, and 2018. MAE ${v.h.mae.toFixed(2)} pts; estimated historical dispersion ${Math.max(4.7,v.h.sd).toFixed(1)} pts (4.7-pt floor). ${errMode?'Not applied to this different-party matchup.':''} Each linked election shows the input source; Senate and presidential observations from the same year are correlated, not independent.`;
+ $('historyExplanation').innerHTML=`Historical calibration shift <b>${r.correction>=0?'R':'D'} +${Math.abs(r.correction).toFixed(2)}</b> from ${r.historical.length} election comparison${r.historical.length===1?'':'s'}. ${r.history_mode==='candidate_repeat'?'The applied adjustment uses only this candidate’s last Senate-election polling error; other historical entries remain audit context.':''} Otherwise Senate events receive full weight; presidential events get 65% office weight; 2024 receives more weight than 2022, 2020, and 2018. MAE ${v.h.mae.toFixed(2)} pts; estimated historical dispersion ${Math.max(4.7,v.h.sd).toFixed(1)} pts (4.7-pt floor). ${errMode?'Not applied to this different-party matchup.':''} Each linked election shows the input source; Senate and presidential observations from the same year are correlated, not independent.`;
 }
 function renderBars(){let items=states.map(evaluate).sort((a,b)=>a.adjusted-b.adjusted);$('bars').innerHTML=items.map(v=>{const value=v.adjusted,width=Math.min(Math.abs(value),25)/25*50,begin=value>=0?50:50-width;
  return `<div class="barrow ${state.selected===v.r.code?'active':''}" role="button" tabindex="0" data-code="${v.r.code}" aria-label="${esc(v.r.state)} ${esc(judge(value,v.r))}"><span class="barname">${esc(v.r.state)}</span><div class="bartrack"><div class="barfill ${value<0?'r':'d'}" style="left:${begin}%;width:${Math.max(.5,width)}%"></div></div><b style="text-align:right;color:var(--${value<0?'red':'blue'})">${esc(fmt(value,v.r,1))}</b></div>`}).join('');$('bars').querySelectorAll('.barrow').forEach(b=>{b.onclick=()=>focusRace(b.dataset.code);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();focusRace(b.dataset.code)}}});}
