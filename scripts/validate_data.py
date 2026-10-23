@@ -17,7 +17,7 @@ for race in states:
     assert len(history) >= 3, f"{race['code']}: only {len(history)} comparisons"
     for observation in history:
         assert 2018 <= observation["year"] <= 2024, (race["code"], observation)
-        assert observation["office"] in ("Senate", "President")
+        assert observation["office"] in ("Senate", "President", "House")
         assert abs(observation["poll"] - observation["actual"] - observation["err"]) < 0.011
         assert 0 < observation["weight"] <= 1
         assert observation["url"].startswith("https://")
@@ -28,8 +28,8 @@ for race in states:
             race["code"], "Independent matchups should not import D/R error shifts"
         )
     if race.get("history_mode") == "candidate_repeat":
-        assert any(x["office"] == "Senate" for x in history)
-        assert race["code"] in ("NE", "SD")
+        assert any(x["office"] in ("Senate", "House") for x in history)
+        assert race["code"] in ("NE", "SD", "AK")
     total += len(history)
 with (site / "historical_error_audit.csv").open(encoding="utf-8", newline="") as file:
     audit = list(csv.DictReader(file))
