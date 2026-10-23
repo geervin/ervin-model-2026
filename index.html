@@ -831,7 +831,7 @@ window.ERVIN_DATA = {
       "correction": -2.783,
       "history_mode": "candidate_repeat",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Alaska",
-      "notes": "Candidate-specific correction uses Peltola's 2022 general and 2024 House ranked-choice final-round polling errors; older 2020 Senate and 2024 presidential comparisons remain audit context and are excluded from the applied correction. Both Peltola comparisons involve different Republican opponents and the 2022 survey predates election day by several weeks. 2026 Senate polls reported as 2-candidate or first-round margins may not be comparable to final RCV runoff results; interpret adjusted margins as a sensitivity scenario, not an estimated final-round outcome. Evidence-weighted setting also includes Sullivan's 2020 Senate polling error at 0.55 candidate-continuity multiplier and the 2024 statewide presidential error at 0.30; Peltola's own House comparisons retain 1.35. Same-year entries share weight.",
+      "notes": "Candidate-specific correction uses Peltola's 2022 general and 2024 House ranked-choice final-round polling errors; older 2020 Senate and 2024 presidential comparisons remain audit context and are excluded from the applied correction. Both Peltola comparisons involve different Republican opponents and the 2022 survey predates election day by several weeks. 2026 Senate polls reported as 2-candidate or first-round margins may not be comparable to final RCV runoff results; interpret adjusted margins as a sensitivity scenario, not an estimated final-round outcome. Evidence-weighted setting also includes Sullivan's 2020 Senate polling error at 0.25 candidate-continuity multiplier and the 2024 statewide presidential error at 0.35; Peltola's own House comparisons retain 1.35. Same-year entries share weight.",
       "special": false,
       "externalRatings": {
         "cook": {
@@ -1742,7 +1742,7 @@ function evidenceWeight(h,r){
  // are not counted as independent elections.
  const quality=/partisan|campaign/.test(kind)?.55:/single|one poll/.test(kind)?.68:/two late polls/.test(kind)?.76:/aggregate|average/.test(kind)?1:.82;
  const isMatch=(r.code==='AK'&&h.office==='House')||(r.code==='NE'&&h.office==='Senate'&&h.year===2024)||(r.code==='SD'&&h.office==='Senate'&&h.year===2022);
- const continuity=r.code==='AK'?(isMatch?1.35:h.office==='Senate'?.55:h.office==='President'?.30:0):r.history_mode==='candidate_repeat'?(isMatch?1.35:0):1;
+ const continuity=r.code==='AK'?(isMatch?1.35:h.office==='Senate'?.25:h.office==='President'?.35:0):r.history_mode==='candidate_repeat'?(isMatch?1.35:0):1;
  return Math.max(0,Number(h.weight||1)*office*quality*continuity);
 }
 function weightedCorrection(r){
