@@ -12,6 +12,19 @@ All three available publishers are evaluated on the exact same four **2024 U.S. 
 
 **Rank depends on loss function:** 270toWin has the lowest root-mean-squared error, while DDHQ has the lowest mean absolute error. The MAE gap between #1 and #3 is only **0.35 points** across four races and is not a reliably estimated general-population difference.
 
+## Ervin + ranking (same matched races, no 2024 look-ahead)
+
+The website's default source-combination view applies **Ervin +**, not Original Ervin. We therefore repeated the same matched 2024 publisher test with **only pre-2024 historical records** for each state and the current Ervin + weighting algorithm (office relevance, source quality, recency, historical-error trend, and per-year sharing). This ranks actual *publisher averages after an Ervin + correction*, not underlying survey firms. Source: [row-level Ervin + audit](ervin_plus_2024_source_backtest.csv).
+
+| Rank | Publisher | Original Ervin MAE | Ervin + MAE | Ervin + RMSE |
+|---|---|---:|---:|---:|
+| 1 | DDHQ | 3.77 | **3.87** | **4.79** |
+| 2 | RCP | 3.95 | **4.22** | 5.11 |
+| 3 | 270toWin | 4.12 | **4.40** | 4.80 |
+| Unranked | Silver Bulletin | Not measured | Not measured | Not measured |
+
+**The ordinal ranking stays DDHQ → RCP → 270toWin** when switching from Original Ervin to Ervin +. All three tested publishers miss some races badly. The small lead, selection of just four races and lack of equivalent archived Silver averages mean **this is not a statistically stable general-performance ranking**. The 2024 Montana correction is an example of an outsized historical shift derived from one older 2020 Senate comparison.
+
 ## Leave-one-state-out sensitivity
 
 | Omitted state | Ranking from lowest to highest MAE |
