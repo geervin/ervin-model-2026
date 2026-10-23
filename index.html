@@ -13,6 +13,9 @@
 .refresh-symbol{font-size:20px;color:var(--accent)}
 @media(max-width:650px){.refresh-strip{flex-wrap:wrap;gap:7px}.refresh-strip a{width:100%}}
 
+
+/* Research lab additions */
+.insight-head{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.insight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0}.insight-stat{background:var(--surface2);border:1px solid var(--edge);border-radius:12px;padding:16px}.insight-stat strong{font:700 27px 'Space Grotesk',sans-serif;display:block;margin:5px 0}.insight-stat small{color:var(--muted)}.comparison-table{width:100%;border-collapse:collapse}.comparison-table th,.comparison-table td{padding:10px;border-bottom:1px solid var(--edge);text-align:left;font-size:12px}.comparison-table th{color:var(--muted)}.insight-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.tagline{border:1px solid var(--edge);border-radius:6px;padding:3px 8px;color:var(--muted);font-size:11px;display:inline-block}.insight-note{color:var(--muted);font-size:12px;margin-top:10px}@media(max-width:700px){.insight-grid{grid-template-columns:1fr}.comparison-table{min-width:540px}}
 </style></head>
 <body>
 <header class="topbar"><div class="shell navinner"><div class="logo"><div class="logo-symbol" aria-hidden="true">E</div><span>ERVIN <b>MODEL</b></span></div><nav class="navend" aria-label="Page sections"><a href="#map-area">THE MAP</a><a href="#races">17 RACES</a><a href="#methodology">METHODOLOGY</a><span class="badge"><span class="dot-live"></span><span id="freshnessLabel">OCT 23 RESEARCH SNAPSHOT</span></span><button class="button ghost" id="themeToggle" aria-label="Toggle light or dark appearance">☀ / ☾</button></nav></div></header>
@@ -23,7 +26,8 @@
 <section class="stat-grid" id="stats" aria-label="Summary metrics"></section>
 <section class="two-col" id="map-area"><article class="panel"><div class="panel-title"><div><div class="section-label">02 &nbsp; THE ELECTORAL LANDSCAPE</div><h2>Interactive Senate cartogram</h2></div><span class="flag">17 WATCHED STATES</span></div><p class="micro">Schematic map of the 50 states (not a geographic boundary map). Select any highlighted state to inspect its polling and historical-error audit.</p><div class="map-wrap"><div class="cartogram" id="map" role="group" aria-label="Interactive U.S. state tile map"></div></div><div class="legend"><span><b style="background:#275f96"></b>Non-Republican model lead</span><span><b style="background:#94424b"></b>Republican model lead</span><span><b style="background:linear-gradient(130deg,#2a6388,#924a5b)"></b>Within 1 point</span><span><b style="background:#243244"></b>Other states</span></div></article><aside class="panel detail" id="detail" aria-live="polite"></aside></section>
 <section class="analysis-row section-gap"><article class="panel"><div class="panel-title"><div><div class="section-label">03 &nbsp; WHERE THE MODEL STANDS</div><h2>Adjusted prediction spread</h2></div><span class="micro">Click a race to inspect</span></div><p class="micro">The chart is centered on zero. Bars show mathematical adjusted margins; values exceeding five points are <b>direction-only</b> predictions in the Ervin Model.</p><div class="bars" id="bars"></div></article><article class="panel"><div class="section-label">04 &nbsp; BACKTEST QUALITY</div><h2>Historical-error report card</h2><p class="micro">Grades assess how well historical state polling captured the actual election result and how many comparable races are available. They are <b>not pollster grades</b>.</p><div class="breakdown" id="gradeOverview"></div><div class="archive"><h3 id="historyHeading">Historical errors</h3><div class="hist-bars" id="histBars" aria-label="Historical polling-error bars"></div><p class="micro" id="historyExplanation"></p></div></article></section>
-<section class="panel table-panel" id="races"><div class="section-label">05 &nbsp; THE FULL RACE BOARD</div><div class="table-top"><div><h2>All 17 Senate races</h2><p class="micro">Sortable calculations · Source provenance · Historical accuracy grades</p></div><div class="filters"><input class="search" id="search" type="search" aria-label="Search races" placeholder="Search state / candidate…"><select class="select" id="raceFilter" aria-label="Filter races"><option value="all">All 17 races</option><option value="close">Adjusted within ±5</option><option value="cross">Scenario band crosses zero</option><option value="proxy">Source fallback used</option><option value="independent">Independent matchups</option></select><select class="select" id="sort" aria-label="Sort races"><option value="close">Closest first</option><option value="name">State A–Z</option><option value="margin">Democratic / independent first</option><option value="error">Largest historical error</option><option value="grade">Strongest historical evidence</option></select></div></div><div class="table-scroll"><table><thead><tr><th>Race</th><th>Polling lead</th><th>Historical R shift</th><th>Ervin adjusted</th><th>Prediction</th><th>80/90% band</th><th>Evidence grade</th><th>Vs RCP</th><th>Input basis</th></tr></thead><tbody id="rows"></tbody></table></div><p class="fine" style="margin:13px 0 0">In Nebraska, South Dakota and Montana, “non-R” means the named independent, not the Democratic nominee. For South Dakota and Montana the historical D-versus-R error is shown but <b>not applied</b> to the independent matchup.</p></section>
+<section class="panel table-panel" id="researchLab"><div class="section-label">05 &nbsp; POLLING RESEARCH LAB</div><div class="insight-head"><div><h2>Cross-source intelligence</h2><p class="micro">Measure publisher disagreement, model sensitivity and an independent qualitative rating.</p></div><div class="insight-toolbar"><label class="fine" for="insightRace">Select race</label><select id="insightRace" class="select" aria-label="Research lab race"></select><button class="button ghost" id="shareForecast" type="button">Copy race link ↗</button></div></div><div class="insight-grid" id="insightStats"></div><div class="table-scroll"><table class="comparison-table"><thead><tr><th>Polling source</th><th>Raw lead</th><th>Original Ervin</th><th>Shrunk Ervin</th><th>Input status</th></tr></thead><tbody id="insightSourceRows"></tbody></table></div><p id="insightContext" class="insight-note"></p><p class="insight-note">Cook Political Report rating: snapshot dated October 20, 2026, not an automatically refreshed probability. <a href="https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1" target="_blank" rel="noopener noreferrer">Read its methodology and current rating ↗</a>. Source disagreement is descriptive only: publishers may share underlying polls, and proxy inputs are excluded from the spread.</p></section>
+<section class="panel table-panel" id="races"><div class="section-label">05 &nbsp; THE FULL RACE BOARD</div><div class="table-top"><div><h2>All 17 Senate races</h2><p class="micro">Sortable calculations · Source provenance · Historical accuracy grades</p></div><div class="filters"><input class="search" id="search" type="search" aria-label="Search races" placeholder="Search state / candidate…"><select class="select" id="raceFilter" aria-label="Filter races"><option value="all">All 17 races</option><option value="close">Adjusted within ±5</option><option value="cross">Scenario band crosses zero</option><option value="proxy">Source fallback used</option><option value="independent">Independent matchups</option></select><select class="select" id="sort" aria-label="Sort races"><option value="close">Closest first</option><option value="name">State A–Z</option><option value="margin">Democratic / independent first</option><option value="error">Largest historical error</option><option value="grade">Strongest historical evidence</option></select></div></div><div class="table-scroll"><table><thead><tr><th>Race</th><th>Polling lead</th><th>Historical R shift</th><th>Ervin adjusted</th><th>Prediction</th><th>80/90% band</th><th>Evidence grade</th><th>Vs RCP</th><th>Input basis</th></tr></thead><tbody id="rows"></tbody></table></div><p class="fine" style="margin:13px 0 0">In Nebraska, South Dakota and Montana, “non-R” means the named independent, not the Democratic nominee. For Nebraska and South Dakota candidate-specific prior-election corrections are applied, while Montana's historical D-versus-R error is not applied.</p></section>
 <section class="panel table-panel" id="methodology"><div class="section-label">06 &nbsp; TRANSPARENCY & REPRODUCIBILITY</div><h2>What these predictions actually mean</h2><div class="method-grid"><div class="method-item"><b>01 / Historical correction</b><p>In D-versus-R races: <b>Adjusted D–R = current poll D–R − mean(past poll margin − past actual margin)</b>. Positive historical errors mean Republicans outperformed polling. The original Ervin ±5 directional rule is retained. An optional small-sample shrinkage toggle multiplies the historical correction by n/(n+3), yielding a separate sensitivity scenario.</p></div><div class="method-item"><b>02 / Evidence grades & intervals</b><p>Historical mean absolute error (MAE) is computed from the election-by-election audit. Grade thresholds include sample-size requirements. Uncertainty bands use a <b>conservative scenario formula</b> with a ≥4.7-point historical dispersion floor and wider bands for few elections, fallbacks, ranked-choice ballots and independents. <b>These are not formally calibrated statistical confidence intervals or win probabilities.</b></p></div><div class="method-item"><b>03 / RealClearPolling benchmark</b><p>RCP is the comparison reference; a separate source tab is never blended with RCP. If a publisher lacks an identifiable same-matchup polling average, we use a <b>named polling proxy</b> and flag it at the row and in the race detail. We do not relabel an outside estimate as a genuine RCP/DDHQ/270toWin average. Different sources can have different field dates.</p></div></div><p class="micro" style="margin-top:17px"><b>Overlap warning:</b> Wikipedia's average-of-aggregators uses aggregator averages that may contain many of the same underlying surveys. This is not equivalent to a unique-poll sample or five independent observations. <b>Uneven calibration:</b> all candidate fields and historical samples are documented, including mixed historical RCP/Wikipedia inputs inherited from the working model. Independent races and ranked-choice voting require more caution.</p><div class="source-links"><a href="https://www.realclearpolling.com/elections/senate/2026/toss-ups" target="_blank" rel="noopener noreferrer">↗ RealClearPolling</a><a href="https://www.270towin.com/2026-senate-polls/" target="_blank" rel="noopener noreferrer">↗ 270toWin</a><a href="https://en.wikipedia.org/wiki/2026_United_States_Senate_elections" target="_blank" rel="noopener noreferrer">↗ Wikipedia aggregator tables</a><a href="https://votes.decisiondeskhq.com/polls/2026" target="_blank" rel="noopener noreferrer">↗ Decision Desk HQ</a><a href="https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1" target="_blank" rel="noopener noreferrer">↗ Cook ratings</a><a href="historical_error_audit.csv" download>↓ Historical error data</a><a href="source_snapshot.csv" download>↓ Polling sources data</a></div></section>
 <footer class="foot"><span>THE ERVIN MODEL <span style="color:var(--accent)">/</span> 2026 RESEARCH EDITION</span><span><span id="siteVisitCount" aria-live="polite" title="Approximate page visits since counter installation">SITE VISITS —</span> · <span id="footerFreshness">Source snapshot October 23, 2026 · Automatic refreshing activates after GitHub Pages deployment</span> · Mechanical, experimental predictions</span></footer>
 </main><div class="snack" id="snack" role="status"></div><script>
@@ -145,7 +149,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
       "notes": "",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Toss Up",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Michigan",
@@ -234,7 +245,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
       "notes": "",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Toss Up",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Ohio",
@@ -323,7 +341,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Ohio",
       "notes": "",
-      "special": true
+      "special": true,
+      "externalRatings": {
+        "cook": {
+          "rating": "Toss Up",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Texas",
@@ -412,7 +437,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
       "notes": "",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Toss Up",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Iowa",
@@ -501,7 +533,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Iowa",
       "notes": "",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Toss Up",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Kansas",
@@ -590,7 +629,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Kansas",
       "notes": "",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Toss Up",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Minnesota",
@@ -679,7 +725,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
       "notes": "September 30 270toWin estimate is older than the other source estimates; historic R correction provisional.",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Lean D",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Alaska",
@@ -779,7 +832,14 @@ window.ERVIN_DATA = {
       "history_mode": "candidate_repeat",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Alaska",
       "notes": "Candidate-specific correction uses Peltola's 2022 general and 2024 House ranked-choice final-round polling errors; older 2020 Senate and 2024 presidential comparisons remain audit context and are excluded from the applied correction. Both Peltola comparisons involve different Republican opponents and the 2022 survey predates election day by several weeks. 2026 Senate polls reported as 2-candidate or first-round margins may not be comparable to final RCV runoff results; interpret adjusted margins as a sensitivity scenario, not an estimated final-round outcome.",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Toss Up",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Georgia",
@@ -868,7 +928,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Georgia",
       "notes": "Georgia 2020 and 2022 comparisons use November general elections, not the subsequent runoffs.",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Likely D",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "North Carolina",
@@ -957,7 +1024,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_North_Carolina",
       "notes": "",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Likely D",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "New Hampshire",
@@ -1046,7 +1120,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_New_Hampshire",
       "notes": "Single historical comparison; 270toWin average predates October polls.",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Lean D",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Nebraska",
@@ -1135,7 +1216,14 @@ window.ERVIN_DATA = {
       "history_mode": "candidate_repeat",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
       "notes": "Dan Osborn ran as an independent in 2024 and again in 2026. Apply the candidate-specific 2024 Osborn–Fischer polling error (+5.07 R shift), rather than unrelated statewide Democratic-vs-Republican presidential corrections. Opponent changes from Fischer to Ricketts; inference is based on one comparable election.",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Likely R",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "South Carolina",
@@ -1224,7 +1312,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
       "notes": "2026 matchup names are from the current Wikipedia general-election aggregation table.",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Lean R",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Mississippi",
@@ -1313,7 +1408,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Mississippi",
       "notes": "Few current polls; the source-specific tabs use explicitly labeled third-party polling proxies, not manufactured DDHQ/270/RCP series.",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Likely R",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Florida",
@@ -1402,7 +1504,14 @@ window.ERVIN_DATA = {
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Florida",
       "notes": "",
-      "special": true
+      "special": true,
+      "externalRatings": {
+        "cook": {
+          "rating": "Solid R",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "South Dakota",
@@ -1491,7 +1600,14 @@ window.ERVIN_DATA = {
       "history_mode": "candidate_repeat",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Dakota",
       "notes": "Brian Bengs was 2022 Democratic Senate nominee versus John Thune and returns in 2026 as an independent versus Mike Rounds. Apply the 2022 Bengs-specific late-poll polling error (+18.50 R points) as a scenario correction. WARNING: single 2022 poll, four years older, party label and Republican opponent changed; very weak calibration.",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Solid R",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     },
     {
       "state": "Montana",
@@ -1580,7 +1696,14 @@ window.ERVIN_DATA = {
       "history_mode": "not_comparable",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
       "notes": "Three-way race: Alme (R), Bodnar (I), Bankhead (D). Polling margin is Bodnar minus Alme (top two), NOT Democrat minus Republican. Past D-R correction is not applied; uncertainty inflated.",
-      "special": false
+      "special": false,
+      "externalRatings": {
+        "cook": {
+          "rating": "Solid R",
+          "date": "Oct 20, 2026",
+          "url": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1"
+        }
+      }
     }
   ],
   "benchmark": "https://www.realclearpolling.com/elections/senate/2026/toss-ups",
@@ -1650,8 +1773,20 @@ function rowsFiltered(){const q=state.search.trim().toLowerCase();let r=states.m
  switch(state.sort){case 'name':r.sort((a,b)=>a.r.state.localeCompare(b.r.state));break;case 'margin':r.sort((a,b)=>b.adjusted-a.adjusted);break;case 'error':r.sort((a,b)=>Math.abs(b.r.correction)-Math.abs(a.r.correction));break;case 'grade':r.sort((a,b)=>'ABCDF'.indexOf(a.grade)-'ABCDF'.indexOf(b.grade)||a.h.mae-b.h.mae);break;default:r.sort((a,b)=>Math.abs(a.adjusted)-Math.abs(b.adjusted));}return r;}
 function renderTable(){const rows=rowsFiltered();$('rows').innerHTML=rows.map(v=>{const r=v.r,p=v.poll,base=r.sources.rcp.value,diff=p.value-base;return `<tr data-id="${r.code}" class="${state.selected===r.code?'active':''}"><td class="statecell"><strong>${esc(r.state)}${r.special?' *':''}</strong><small>${esc(r.dem.split(' ').slice(-1).join(' '))} / ${esc(r.rep.split(' ').slice(-1).join(' '))} ${r.party==='I'?'· IND':''}</small></td><td>${esc(fmt(p.value,r))}</td><td>${r.history_mode==='not_comparable'?'<span class="fine" title="Historical D-R shift not transferable">not applied</span>':(v.correction>=0?'R +':'D +')+Math.abs(v.correction).toFixed(2)}</td><td style="color:var(--${v.adjusted<0?'red':'blue'})"><b>${esc(fmt(v.adjusted,r))}</b></td><td><span class="call-pill ${v.adjusted<0?'rep':'dem'}">${esc(judge(v.adjusted,r))}</span></td><td><span style="font-size:11px">${v.crosses?'Crosses tie':'One side of tie'}</span><div class="micro">±${v.half.toFixed(1)} pts</div></td><td><span class="grade ${v.grade}">${v.grade}</span> <span class="micro">${v.h.n} yr / ${v.h.mae.toFixed(1)} MAE</span></td><td>${diff>=0?'+':''}${diff.toFixed(2)}${r.sources.rcp.proxy?'*':''}</td><td><span class="status ${p.proxy?'proxy':''}" title="${esc(p.note||p.origin)}">${p.proxy?'Reference proxy':'Publisher'}</span></td></tr>`}).join('')||'<tr><td colspan="9" style="padding:24px;color:var(--muted)">No races match these filters. Reset the search or filter.</td></tr>';
  $('rows').querySelectorAll('tr[data-id]').forEach(tr=>tr.onclick=()=>{focusRace(tr.dataset.id);$('detail').scrollIntoView({behavior:'smooth',block:'nearest'})});}
-function focusRace(code){state.selected=code;renderMap();detail();renderBars();renderTable();}
-function render(){renderTabs();renderStats();renderMap();detail();renderBars();renderTable();}
+function focusRace(code){state.selected=code;renderMap();detail();renderBars();renderTable();renderInsights();}
+function renderInsights(){
+ const sel=$('insightRace');if(!sel)return;
+ if(!sel.options.length){sel.innerHTML=states.map(r=>`<option value="${esc(r.code)}">${esc(r.state)}</option>`).join('');sel.onchange=()=>{state.selected=sel.value;renderMap();detail();renderBars();renderTable();renderInsights();};$('shareForecast').onclick=()=>{const url=new URL(location.href);url.hash='researchLab';url.searchParams.set('race',state.selected);if(navigator.clipboard?.writeText){navigator.clipboard.writeText(url.href).then(()=>snack('Race research link copied'),()=>snack('Copy unavailable'));}else snack('Copy unavailable')};}
+ sel.value=state.selected;
+ const r=selected(),v=evaluate(r),s=Object.entries(r.sources).filter(([k,p])=>!p.proxy),vals=s.map(([k,p])=>p.value),spread=vals.length>=2?Math.max(...vals)-Math.min(...vals):null;
+ const candidateSpecific=r.history_mode==='candidate_repeat',shrink=candidateSpecific?(r.code==='AK'?.4:.25):v.h.n/(v.h.n+3);
+ const display=(x)=>esc(fmt(x,r,2));
+ const rating=r.externalRatings?.cook;
+ $('insightStats').innerHTML=`<div class="insight-stat"><small>Publisher-average spread</small><strong>${spread===null?'—':spread.toFixed(2)+' pts'}</strong><small>${s.length} non-proxy source inputs · not independent surveys</small></div><div class="insight-stat"><small>Full historical correction</small><strong>${r.history_mode==='not_comparable'?'Not used':display(v.correction)}</strong><small>${v.h.n} historical entries; election types labeled in audit</small></div><div class="insight-stat"><small>Cook Political Report</small><strong style="font-size:23px">${rating?esc(rating.rating):'—'}</strong><small>As of ${rating?esc(rating.date):'unknown'} · external qualitative rating</small></div>`;
+ $('insightSourceRows').innerHTML=CONFIG.sourceList.map(src=>{const p=r.sources[src.key],raw=p.value,full=r.history_mode==='not_comparable'?0:r.correction,shrunk=full*shrink;return `<tr><td><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(src.title)} ↗</a></td><td>${display(raw)}</td><td>${display(raw-full)}</td><td>${display(raw-shrunk)}</td><td><span class="tagline">${p.proxy?'Reference proxy':'Publisher'}</span></td></tr>`}).join('');
+ $('insightContext').textContent=`Historical error is subtracted from the raw non-Republican margin. ${candidateSpecific?'Candidate-specific comparison; the full shift is based on prior contests involving the same candidate. ':''}The shrinkage option retains ${Math.round(shrink*100)}% of the correction. The Cook rating is a separate published assessment, not a numerical probability or an additional poll.`;
+}
+function render(){renderTabs();renderStats();renderMap();detail();renderBars();renderTable();renderInsights();}
 function snack(msg){const box=$('snack');box.textContent=msg;box.classList.add('show');setTimeout(()=>box.classList.remove('show'),2700)}
 function exportCSV(){const headers=['State','Party of non-R candidate','Source tab','Input margin non-R-minus-R','Input origin','Source date','Proxy flag','Applied R shift','Historical polling errors N','Historical MAE','Evidence grade','Adjusted non-R-minus-R','Lower scenario bound','Upper scenario bound','Confidence statement'];let csv=[headers,...states.map(r=>{let v=evaluate(r);return [r.state,r.party,state.source,v.poll.value,v.poll.origin,v.poll.date,v.poll.proxy,v.correction,v.h.n,round(v.h.mae),v.grade,round(v.adjusted),round(v.lo),round(v.hi),v.support]})].map(a=>a.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf8;'}));a.download=`Ervin-Model-${state.source}-${new Date().toISOString().slice(0,10)}.csv`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);snack(`CSV exported with ${states.length} races and source flags`)}
 $('confidenceLevel').onchange=e=>{state.level=Number(e.target.value);render()};$('biasMode').onchange=e=>{state.biasMode=e.target.value;render()};$('raceFilter').onchange=e=>{state.filter=e.target.value;renderTable()};$('sort').onchange=e=>{state.sort=e.target.value;renderTable()};$('search').oninput=e=>{state.search=e.target.value;renderTable()};$('exportCSV').onclick=exportCSV;
@@ -1682,6 +1817,7 @@ function setFreshness(){
   link.hidden=true;
  }
 }
+const requested=new URLSearchParams(location.search).get('race');if(requested&&states.some(r=>r.code===requested.toUpperCase()))state.selected=requested.toUpperCase();
 setFreshness();
 render();
 })();
