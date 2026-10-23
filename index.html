@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#09111e"><meta name="description" content="Ervin Model: a research dashboard comparing 2026 Senate polling, historical state errors, and uncertainty across 17 competitive races.">
+<title>Ervin Model • Senate Forecast Lab | 2026</title><style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root{color-scheme:dark;--bg:#09111e;--bg2:#0c1727;--surface:#101f30;--surface2:#15283a;--edge:#273b4c;--text:#f1f4f7;--muted:#9caec0;--subtle:#6f849b;--cream:#fff8e6;--accent:#f0c67d;--blue:#57a1e9;--blue-soft:#1d3d5d;--red:#fa7980;--red-soft:#5e2839;--orange:#f0ae72;--shadow:0 16px 38px #03091255}
+:root.light{color-scheme:light;--bg:#eef2f5;--bg2:#e4ebef;--surface:#fff;--surface2:#f4f7fa;--edge:#d6dfe8;--text:#172c3d;--muted:#53677a;--subtle:#70849a;--cream:#fff4da;--accent:#bc7a28;--blue:#2679b5;--blue-soft:#e0effb;--red:#c44953;--red-soft:#fce7e9;--shadow:0 13px 36px #10233813}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--text);background:radial-gradient(ellipse at 50% -10%,#213b50 0,var(--bg) 38%,var(--bg) 75%);font:14px/1.55 'DM Sans',system-ui,sans-serif}body.light, .light body{background:var(--bg)}button,select,input{font:inherit}button{cursor:pointer}a{color:var(--blue)}.shell{width:min(1480px,calc(100% - 64px));margin-inline:auto}.topbar{height:73px;border-bottom:1px solid var(--edge);background:#08121cd9;backdrop-filter:blur(17px);position:sticky;top:0;z-index:20}.light .topbar{background:#fafcfded}.navinner{display:flex;align-items:center;justify-content:space-between;height:100%;gap:16px}.logo{display:flex;align-items:center;gap:13px;font:700 18px/1 'Space Grotesk',sans-serif;letter-spacing:.12em}.logo-symbol{width:35px;height:35px;border:1px solid #b58c50;border-radius:9px;display:grid;place-items:center;color:var(--accent);font:700 23px 'Space Grotesk'}.logo b{color:var(--accent)}.navend{display:flex;align-items:center;gap:15px}.navend a{color:var(--muted);text-decoration:none;font-size:12px;font-weight:700}.navend a:hover{color:var(--text)}.badge{border:1px solid var(--edge);border-radius:100px;padding:6px 11px;color:var(--muted);font-size:11px;letter-spacing:.04em;white-space:nowrap}.dot-live{width:7px;height:7px;border-radius:50%;display:inline-block;background:#6bcbb0;margin-right:6px;box-shadow:0 0 0 3px #6bcbb022}.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--edge);color:var(--text);background:var(--surface2);padding:9px 13px;border-radius:9px;font-weight:700;font-size:12px;text-decoration:none;transition:background .2s,transform .2s}.button:hover{background:var(--edge)}.button:focus-visible,.tile:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}.button.primary{background:var(--accent);color:#16202c;border-color:var(--accent)}.button.ghost{background:transparent}.hero{padding:46px 0 28px;display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap}.kicker,.eyebrow{font-weight:800;text-transform:uppercase;letter-spacing:.17em;font-size:10px;color:var(--accent)}.hero h1{font:600 clamp(30px,3.35vw,48px)/1.1 'Space Grotesk';max-width:760px;letter-spacing:-.052em;margin:13px 0 15px}.hero h1 em{font-style:normal;color:var(--accent)}.lede{max-width:670px;color:var(--muted);font-size:14px;margin:0}.hero-right{display:flex;flex-direction:column;gap:9px;align-items:flex-end}.hero-right strong{font:700 30px/1 'Space Grotesk';letter-spacing:-.04em}.hero-right small{color:var(--muted)}.divider{height:1px;background:var(--edge);margin:8px 0 24px}.toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:19px}.section-label{font-size:11px;text-transform:uppercase;font-weight:800;letter-spacing:.14em;color:var(--subtle);margin-bottom:9px}.tabs{display:flex;flex-wrap:wrap;gap:7px}.tab{color:var(--muted);background:transparent;border:1px solid var(--edge);border-radius:9px;padding:11px 14px;font-size:12px;font-weight:750;transition:all .17s}.tab:hover{background:var(--surface2)}.tab[aria-selected=true]{background:var(--cream);color:#182334;border-color:var(--cream);box-shadow:0 3px 12px #01060e38}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.select, .search{border:1px solid var(--edge);background:var(--surface);color:var(--text);border-radius:9px;padding:10px 11px;min-height:39px}.search{width:194px;outline:none}.subbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 16px;color:var(--muted);font-size:12px}.subbar span.source-brand{color:var(--text);font-weight:800}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 18px}.stat{background:linear-gradient(145deg,var(--surface),var(--surface2));border:1px solid var(--edge);border-radius:14px;padding:19px 20px;position:relative;overflow:hidden;min-height:114px}.stat:before{content:'';position:absolute;right:-14px;top:-29px;width:105px;height:105px;border-radius:50%;border:1px solid #ffffff0a}.stat .num{font:650 34px/1.15 'Space Grotesk';letter-spacing:-.055em;white-space:nowrap}.stat .num.blue{color:var(--blue)}.stat .num.red{color:var(--red)}.stat .num.gold{color:var(--accent)}.stat p{font-size:12px;color:var(--muted);margin:9px 0 0}.stat small{color:var(--subtle);font-size:10px}.two-col{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(325px,1fr);gap:16px;align-items:stretch}.panel{border:1px solid var(--edge);background:var(--surface);box-shadow:var(--shadow);border-radius:15px;padding:21px}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:12px}.panel h2{font:650 18px 'Space Grotesk';letter-spacing:-.025em;margin:0}.panel h3{font:650 16px 'Space Grotesk';margin:0 0 10px}.muted{color:var(--muted)}.micro{font-size:11px;color:var(--muted)}.map-wrap{padding-top:22px}.cartogram{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:repeat(8,49px);gap:5px;max-width:830px;margin:8px auto 23px}.tile{border:1px solid #50627853;color:#9bafc0;background:#24324468;border-radius:8px;display:grid;place-items:center;min-width:0;font-weight:800;font-size:12px;position:relative;cursor:default;transition:filter .18s,transform .18s,box-shadow .18s}.tile span.tiny{font-size:8px;position:absolute;right:3px;bottom:2px;font-weight:700;opacity:.65}.tile.tracked{cursor:pointer;border-color:#ffffff34;color:#f4f6fa}.tile.tracked:hover{transform:translateY(-3px) scale(1.06);filter:brightness(1.25);z-index:2}.tile.dem{background:#275f96}.tile.rep{background:#94424b}.tile.close{background:linear-gradient(130deg,#2a6388,#924a5b);background-color:#51485d}.tile.active{outline:3px solid var(--accent);outline-offset:2px;z-index:3;box-shadow:0 0 0 6px #f0c67d1b}.tile.pinned{border-style:dashed}.legend{display:flex;flex-wrap:wrap;gap:15px;align-items:center;color:var(--muted);font-size:11px}.legend b{width:11px;height:11px;display:inline-block;border-radius:3px;margin-right:5px;vertical-align:-1px}.flag{font-size:10px;color:var(--accent);background:#d7a95b19;border-radius:4px;padding:3px 7px;letter-spacing:.05em;font-weight:800;white-space:nowrap}.detail-title{margin-top:16px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.detail h3{font-size:25px;margin:1px 0 3px}.detail .lead{font:650 31px/1.13 'Space Grotesk';letter-spacing:-.045em;margin:15px 0 0}.lead.dem{color:var(--blue)}.lead.rep{color:var(--red)}.detail .candidate{font-size:12px;color:var(--muted)}.mini-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:18px 0}.mini{background:var(--surface2);border:1px solid var(--edge);border-radius:9px;padding:10px}.mini small{display:block;color:var(--muted);font-size:10px;line-height:1.35}.mini strong{font:650 17px 'Space Grotesk';display:block;margin-top:5px}.range-chart{padding:10px 0}.range-label{display:flex;justify-content:space-between;gap:12px}.range-bounds{margin-top:6px;display:flex;justify-content:space-between;color:var(--muted);font-size:10px}.band{height:25px;background:linear-gradient(90deg,#8b4550 0%,#643d4e 50%,#315575 50%,#244b73 100%);border:1px solid var(--edge);border-radius:7px;position:relative;overflow:hidden;margin-top:10px}.band:before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:#e8e9ed88;z-index:1}.band-interval{position:absolute;top:7px;height:11px;border-radius:6px;background:#f2d4a6;opacity:.85;z-index:2}.band-center{position:absolute;width:12px;height:23px;top:0;background:var(--accent);border:2px solid #fff8e6;transform:translateX(-50%);border-radius:3px;z-index:3}.detail-note{border-top:1px solid var(--edge);padding-top:12px;margin-top:10px;color:var(--muted);font-size:12px}.detail-refs{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.detail-refs a{font-size:11px;text-decoration:none;border:1px solid var(--edge);border-radius:7px;padding:6px 9px}.section-gap{margin-top:17px}.analysis-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr);gap:16px;align-items:stretch}.bars{display:grid;gap:7px;margin-top:16px;max-height:360px;overflow:auto;padding-right:7px}.barrow{display:grid;grid-template-columns:110px minmax(0,1fr) 64px;gap:10px;align-items:center;font-size:11px}.barname{color:var(--muted);font-weight:750}.bartrack{height:15px;position:relative;background:linear-gradient(90deg,#70303e35 0 50%,#305b8035 50% 100%);border:1px solid var(--edge);border-radius:3px}.bartrack:after{content:'';position:absolute;left:50%;width:1px;background:var(--muted);opacity:.8;top:0;bottom:0}.barfill{position:absolute;top:2px;bottom:2px;border-radius:2px}.barfill.r{background:var(--red)}.barfill.d{background:var(--blue)}.barrow[data-code]{cursor:pointer}.barrow.active .barname{color:var(--accent)}.breakdown{display:grid;gap:9px;margin-top:15px}.grade-row{display:flex;align-items:center;gap:8px;justify-content:space-between;border-bottom:1px solid var(--edge);padding:6px 0;font-size:12px}.grade{font:800 12px 'Space Grotesk';border-radius:5px;padding:4px 9px;min-width:33px;text-align:center}.grade.A,.grade.B{background:#274a46;color:#8ce0ca}.grade.C{background:#64502f;color:#ffdc99}.grade.D,.grade.F{background:#5f3340;color:#ffabab}.archive{padding-top:11px}.hist-bars{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:end;min-height:118px;margin-top:6px}.hist-column{display:flex;flex-direction:column;align-items:center;justify-content:end;gap:5px;color:var(--muted);font-size:10px}.hist-column .vbar{width:21px;border-radius:5px 5px 0 0;background:var(--orange);min-height:4px}.hist-column .vbar.neg{background:var(--blue)}.archive a{font-size:11px}.table-panel{margin-top:17px}.table-top{display:flex;justify-content:space-between;gap:13px;align-items:center;flex-wrap:wrap;margin-bottom:9px}.filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.table-scroll{width:100%;overflow:auto;scrollbar-color:var(--edge) transparent}table{border-collapse:collapse;width:100%;min-width:970px}td,th{text-align:left;border-bottom:1px solid var(--edge);padding:13px 10px;white-space:nowrap}th{font-size:10px;letter-spacing:.075em;text-transform:uppercase;color:var(--muted)}td{font-size:12px;font-variant-numeric:tabular-nums}td.statecell strong{display:block;font-size:12px}td.statecell small{color:var(--subtle)}tr[data-id]{cursor:pointer}tr[data-id]:hover, tr.active{background:var(--surface2)}.call-pill{padding:5px 9px;border-radius:6px;font-size:11px;font-weight:800}.call-pill.rep{background:var(--red-soft);color:var(--red)}.call-pill.dem{background:var(--blue-soft);color:var(--blue)}.call-pill.tie{background:var(--surface2);color:var(--muted)}.status{font-size:10px;color:var(--muted);border:1px solid var(--edge);padding:3px 7px;border-radius:5px}.status.proxy{color:var(--accent);border-color:#b88e5650}.fine{font-size:11px;color:var(--muted)}.source-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:17px}.source-links a{font-size:11px;border:1px solid var(--edge);background:var(--surface2);border-radius:8px;padding:9px 11px;text-decoration:none;font-weight:700}.method-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:15px}.method-item{padding:16px;background:var(--surface2);border:1px solid var(--edge);border-radius:10px}.method-item b{font-size:12px}.method-item p{font-size:11px;color:var(--muted);margin:8px 0 0}.foot{padding:36px 0 50px;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;font-size:11px;color:var(--subtle)}.snack{position:fixed;bottom:23px;left:50%;transform:translateX(-50%);padding:12px 19px;border-radius:11px;background:var(--cream);color:#182534;z-index:40;box-shadow:var(--shadow);font-size:12px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s}.snack.show{opacity:1}@media(max-width:1050px){.two-col,.analysis-row{grid-template-columns:1fr}.cartogram{grid-template-rows:repeat(8,42px)}.stat-grid{grid-template-columns:repeat(2,1fr)}.method-grid{grid-template-columns:1fr 1fr}}@media(max-width:670px){.shell{width:calc(100% - 28px)}.hero{padding:29px 0 20px}.hero-right{align-items:flex-start}.navend a,.topbar .navend .badge{display:none}.topbar{height:64px}.stat{padding:14px;min-height:98px}.stat .num{font-size:29px}.panel{padding:15px}.cartogram{grid-template-rows:repeat(8,30px);gap:3px}.tile{font-size:9px;border-radius:4px}.tile span.tiny{display:none}.legend{gap:9px}.method-grid{grid-template-columns:1fr}.tab{padding:8px 10px}.search{width:155px}.hero h1{font-size:33px}.barrow{grid-template-columns:87px minmax(0,1fr) 65px}.mini-grid{gap:5px}.mini{padding:8px}.mini strong{font-size:13px}.logo{font-size:15px;letter-spacing:.07em}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+/* Automatic polling-source refresh indicator */
+.refresh-strip{display:flex;align-items:center;gap:11px;padding:11px 15px;margin:8px 0 4px;border:1px solid var(--edge);background:var(--surface);border-radius:11px;color:var(--muted);font-size:12px;line-height:1.5}
+.refresh-strip span:nth-child(2){flex:1}.refresh-strip a{color:var(--accent);white-space:nowrap;text-decoration:none;font-weight:700}
+.refresh-symbol{font-size:20px;color:var(--accent)}
+@media(max-width:650px){.refresh-strip{flex-wrap:wrap;gap:7px}.refresh-strip a{width:100%}}
+
+</style></head>
+<body>
+<header class="topbar"><div class="shell navinner"><div class="logo"><div class="logo-symbol" aria-hidden="true">E</div><span>ERVIN <b>MODEL</b></span></div><nav class="navend" aria-label="Page sections"><a href="#map-area">THE MAP</a><a href="#races">17 RACES</a><a href="#methodology">METHODOLOGY</a><span class="badge"><span class="dot-live"></span><span id="freshnessLabel">OCT 23 RESEARCH SNAPSHOT</span></span><button class="button ghost" id="themeToggle" aria-label="Toggle light or dark appearance">☀ / ☾</button></nav></div></header>
+<main class="shell">
+<section class="hero"><div><div class="kicker">2026 U.S. Senate • Election intelligence dashboard</div><h1>Past polling errors.<br><em>Present predictions.</em></h1><p class="lede">The Ervin Model adjusts today's Senate poll averages by each state's historical polling error. Compare five source views, examine the evidence behind each correction, and explore uncertainty rather than guess at certainty.</p></div><div class="hero-right"><div class="eyebrow">Countdown to Election Day</div><strong id="countdown">11 days</strong><small id="countdownFoot">Tuesday, November 3, 2026 · Archived research snapshot</small><button class="button primary" id="exportCSV">↓ Export current calculations</button></div></section>
+<div class="refresh-strip" role="status" aria-live="polite"><span class="refresh-symbol" aria-hidden="true">↻</span><span id="refreshDetails">This downloaded edition is a dated polling snapshot. An authorized GitHub Pages deployment enables scheduled checks every six hours.</span><a href="refresh_log.json" id="refreshAuditLink" hidden target="_blank" rel="noopener noreferrer">Refresh audit ↗</a></div><div class="divider"></div>
+<section aria-label="Polling data sources"><div class="section-label">01 &nbsp; SELECT THE POLLING SOURCE</div><div class="toolbar"><div class="tabs" id="tabs" role="tablist" aria-label="Polling source"></div><div class="controls"><label class="fine" for="confidenceLevel">Uncertainty band</label><select class="select" id="confidenceLevel" aria-label="Choose uncertainty level"><option value="80">80% scenario</option><option value="90">90% scenario</option></select><label class="fine" for="biasMode">Bias</label><select class="select" id="biasMode" aria-label="Choose historical bias mode"><option value="original">Original Ervin</option><option value="shrink">Shrink small samples</option></select></div></div><div class="subbar"><span><span class="source-brand" id="sourceName">Average of averages</span> <span id="sourceDescription">Wikipedia aggregator consensus, not extra individual polls.</span></span><span id="verifiedCount">17 races • Source provenance shown per race</span></div></section>
+<section class="stat-grid" id="stats" aria-label="Summary metrics"></section>
+<section class="two-col" id="map-area"><article class="panel"><div class="panel-title"><div><div class="section-label">02 &nbsp; THE ELECTORAL LANDSCAPE</div><h2>Interactive Senate cartogram</h2></div><span class="flag">17 WATCHED STATES</span></div><p class="micro">Schematic map of the 50 states (not a geographic boundary map). Select any highlighted state to inspect its polling and historical-error audit.</p><div class="map-wrap"><div class="cartogram" id="map" role="group" aria-label="Interactive U.S. state tile map"></div></div><div class="legend"><span><b style="background:#275f96"></b>Non-Republican model lead</span><span><b style="background:#94424b"></b>Republican model lead</span><span><b style="background:linear-gradient(130deg,#2a6388,#924a5b)"></b>Within 1 point</span><span><b style="background:#243244"></b>Other states</span></div></article><aside class="panel detail" id="detail" aria-live="polite"></aside></section>
+<section class="analysis-row section-gap"><article class="panel"><div class="panel-title"><div><div class="section-label">03 &nbsp; WHERE THE MODEL STANDS</div><h2>Adjusted prediction spread</h2></div><span class="micro">Click a race to inspect</span></div><p class="micro">The chart is centered on zero. Bars show mathematical adjusted margins; values exceeding five points are <b>direction-only</b> predictions in the Ervin Model.</p><div class="bars" id="bars"></div></article><article class="panel"><div class="section-label">04 &nbsp; BACKTEST QUALITY</div><h2>Historical-error report card</h2><p class="micro">Grades assess how well historical state polling captured the actual election result and how many comparable races are available. They are <b>not pollster grades</b>.</p><div class="breakdown" id="gradeOverview"></div><div class="archive"><h3 id="historyHeading">Historical errors</h3><div class="hist-bars" id="histBars" aria-label="Historical polling-error bars"></div><p class="micro" id="historyExplanation"></p></div></article></section>
+<section class="panel table-panel" id="races"><div class="section-label">05 &nbsp; THE FULL RACE BOARD</div><div class="table-top"><div><h2>All 17 Senate races</h2><p class="micro">Sortable calculations · Source provenance · Historical accuracy grades</p></div><div class="filters"><input class="search" id="search" type="search" aria-label="Search races" placeholder="Search state / candidate…"><select class="select" id="raceFilter" aria-label="Filter races"><option value="all">All 17 races</option><option value="close">Adjusted within ±5</option><option value="cross">Scenario band crosses zero</option><option value="proxy">Source fallback used</option><option value="independent">Independent matchups</option></select><select class="select" id="sort" aria-label="Sort races"><option value="close">Closest first</option><option value="name">State A–Z</option><option value="margin">Democratic / independent first</option><option value="error">Largest historical error</option><option value="grade">Strongest historical evidence</option></select></div></div><div class="table-scroll"><table><thead><tr><th>Race</th><th>Polling lead</th><th>Historical R shift</th><th>Ervin adjusted</th><th>Prediction</th><th>80/90% band</th><th>Evidence grade</th><th>Vs RCP</th><th>Input basis</th></tr></thead><tbody id="rows"></tbody></table></div><p class="fine" style="margin:13px 0 0">In Nebraska, South Dakota and Montana, “non-R” means the named independent, not the Democratic nominee. For South Dakota and Montana the historical D-versus-R error is shown but <b>not applied</b> to the independent matchup.</p></section>
+<section class="panel table-panel" id="methodology"><div class="section-label">06 &nbsp; TRANSPARENCY & REPRODUCIBILITY</div><h2>What these predictions actually mean</h2><div class="method-grid"><div class="method-item"><b>01 / Historical correction</b><p>In D-versus-R races: <b>Adjusted D–R = current poll D–R − mean(past poll margin − past actual margin)</b>. Positive historical errors mean Republicans outperformed polling. The original Ervin ±5 directional rule is retained. An optional small-sample shrinkage toggle multiplies the historical correction by n/(n+3), yielding a separate sensitivity scenario.</p></div><div class="method-item"><b>02 / Evidence grades & intervals</b><p>Historical mean absolute error (MAE) is computed from the election-by-election audit. Grade thresholds include sample-size requirements. Uncertainty bands use a <b>conservative scenario formula</b> with a ≥4.7-point historical dispersion floor and wider bands for few elections, fallbacks, ranked-choice ballots and independents. <b>These are not formally calibrated statistical confidence intervals or win probabilities.</b></p></div><div class="method-item"><b>03 / RealClearPolling benchmark</b><p>RCP is the comparison reference; a separate source tab is never blended with RCP. If a publisher lacks an identifiable same-matchup polling average, we use a <b>named polling proxy</b> and flag it at the row and in the race detail. We do not relabel an outside estimate as a genuine RCP/DDHQ/270toWin average. Different sources can have different field dates.</p></div></div><p class="micro" style="margin-top:17px"><b>Overlap warning:</b> Wikipedia's average-of-aggregators uses aggregator averages that may contain many of the same underlying surveys. This is not equivalent to a unique-poll sample or five independent observations. <b>Uneven calibration:</b> all candidate fields and historical samples are documented, including mixed historical RCP/Wikipedia inputs inherited from the working model. Independent races and ranked-choice voting require more caution.</p><div class="source-links"><a href="https://www.realclearpolling.com/elections/senate/2026/toss-ups" target="_blank" rel="noopener noreferrer">↗ RealClearPolling</a><a href="https://www.270towin.com/2026-senate-polls/" target="_blank" rel="noopener noreferrer">↗ 270toWin</a><a href="https://en.wikipedia.org/wiki/2026_United_States_Senate_elections" target="_blank" rel="noopener noreferrer">↗ Wikipedia aggregator tables</a><a href="https://votes.decisiondeskhq.com/polls/2026" target="_blank" rel="noopener noreferrer">↗ Decision Desk HQ</a><a href="https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1" target="_blank" rel="noopener noreferrer">↗ Cook ratings</a><a href="historical_error_audit.csv" download>↓ Historical error data</a><a href="source_snapshot.csv" download>↓ Polling sources data</a></div></section>
+<footer class="foot"><span>THE ERVIN MODEL <span style="color:var(--accent)">/</span> 2026 RESEARCH EDITION</span><span><span id="footerFreshness">Source snapshot October 23, 2026 · Automatic refreshing activates after GitHub Pages deployment</span> · Mechanical, experimental predictions</span></footer>
+</main><div class="snack" id="snack" role="status"></div><script>
+window.ERVIN_DATA = {
+  "asof": "October 23, 2026",
+  "election": "November 3, 2026",
+  "sourceList": [
+    {
+      "key": "rcp",
+      "title": "RCP Benchmark",
+      "desc": "RealClearPolling is the benchmark; explicit independently published poll proxies used only where no matching RCP average was verified."
+    },
+    {
+      "key": "ddhq",
+      "title": "DDHQ",
+      "desc": "Decision Desk HQ polling averages; explicit polling proxies where there is no matching DDHQ average."
+    },
+    {
+      "key": "win270",
+      "title": "270toWin",
+      "desc": "270toWin rolling polls; explicit polling proxies where there is no comparable published 270toWin number."
+    },
+    {
+      "key": "average",
+      "title": "Average of averages",
+      "desc": "Wikipedia equal-aggregator consensus where published. Does not de-duplicate overlapping constituent polls. Explicit alternate source for isolated exceptions."
+    },
+    {
+      "key": "silver",
+      "title": "Silver Bulletin",
+      "desc": "Silver Bulletin polling averages, with explicit proxies where unmatched."
+    }
+  ],
+  "states": [
+    {
+      "state": "Maine",
+      "code": "ME",
+      "dem": "Troy Jackson",
+      "rep": "Susan Collins",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": 1.5,
+          "origin": "RealClearPolling",
+          "date": "Oct 15",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": 2.3,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 16",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": 2.0,
+          "origin": "270toWin",
+          "date": "Oct 9",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": 2.2,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 2.7,
+          "origin": "Silver Bulletin",
+          "date": "Oct 16",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2008,
+          "poll": -14.6,
+          "actual": -23.0,
+          "err": 8.4,
+          "url": "https://www.realclearpolitics.com/epolls/2008/senate/me/maine_senate_race-649.html",
+          "kind": "Aggregate",
+          "notes": "Historical RCP supplement"
+        },
+        {
+          "year": 2020,
+          "poll": 5.15,
+          "actual": -8.6,
+          "err": 13.75,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Maine",
+          "kind": "Aggregate",
+          "notes": ""
+        }
+      ],
+      "correction": 11.08,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
+      "notes": "",
+      "special": false
+    },
+    {
+      "state": "Michigan",
+      "code": "MI",
+      "dem": "Abdul El-Sayed",
+      "rep": "Mike Rogers",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": 2,
+          "origin": "RealClearPolling",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": 2.2,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": 3.5,
+          "origin": "270toWin",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": 2.8,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 3.0,
+          "origin": "Silver Bulletin",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2018,
+          "poll": 8.3,
+          "actual": 6.4,
+          "err": 1.9,
+          "url": "https://www.realclearpolling.com/polls/senate/general/2018/michigan/stabenow-vs-james",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2020,
+          "poll": 6.5,
+          "actual": 1.7,
+          "err": 4.8,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Michigan",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2024,
+          "poll": 3.2,
+          "actual": 0.3,
+          "err": 2.9,
+          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Michigan",
+          "kind": "Aggregate",
+          "notes": ""
+        }
+      ],
+      "correction": 3.2,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
+      "notes": "",
+      "special": false
+    },
+    {
+      "state": "Ohio",
+      "code": "OH",
+      "dem": "Sherrod Brown",
+      "rep": "Jon Husted",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": 2.9,
+          "origin": "RealClearPolling",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Ohio",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": 4.4,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 22",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Ohio",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": 4.2,
+          "origin": "270toWin",
+          "date": "Oct 22",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Ohio",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": 3.9,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Ohio",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 3.7,
+          "origin": "Silver Bulletin",
+          "date": "Oct 22",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Ohio",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2022,
+          "poll": -7.4,
+          "actual": -6.1,
+          "err": -1.3,
+          "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_Ohio",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2024,
+          "poll": -1,
+          "actual": -3.6,
+          "err": 2.6,
+          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Ohio",
+          "kind": "Aggregate",
+          "notes": ""
+        }
+      ],
+      "correction": 0.65,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Ohio",
+      "notes": "",
+      "special": true
+    },
+    {
+      "state": "Texas",
+      "code": "TX",
+      "dem": "James Talarico",
+      "rep": "Ken Paxton",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": 1.5,
+          "origin": "RealClearPolling",
+          "date": "Oct 22",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": 2.5,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 22",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": 1.6,
+          "origin": "270toWin",
+          "date": "Oct 22",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": 2.2,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 2.5,
+          "origin": "Silver Bulletin",
+          "date": "Oct 22",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2018,
+          "poll": -6.8,
+          "actual": -2.6,
+          "err": -4.2,
+          "url": "https://www.realclearpolling.com/polls/senate/general/2018/texas/cruz-vs-orourke",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2020,
+          "poll": -5.85,
+          "actual": -9.8,
+          "err": 3.95,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Texas",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2024,
+          "poll": -4,
+          "actual": -8.5,
+          "err": 4.5,
+          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Texas",
+          "kind": "Aggregate",
+          "notes": ""
+        }
+      ],
+      "correction": 1.42,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
+      "notes": "",
+      "special": false
+    },
+    {
+      "state": "Iowa",
+      "code": "IA",
+      "dem": "Josh Turek",
+      "rep": "Ashley Hinson",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": -0.6,
+          "origin": "RealClearPolling",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Iowa",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": -0.8,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Iowa",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": -0.3,
+          "origin": "270toWin",
+          "date": "Oct 22",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Iowa",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": 0,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Iowa",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 1.2,
+          "origin": "Silver Bulletin",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Iowa",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2014,
+          "poll": -2.3,
+          "actual": -8.5,
+          "err": 6.2,
+          "url": "https://en.wikipedia.org/wiki/2014_United_States_Senate_election_in_Iowa",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2020,
+          "poll": 2,
+          "actual": -6.6,
+          "err": 8.6,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Iowa",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2022,
+          "poll": -9.9,
+          "actual": -12.2,
+          "err": 2.3,
+          "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_Iowa",
+          "kind": "Aggregate",
+          "notes": ""
+        }
+      ],
+      "correction": 5.7,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Iowa",
+      "notes": "",
+      "special": false
+    },
+    {
+      "state": "Kansas",
+      "code": "KS",
+      "dem": "Adam Hamilton",
+      "rep": "Roger Marshall",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": -0.3,
+          "origin": "RealClearPolling",
+          "date": "Oct 15",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Kansas",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": 1.5,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 16",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Kansas",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": 1,
+          "origin": "270toWin",
+          "date": "Oct 22",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Kansas",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": 0.8,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Kansas",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 1.1,
+          "origin": "Silver Bulletin",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Kansas",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2020,
+          "poll": -3,
+          "actual": -11.4,
+          "err": 8.4,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Kansas",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2022,
+          "poll": -16.5,
+          "actual": -23.2,
+          "err": 6.7,
+          "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_Kansas",
+          "kind": "Aggregate",
+          "notes": "Two final polls rather than aggregator"
+        }
+      ],
+      "correction": 7.55,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Kansas",
+      "notes": "",
+      "special": false
+    },
+    {
+      "state": "Minnesota",
+      "code": "MN",
+      "dem": "Peggy Flanagan",
+      "rep": "Michele Tafoya",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": 2.8,
+          "origin": "RealClearPolling",
+          "date": "Oct 19",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": 3.7,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 19",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": 1.5,
+          "origin": "270toWin",
+          "date": "Sep 30",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": 3.3,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 4.6,
+          "origin": "Silver Bulletin",
+          "date": "Oct 19",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2018,
+          "poll": 9,
+          "actual": 10.6,
+          "err": -1.6,
+          "url": "https://en.wikipedia.org/wiki/2018_United_States_Senate_special_election_in_Minnesota",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2020,
+          "poll": 9.6,
+          "actual": 5.3,
+          "err": 4.3,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Minnesota",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2024,
+          "poll": 13.2,
+          "actual": 15.8,
+          "err": -2.6,
+          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Minnesota",
+          "kind": "Aggregate",
+          "notes": ""
+        }
+      ],
+      "correction": 0.03,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
+      "notes": "September 30 270toWin estimate is older than the other source estimates; historic R correction provisional.",
+      "special": false
+    },
+    {
+      "state": "Alaska",
+      "code": "AK",
+      "dem": "Mary Peltola",
+      "rep": "Dan Sullivan",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": 1.2,
+          "origin": "RealClearPolling",
+          "date": "Oct 23",
+          "url": "https://www.realclearpolling.com/elections/senate/2026/toss-ups",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": 2.4,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 12",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Alaska",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": 1.2,
+          "origin": "RCP reference proxy",
+          "date": "Oct 23",
+          "url": "https://www.realclearpolling.com/elections/senate/2026/toss-ups",
+          "proxy": true,
+          "note": "No comparable 270toWin average in checked Wikipedia table; RCP reference used instead."
+        },
+        "average": {
+          "value": 2.4,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Alaska",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 2.8,
+          "origin": "Silver Bulletin",
+          "date": "Oct 8",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Alaska",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2020,
+          "poll": -4.7,
+          "actual": -12.7,
+          "err": 8.0,
+          "url": "https://www.270towin.com/2020-senate-polls/alaska/",
+          "kind": "Aggregate",
+          "notes": "270toWin final average"
+        }
+      ],
+      "correction": 8.0,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Alaska",
+      "notes": "2026 Alaska uses ranked-choice voting. Two-candidate polling is not the same as final RCV round; confidence widened.",
+      "special": false
+    },
+    {
+      "state": "Georgia",
+      "code": "GA",
+      "dem": "Jon Ossoff",
+      "rep": "Mike Collins",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": 8.6,
+          "origin": "RealClearPolling",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Georgia",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": 7.8,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Georgia",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": 8.4,
+          "origin": "270toWin",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Georgia",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": 8.5,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Georgia",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 8.9,
+          "origin": "Silver Bulletin",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Georgia",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2020,
+          "poll": 0.95,
+          "actual": -1.78,
+          "err": 2.73,
+          "url": "https://en.wikipedia.org/wiki/2020%E2%80%9321_United_States_Senate_election_in_Georgia",
+          "kind": "Aggregate",
+          "notes": "November general round only; NOT Jan runoff"
+        },
+        {
+          "year": 2022,
+          "poll": -1.4,
+          "actual": 0.9,
+          "err": -2.3,
+          "url": "https://www.realclearpolitics.com/epolls/2022/senate/Georgia.html",
+          "kind": "Aggregate",
+          "notes": "November general round only; NOT Dec runoff"
+        }
+      ],
+      "correction": 2.52,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Georgia",
+      "notes": "Georgia 2020 and 2022 comparisons use November general elections, not the subsequent runoffs.",
+      "special": false
+    },
+    {
+      "state": "North Carolina",
+      "code": "NC",
+      "dem": "Roy Cooper",
+      "rep": "Michael Whatley",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": 9.9,
+          "origin": "RealClearPolling",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_North_Carolina",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": 12.1,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_North_Carolina",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": 11.4,
+          "origin": "270toWin",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_North_Carolina",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": 10.8,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_North_Carolina",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 9.9,
+          "origin": "Silver Bulletin",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_North_Carolina",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2020,
+          "poll": 2.6,
+          "actual": -1.8,
+          "err": 4.4,
+          "url": "https://www.realclearpolling.com/polls/senate/general/2020/north-carolina/tillis-vs-cunningham",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2022,
+          "poll": -5.1,
+          "actual": -3.23,
+          "err": -1.87,
+          "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_North_Carolina",
+          "kind": "Aggregate",
+          "notes": ""
+        }
+      ],
+      "correction": 1.27,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_North_Carolina",
+      "notes": "",
+      "special": false
+    },
+    {
+      "state": "New Hampshire",
+      "code": "NH",
+      "dem": "Chris Pappas",
+      "rep": "John E. Sununu",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": 6.5,
+          "origin": "RealClearPolling",
+          "date": "Oct 17",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_New_Hampshire",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": 7.2,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 17",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_New_Hampshire",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": 5.4,
+          "origin": "270toWin",
+          "date": "Sep 27",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_New_Hampshire",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": 6.7,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_New_Hampshire",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": 7.1,
+          "origin": "Silver Bulletin",
+          "date": "Oct 17",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_New_Hampshire",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2022,
+          "poll": 2.3,
+          "actual": 9.1,
+          "err": -6.8,
+          "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_New_Hampshire",
+          "kind": "Aggregate",
+          "notes": ""
+        }
+      ],
+      "correction": -6.8,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_New_Hampshire",
+      "notes": "Single historical comparison; 270toWin average predates October polls.",
+      "special": false
+    },
+    {
+      "state": "Nebraska",
+      "code": "NE",
+      "dem": "Dan Osborn",
+      "rep": "Pete Ricketts",
+      "party": "I",
+      "sources": {
+        "rcp": {
+          "value": -2.3,
+          "origin": "270toWin reference proxy",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
+          "proxy": true,
+          "note": "No same-matchup RCP poll average verified; uses 270toWin published margin."
+        },
+        "ddhq": {
+          "value": -2.5,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": -2.3,
+          "origin": "270toWin",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": -1.8,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": -0.7,
+          "origin": "Silver Bulletin",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2024,
+          "poll": -1.6,
+          "actual": -6.67,
+          "err": 5.07,
+          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Nebraska",
+          "kind": "Aggregate",
+          "notes": "2024 Fischer vs Osborn independent matchup"
+        }
+      ],
+      "correction": 5.07,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
+      "notes": "2024 same independent Dan Osborn matchup is the only direct state historical comparison. No Democratic nominee in 2026; positive means Osborn, not Democrat.",
+      "special": false
+    },
+    {
+      "state": "South Carolina",
+      "code": "SC",
+      "dem": "Annie Andrews",
+      "rep": "Darline Graham",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": -2.7,
+          "origin": "RealClearPolling",
+          "date": "Oct 19",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": -2.3,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": -2.0,
+          "origin": "270toWin",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": -2.0,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": -1.7,
+          "origin": "Silver Bulletin",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2020,
+          "poll": -3.7,
+          "actual": -10.27,
+          "err": 6.57,
+          "url": "https://www.270towin.com/2020-senate-polls/south-carolina/",
+          "kind": "Aggregate",
+          "notes": "270toWin polling vs certified results"
+        }
+      ],
+      "correction": 6.57,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
+      "notes": "2026 matchup names are from the current Wikipedia general-election aggregation table.",
+      "special": false
+    },
+    {
+      "state": "Mississippi",
+      "code": "MS",
+      "dem": "Scott Colom",
+      "rep": "Cindy Hyde-Smith",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": -4.4,
+          "origin": "Track the Vote reference proxy",
+          "date": "Oct 21",
+          "url": "https://www.trackthevote.net/senate/mississippi",
+          "proxy": true,
+          "note": "No published matching RCP race-average identified; independent current polling average substituted."
+        },
+        "ddhq": {
+          "value": -4.4,
+          "origin": "Track the Vote reference proxy",
+          "date": "Oct 21",
+          "url": "https://www.trackthevote.net/senate/mississippi",
+          "proxy": true,
+          "note": "DDHQ publishes a win forecast, not a comparable polling average. Uses independent polling average."
+        },
+        "win270": {
+          "value": -4.4,
+          "origin": "Track the Vote reference proxy",
+          "date": "Oct 21",
+          "url": "https://www.trackthevote.net/senate/mississippi",
+          "proxy": true,
+          "note": "No matching 270toWin poll average identified; reference average substituted."
+        },
+        "average": {
+          "value": -4.7,
+          "origin": "Hedge recency-weighted poll average",
+          "date": "Oct 23",
+          "url": "https://choosehedge.com/race/ms/senate",
+          "proxy": true,
+          "note": "No Wikipedia multi-aggregator Average row; alternate polling aggregator supplied."
+        },
+        "silver": {
+          "value": -4.4,
+          "origin": "Track the Vote reference proxy",
+          "date": "Oct 21",
+          "url": "https://www.trackthevote.net/senate/mississippi",
+          "proxy": true,
+          "note": "No comparable Silver Bulletin average found; polling reference substituted."
+        }
+      },
+      "historical": [
+        {
+          "year": 2020,
+          "poll": -5.5,
+          "actual": -9.97,
+          "err": 4.47,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Mississippi",
+          "kind": "Two-poll mean",
+          "notes": "Average of latest DFP R+3 and Civiqs R+8; NOT historical aggregator"
+        }
+      ],
+      "correction": 4.47,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Mississippi",
+      "notes": "Few current polls; the source-specific tabs use explicitly labeled third-party polling proxies, not manufactured DDHQ/270/RCP series.",
+      "special": false
+    },
+    {
+      "state": "Florida",
+      "code": "FL",
+      "dem": "Angie Nixon",
+      "rep": "Ashley Moody",
+      "party": "D",
+      "sources": {
+        "rcp": {
+          "value": -7.0,
+          "origin": "RealClearPolling",
+          "date": "Oct 23",
+          "url": "https://www.realclearpolling.com/polls/senate/general/2026/florida/moody-vs-nixon",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": -6.3,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Florida",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": -7.0,
+          "origin": "270toWin",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Florida",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": -6.4,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Florida",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": -5.9,
+          "origin": "Silver Bulletin",
+          "date": "Oct 21",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Florida",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2018,
+          "poll": 2.4,
+          "actual": -0.2,
+          "err": 2.6,
+          "url": "https://www.realclearpolling.com/polls/senate/general/2018/florida/scott-vs-nelson",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2022,
+          "poll": -8.8,
+          "actual": -16.4,
+          "err": 7.6,
+          "url": "https://www.realclearpolling.com/polls/senate/general/2022/florida/rubio-vs-demings",
+          "kind": "Aggregate",
+          "notes": ""
+        }
+      ],
+      "correction": 5.1,
+      "history_mode": "standard",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Florida",
+      "notes": "",
+      "special": true
+    },
+    {
+      "state": "South Dakota",
+      "code": "SD",
+      "dem": "Brian Bengs",
+      "rep": "Mike Rounds",
+      "party": "I",
+      "sources": {
+        "rcp": {
+          "value": -15.0,
+          "origin": "270toWin reference proxy",
+          "date": "Oct 23",
+          "url": "https://www.270towin.com/2026-senate-polls/south-dakota",
+          "proxy": true,
+          "note": "RCP shows individual polls but no comparable aggregate; 270toWin two-poll average used."
+        },
+        "ddhq": {
+          "value": -15.0,
+          "origin": "270toWin reference proxy",
+          "date": "Oct 23",
+          "url": "https://www.270towin.com/2026-senate-polls/south-dakota",
+          "proxy": true,
+          "note": "No matching DDHQ average verified; 270toWin two-poll average used."
+        },
+        "win270": {
+          "value": -15.0,
+          "origin": "270toWin",
+          "date": "Oct 23",
+          "url": "https://www.270towin.com/2026-senate-polls/south-dakota",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": -7.4,
+          "origin": "Silver Bulletin only",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Dakota",
+          "proxy": true,
+          "note": "Wikipedia contains one aggregator, Silver Bulletin, not a multi-aggregator Average; carried as single aggregator."
+        },
+        "silver": {
+          "value": -7.4,
+          "origin": "Silver Bulletin",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Dakota",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2020,
+          "poll": -17.0,
+          "actual": -31.48,
+          "err": 14.48,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_South_Dakota",
+          "kind": "Single late poll",
+          "notes": "Nielson Bros poll only; Democrat opponent in 2020, independent in 2026"
+        }
+      ],
+      "correction": 14.48,
+      "history_mode": "not_comparable",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Dakota",
+      "notes": "Independent candidate. Prior 2020 D-R error is shown for audit but NOT applied to Bengs vs Rounds; no comparable R-I calibration.",
+      "special": false
+    },
+    {
+      "state": "Montana",
+      "code": "MT",
+      "dem": "Seth Bodnar",
+      "rep": "Kurt Alme",
+      "party": "I",
+      "sources": {
+        "rcp": {
+          "value": -12.0,
+          "origin": "RealClearPolling",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
+          "proxy": false,
+          "note": ""
+        },
+        "ddhq": {
+          "value": -12.5,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
+          "proxy": false,
+          "note": ""
+        },
+        "win270": {
+          "value": -18.0,
+          "origin": "270toWin",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
+          "proxy": false,
+          "note": ""
+        },
+        "average": {
+          "value": -13.0,
+          "origin": "Wikipedia aggregator average",
+          "date": "Oct 23",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
+          "proxy": false,
+          "note": ""
+        },
+        "silver": {
+          "value": -10.8,
+          "origin": "Silver Bulletin",
+          "date": "Oct 20",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
+          "proxy": false,
+          "note": ""
+        }
+      },
+      "historical": [
+        {
+          "year": 2020,
+          "poll": -1.6,
+          "actual": -10.0,
+          "err": 8.4,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Montana",
+          "kind": "Aggregate",
+          "notes": ""
+        },
+        {
+          "year": 2024,
+          "poll": -6.9,
+          "actual": -7.1,
+          "err": 0.2,
+          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Montana",
+          "kind": "Aggregate",
+          "notes": ""
+        }
+      ],
+      "correction": 4.3,
+      "history_mode": "not_comparable",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
+      "notes": "Three-way race: Alme (R), Bodnar (I), Bankhead (D). Polling margin is Bodnar minus Alme (top two), NOT Democrat minus Republican. Past D-R correction is not applied; uncertainty inflated.",
+      "special": false
+    }
+  ],
+  "benchmark": "https://www.realclearpolling.com/elections/senate/2026/toss-ups",
+  "ratings": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1",
+  "errorResearch": "https://www.pollingforecast.com/research/us-polling-error"
+};
+
+</script><script>
+(()=>{'use strict';
+const CONFIG=window.ERVIN_DATA;
+if(!CONFIG){document.body.innerHTML='<h1>Dashboard data did not load.</h1>';return;}
+const states=CONFIG.states;const $=(id)=>document.getElementById(id);
+const state={source:'average',selected:'MI',level:80,biasMode:'original',search:'',filter:'all',sort:'close'};
+const cartogram={AK:[0,7],HI:[1,7],WA:[1,0],OR:[1,1],CA:[1,2],NV:[2,2],ID:[2,1],MT:[3,0],WY:[3,1],UT:[3,2],AZ:[3,3],NM:[4,3],CO:[4,2],ND:[4,0],SD:[4,1],NE:[5,1],KS:[5,2],OK:[5,3],TX:[5,4],MN:[5,0],IA:[6,1],MO:[6,2],AR:[6,3],LA:[6,4],WI:[6,0],IL:[7,1],MS:[7,4],MI:[7,0],IN:[8,1],KY:[8,2],TN:[8,3],AL:[8,4],FL:[9,5],GA:[9,4],SC:[10,4],NC:[10,3],VA:[10,2],WV:[9,2],OH:[9,1],PA:[10,1],NY:[10,0],VT:[11,0],NH:[11,1],ME:[11,2],MA:[11,3],CT:[11,4],RI:[11,5],NJ:[10,5],DE:[10,6],MD:[9,3]};
+const esc=(a)=>String(a??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const round=(v,d=2)=>Number(v.toFixed(d));
+const fmt=(v,r,dp=2)=>{const p=r&&r.party==='I'?'I':'D';return Math.abs(v)<.005?'EVEN':(v>=0?p:'R')+' +'+Math.abs(v).toFixed(dp)};
+const gradient=(v)=>Math.abs(v)<1?'close':v>=0?'dem':'rep';
+const judge=(v,r)=>Math.abs(v)<.005?'Tied':Math.abs(v)>5?(v>0?(r.party==='I'?'Independent':'Democratic')+' direction':'Republican direction'):fmt(v,r);
+function historical(r){const errs=r.historical.map(h=>h.err),n=errs.length,mae=n?errs.reduce((a,e)=>a+Math.abs(e),0)/n:0,mean=n?errs.reduce((a,e)=>a+e,0)/n:0,variance=n>1?errs.reduce((a,e)=>a+(e-mean)**2,0)/(n-1):0,sd=n>1?Math.sqrt(variance):0;
+ let grade='D';if(n>=4&&mae<=2.5)grade='A';else if(n>=3&&mae<=4)grade='B';else if(n>=2&&mae<=6)grade='C';else if(mae>8)grade='F';
+ return {n,mae,mean,sd,grade};}
+function evaluate(r){const h=historical(r),poll=r.sources[state.source],orig=r.correction;
+ const apply=r.history_mode!=='not_comparable';const correction=apply?(state.biasMode==='shrink'?orig*(h.n/(h.n+3)):orig):0;
+ const adjusted=poll.value-correction;
+ const proxyPenalty=poll.proxy?3:0;
+ const variant=r.party==='I'?4.0:0;
+ const rcv=r.code==='AK'?2:0;
+ const sigmaBase=Math.max(4.7,h.sd);const sigma=Math.sqrt(sigmaBase*sigmaBase*(1+1/Math.max(h.n,1))+4+proxyPenalty*proxyPenalty+variant*variant+rcv*rcv);
+ const z=state.level===90?1.645:1.282;const half=z*sigma,lo=adjusted-half,hi=adjusted+half;
+ const crosses=lo<=0&&hi>=0;let support='Uncertain';if(!crosses)support=h.n>=3&&!poll.proxy&&r.party==='D'?'Directional signal':'Tentative direction';
+ return {r,poll,h,correction,adjusted,half,lo,hi,crosses,support,grade:h.grade,backtest:h.mae};}
+const sourceTitle=()=>CONFIG.sourceList.find(s=>s.key===state.source);
+function selected(){return states.find(s=>s.code===state.selected)||states[0]}
+function renderTabs(){$('tabs').innerHTML=CONFIG.sourceList.map(s=>`<button type="button" class="tab" role="tab" aria-selected="${state.source===s.key}" data-source="${esc(s.key)}">${esc(s.title)}</button>`).join('');$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{state.source=b.dataset.source;render()});
+ $('sourceName').textContent=sourceTitle().title; $('sourceDescription').textContent=' — '+sourceTitle().desc;
+ const proxies=states.filter(r=>r.sources[state.source].proxy).length;
+ $('verifiedCount').textContent=proxies?`${states.length-proxies} publisher averages · ${proxies} clearly labeled reference proxies`:`${states.length} directly attributed source averages`;}
+function renderStats(){const v=states.map(evaluate),dem=v.filter(x=>x.adjusted>=0).length,rep=v.filter(x=>x.adjusted<0).length,close=v.filter(x=>Math.abs(x.adjusted)<=5).length,cross=v.filter(x=>x.crosses).length,closest=[...v].sort((a,b)=>Math.abs(a.adjusted)-Math.abs(b.adjusted))[0];
+ $('stats').innerHTML=[['Non-Republican calls',dem,'blue','Includes independents'],['Republican calls',rep,'red','Directional & numerical'],['Within 5 points',close,'gold','Under Ervin margin rule'],['Closest contest',esc(closest.r.code),'',''+fmt(closest.adjusted,closest.r)]].map(([label,value,cl,foot])=>`<div class="stat"><div class="num ${cl}">${value}</div><p>${label}</p><small>${foot}</small></div>`).join('');
+ $('gradeOverview').innerHTML=`<div class="grade-row"><span>States whose scenario band spans a tie</span><b>${cross} / 17</b></div><div class="grade-row"><span>Strongest evidence grade among tracked races</span><b class="grade B">B</b></div><div class="grade-row"><span>Publisher proxies in this tab</span><b>${states.filter(r=>r.sources[state.source].proxy).length}</b></div><div class="grade-row"><span>Historical observations audited</span><b>${states.reduce((n,r)=>n+r.historical.length,0)}</b></div><div class="grade-row"><span>Source overlap in Wikipedia consensus</span><b>Yes · not independent</b></div><p class="micro">Grade rules: A requires ≥4 elections &amp; ≤2.5-point MAE; B ≥3 &amp; ≤4; C ≥2 &amp; ≤6; other cases D, or F when MAE exceeds 8. A large margin is not itself a high grade.</p>`;
+}
+function renderMap(){let entries=Object.entries(cartogram);$('map').innerHTML=entries.map(([key,[x,y]])=>{const r=states.find(v=>v.code===key),v=r?evaluate(r):null;let kind=r?(Math.abs(v.adjusted)<1?'close':gradient(v.adjusted)):'';let title=r?`${r.state}: ${judge(v.adjusted,r)}. Select for details.`:`${key} not in expanded tracked set`;
+ return `<button type="button" class="tile ${r?'tracked':''} ${kind} ${state.selected===key?'active':''} ${r&&v.poll.proxy?'pinned':''}" ${r?'':'disabled'} data-code="${key}" style="grid-column:${x+1};grid-row:${y+1}" title="${esc(title)}" aria-label="${esc(title)}">${key}</button>`}).join('');$('map').querySelectorAll('.tracked').forEach(b=>b.onclick=()=>focusRace(b.dataset.code));}
+function displayRange(v){const left=Math.max(-26,v.lo),right=Math.min(26,v.hi);return `<div class="range-chart"><div class="range-label"><span class="micro">${state.level}% error scenario</span><strong>${fmt(v.lo,v.r,1)} to ${fmt(v.hi,v.r,1)}</strong></div><div class="band"><div class="band-interval" style="left:${((left+26)/52)*100}%;width:${Math.max(0,(right-left)/52*100)}%"></div><div class="band-center" style="left:${Math.max(0,Math.min(100,(v.adjusted+26)/52*100))}%"></div></div><div class="range-bounds"><span>R +26</span><span>EVEN</span><span>${v.r.party==='I'?'I':'D'} +26</span></div></div>`}
+function detail(){const r=selected(),v=evaluate(r),p=v.poll,baseline=r.sources.rcp;
+ const difference=(p.value-baseline.value),errMode=r.history_mode==='not_comparable';
+ $('detail').innerHTML=`<div class="panel-title"><div class="section-label">RACE INTELLIGENCE / ${r.code}</div><span class="flag">${esc(p.proxy?'REFERENCE PROXY':'PUBLISHED AVERAGE')}</span></div><div class="detail-title"><div><h3>${esc(r.state)}</h3><div class="candidate">${esc(r.dem)} (${r.party}) <span style="color:var(--subtle)">vs</span> ${esc(r.rep)} (R)${r.special?' · Special election':''}</div></div><span class="grade ${v.grade}" title="Historical evidence grade">${v.grade}</span></div><div class="lead ${gradient(v.adjusted)==='close'?(v.adjusted>=0?'dem':'rep'):gradient(v.adjusted)}">${esc(judge(v.adjusted,r))}</div><div class="micro" style="margin-top:4px">${esc(v.support)} · ${Math.abs(v.adjusted)>5?'Magnitude suppressed by ±5 rule':'Numerical margin prediction'}</div><div class="mini-grid"><div class="mini"><small>Polling input</small><strong>${esc(fmt(p.value,r,1))}</strong></div><div class="mini"><small>${errMode?'Historical shift (not applied)':'Applied R shift'}</small><strong>${errMode?'0.00':v.correction.toFixed(2)} pts</strong></div><div class="mini"><small>Historical MAE</small><strong>${v.h.mae.toFixed(1)} pts</strong></div></div>${displayRange(v)}<div class="detail-note"><div class="grade-row"><span>Published source / proxy</span><strong>${esc(p.origin)}</strong></div><div class="grade-row"><span>Source date</span><strong>${esc(p.date)} 2026</strong></div><div class="grade-row"><span>RCP benchmark</span><strong>${esc(fmt(baseline.value,r,1))}${baseline.proxy?' · proxy':''}</strong></div><div class="grade-row"><span>Input difference vs. benchmark</span><strong>${difference>=0?'+':''}${difference.toFixed(2)} pts</strong></div><div class="grade-row"><span>Historical Senate comparisons</span><strong>${v.h.n} · ${esc(v.grade)} grade</strong></div>${errMode?`<p class="micro" style="color:var(--accent)">Independent matchup: historic D–R shift of ${r.correction.toFixed(2)} points is <b>not transferred</b> to this race.</p>`:''}${p.proxy?`<p class="micro" style="color:var(--accent)">Fallback detail: ${esc(p.note)}</p>`:''}${r.notes?`<p class="micro">${esc(r.notes)}</p>`:''}</div><div class="detail-refs"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">↗ Polling source</a><a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener noreferrer">↗ Source table</a><button class="button ghost" type="button" id="historyJump">Audit historical years ↓</button></div>`;
+ $('historyJump').onclick=()=>{$('historyHeading').scrollIntoView({behavior:'smooth',block:'center'})};
+ $('historyHeading').textContent=`${r.state} · historical Senate errors`;
+ $('histBars').innerHTML=r.historical.map(h=>{const ht=Math.min(92,Math.max(8,Math.abs(h.err)*6));return `<div class="hist-column"><b style="color:var(--text)">${h.err>=0?'R':'D'} +${Math.abs(h.err).toFixed(1)}</b><div class="vbar ${h.err<0?'neg':''}" style="height:${ht}px"></div><a href="${esc(h.url)}" target="_blank" rel="noopener noreferrer">${h.year} ↗</a></div>`}).join('');
+ $('historyExplanation').innerHTML=`Mean historical R shift <b>${r.correction>=0?'R':'D'} +${Math.abs(r.correction).toFixed(2)}</b> from ${r.historical.length} election${r.historical.length===1?'':'s'}. MAE ${v.h.mae.toFixed(2)} pts; estimated historical dispersion ${Math.max(4.7,v.h.sd).toFixed(1)} pts (4.7-pt floor). ${errMode?'Not applied to this different-party matchup.':''} Each linked year shows the backing election source.`;
+}
+function renderBars(){let items=states.map(evaluate).sort((a,b)=>a.adjusted-b.adjusted);$('bars').innerHTML=items.map(v=>{const value=v.adjusted,width=Math.min(Math.abs(value),25)/25*50,begin=value>=0?50:50-width;
+ return `<div class="barrow ${state.selected===v.r.code?'active':''}" role="button" tabindex="0" data-code="${v.r.code}" aria-label="${esc(v.r.state)} ${esc(judge(value,v.r))}"><span class="barname">${esc(v.r.state)}</span><div class="bartrack"><div class="barfill ${value<0?'r':'d'}" style="left:${begin}%;width:${Math.max(.5,width)}%"></div></div><b style="text-align:right;color:var(--${value<0?'red':'blue'})">${esc(fmt(value,v.r,1))}</b></div>`}).join('');$('bars').querySelectorAll('.barrow').forEach(b=>{b.onclick=()=>focusRace(b.dataset.code);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();focusRace(b.dataset.code)}}});}
+function rowsFiltered(){const q=state.search.trim().toLowerCase();let r=states.map(evaluate).filter(v=>!q||[v.r.state,v.r.code,v.r.dem,v.r.rep].join(' ').toLowerCase().includes(q));switch(state.filter){case 'close':r=r.filter(v=>Math.abs(v.adjusted)<=5);break;case 'cross':r=r.filter(v=>v.crosses);break;case 'proxy':r=r.filter(v=>v.poll.proxy);break;case 'independent':r=r.filter(v=>v.r.party==='I');break;}
+ switch(state.sort){case 'name':r.sort((a,b)=>a.r.state.localeCompare(b.r.state));break;case 'margin':r.sort((a,b)=>b.adjusted-a.adjusted);break;case 'error':r.sort((a,b)=>Math.abs(b.r.correction)-Math.abs(a.r.correction));break;case 'grade':r.sort((a,b)=>'ABCDF'.indexOf(a.grade)-'ABCDF'.indexOf(b.grade)||a.h.mae-b.h.mae);break;default:r.sort((a,b)=>Math.abs(a.adjusted)-Math.abs(b.adjusted));}return r;}
+function renderTable(){const rows=rowsFiltered();$('rows').innerHTML=rows.map(v=>{const r=v.r,p=v.poll,base=r.sources.rcp.value,diff=p.value-base;return `<tr data-id="${r.code}" class="${state.selected===r.code?'active':''}"><td class="statecell"><strong>${esc(r.state)}${r.special?' *':''}</strong><small>${esc(r.dem.split(' ').slice(-1).join(' '))} / ${esc(r.rep.split(' ').slice(-1).join(' '))} ${r.party==='I'?'· IND':''}</small></td><td>${esc(fmt(p.value,r))}</td><td>${r.history_mode==='not_comparable'?'<span class="fine" title="Historical D-R shift not transferable">not applied</span>':(v.correction>=0?'R +':'D +')+Math.abs(v.correction).toFixed(2)}</td><td style="color:var(--${v.adjusted<0?'red':'blue'})"><b>${esc(fmt(v.adjusted,r))}</b></td><td><span class="call-pill ${v.adjusted<0?'rep':'dem'}">${esc(judge(v.adjusted,r))}</span></td><td><span style="font-size:11px">${v.crosses?'Crosses tie':'One side of tie'}</span><div class="micro">±${v.half.toFixed(1)} pts</div></td><td><span class="grade ${v.grade}">${v.grade}</span> <span class="micro">${v.h.n} yr / ${v.h.mae.toFixed(1)} MAE</span></td><td>${diff>=0?'+':''}${diff.toFixed(2)}${r.sources.rcp.proxy?'*':''}</td><td><span class="status ${p.proxy?'proxy':''}" title="${esc(p.note||p.origin)}">${p.proxy?'Reference proxy':'Publisher'}</span></td></tr>`}).join('')||'<tr><td colspan="9" style="padding:24px;color:var(--muted)">No races match these filters. Reset the search or filter.</td></tr>';
+ $('rows').querySelectorAll('tr[data-id]').forEach(tr=>tr.onclick=()=>{focusRace(tr.dataset.id);$('detail').scrollIntoView({behavior:'smooth',block:'nearest'})});}
+function focusRace(code){state.selected=code;renderMap();detail();renderBars();renderTable();}
+function render(){renderTabs();renderStats();renderMap();detail();renderBars();renderTable();}
+function snack(msg){const box=$('snack');box.textContent=msg;box.classList.add('show');setTimeout(()=>box.classList.remove('show'),2700)}
+function exportCSV(){const headers=['State','Party of non-R candidate','Source tab','Input margin non-R-minus-R','Input origin','Source date','Proxy flag','Applied R shift','Historical Senate errors N','Historical MAE','Evidence grade','Adjusted non-R-minus-R','Lower scenario bound','Upper scenario bound','Confidence statement'];let csv=[headers,...states.map(r=>{let v=evaluate(r);return [r.state,r.party,state.source,v.poll.value,v.poll.origin,v.poll.date,v.poll.proxy,v.correction,v.h.n,round(v.h.mae),v.grade,round(v.adjusted),round(v.lo),round(v.hi),v.support]})].map(a=>a.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf8;'}));a.download=`Ervin-Model-${state.source}-${new Date().toISOString().slice(0,10)}.csv`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);snack(`CSV exported with ${states.length} races and source flags`)}
+$('confidenceLevel').onchange=e=>{state.level=Number(e.target.value);render()};$('biasMode').onchange=e=>{state.biasMode=e.target.value;render()};$('raceFilter').onchange=e=>{state.filter=e.target.value;renderTable()};$('sort').onchange=e=>{state.sort=e.target.value;renderTable()};$('search').oninput=e=>{state.search=e.target.value;renderTable()};$('exportCSV').onclick=exportCSV;
+$('themeToggle').onclick=()=>{document.documentElement.classList.toggle('light');snack(document.documentElement.classList.contains('light')?'Light theme':'Dark theme')};
+function setFreshness(){
+ const m=CONFIG.liveMeta||null;
+ const badge=$('freshnessLabel'), details=$('refreshDetails'), foot=$('footerFreshness'), link=$('refreshAuditLink');
+ const election=new Date('2026-11-03T23:59:59-05:00');
+ const now=new Date();
+ const days=Math.max(0,Math.ceil((new Date('2026-11-03T00:00:00-05:00')-now)/86400000));
+ $('countdown').textContent=now>election?'ELECTION HELD':days+' days';
+ $('countdownFoot').textContent=now>election?'November 3, 2026 · Pre-election forecast archive':'Tuesday, November 3, 2026 · Polling is checked periodically on the hosted edition';
+ const show=date=>date.toLocaleString('en-US',{timeZone:'America/New_York',month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+ if(m&&m.checkedAt){
+  const checked=new Date(m.checkedAt);
+  const ageHours=(now-checked)/3600000;
+  const pages=Number(m.pagesParsed)||0;
+  const partial=pages<states.length;
+  const stale=(!Number.isFinite(ageHours)||ageHours>24);
+  badge.textContent=stale?'DATA CHECK OVERDUE':partial?'PARTIAL POLL REFRESH':'POLLING REFRESH ACTIVE';
+  details.textContent=`Last attempted source check: ${show(checked)} · ${pages}/${states.length} state pages parsed · ${m.changes||0} changed published averages. ${partial?'Other states retain their previously verified snapshots. ':''}${stale?'The last successful check was over 24 hours ago. ':''}Underlying aggregators may publish on different schedules.`;
+  foot.textContent=`Most recent hosted source check ${show(checked)} · ${pages}/${states.length} states verified`;
+  link.hidden=false;
+ }else{
+  badge.textContent='OCT 23 RESEARCH SNAPSHOT';
+  details.textContent='Dated October 23, 2026. Automated polling checks are configured for every six hours once this repository is published with GitHub Pages; no host is connected in this local copy.';
+  foot.textContent='Source snapshot October 23, 2026 · Automatic refreshing requires published GitHub Pages site';
+  link.hidden=true;
+ }
+}
+setFreshness();
+render();
+})();
+
+</script></body></html>
