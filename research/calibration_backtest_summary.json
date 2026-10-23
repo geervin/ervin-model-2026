@@ -1,0 +1,58 @@
+{
+  "createdAt": "2026-10-23",
+  "eventsAvailable": 88,
+  "backtest": {
+    "n": 63,
+    "rawMAE": 4.062317460317461,
+    "pooledMAE": 3.2790793650793644,
+    "rawRMSE": 5.054226582693572,
+    "pooledRMSE": 4.074064309752608
+  },
+  "byYear": {
+    "2018": {
+      "n": 8,
+      "rawMAE": 2.284625,
+      "pooledMAE": 2.824875,
+      "rawRMSE": 2.6658488329235777,
+      "pooledRMSE": 3.210101244509276
+    },
+    "2020": {
+      "n": 30,
+      "rawMAE": 4.741766666666666,
+      "pooledMAE": 3.5809333333333337,
+      "rawRMSE": 5.6156181019249045,
+      "pooledRMSE": 4.289090812748082
+    },
+    "2022": {
+      "n": 7,
+      "rawMAE": 2.7115714285714287,
+      "pooledMAE": 3.1020000000000003,
+      "rawRMSE": 4.078112308409369,
+      "pooledRMSE": 4.143997380032266
+    },
+    "2024": {
+      "n": 18,
+      "rawMAE": 4.245277777777777,
+      "pooledMAE": 3.0467222222222228,
+      "rawRMSE": 5.217609073555093,
+      "pooledRMSE": 4.021732628275198
+    }
+  },
+  "byOffice": {
+    "Senate": {
+      "n": 35,
+      "rawMAE": 3.7422285714285715,
+      "pooledMAE": 3.4723142857142855,
+      "rawRMSE": 4.84275010416897,
+      "pooledRMSE": 4.186911579127098
+    },
+    "President": {
+      "n": 28,
+      "rawMAE": 4.462428571428572,
+      "pooledMAE": 3.037535714285714,
+      "rawRMSE": 5.3067342661403885,
+      "pooledRMSE": 3.928449348752544
+    }
+  },
+  "note": "Conservative past-year-only training. Candidate-specific Alaska/Nebraska/South Dakota overlays not validated in this general partisan benchmark. 2024 source composition differs; correlation across same state-year. The 80%/90% scenario bands are not calibrated confidence intervals."
+}
