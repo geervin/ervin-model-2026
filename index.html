@@ -82,7 +82,7 @@ window.ERVIN_DATA = {
           "note": ""
         },
         "win270": {
-          "value": 2.0,
+          "value": 2,
           "origin": "270toWin",
           "date": "Oct 9",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
@@ -108,13 +108,15 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2008,
-          "poll": -14.6,
-          "actual": -23.0,
-          "err": 8.4,
-          "url": "https://www.realclearpolitics.com/epolls/2008/senate/me/maine_senate_race-649.html",
-          "kind": "Aggregate",
-          "notes": "Historical RCP supplement"
+          "year": 2024,
+          "poll": 8.6,
+          "actual": 6.9,
+          "err": 1.7,
+          "url": "https://www.270towin.com/2024-presidential-election-polls/maine/",
+          "kind": "270toWin final average",
+          "notes": "Harris–Trump statewide, not the 2nd congressional district.",
+          "office": "President",
+          "weight": 0.65
         },
         {
           "year": 2020,
@@ -123,10 +125,23 @@ window.ERVIN_DATA = {
           "err": 13.75,
           "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Maine",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.8
+        },
+        {
+          "year": 2020,
+          "poll": 11.6,
+          "actual": 9.1,
+          "err": 2.5,
+          "url": "https://www.270towin.com/2020-polls-biden-trump/maine/",
+          "kind": "270toWin final average",
+          "notes": "Statewide Biden–Trump comparison; separate from the 2020 Senate election.",
+          "office": "President",
+          "weight": 0.52
         }
       ],
-      "correction": 11.08,
+      "correction": 6.805,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
       "notes": "",
@@ -172,7 +187,7 @@ window.ERVIN_DATA = {
           "note": ""
         },
         "silver": {
-          "value": 3.0,
+          "value": 3,
           "origin": "Silver Bulletin",
           "date": "Oct 21",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
@@ -182,13 +197,15 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2018,
-          "poll": 8.3,
-          "actual": 6.4,
-          "err": 1.9,
-          "url": "https://www.realclearpolling.com/polls/senate/general/2018/michigan/stabenow-vs-james",
+          "year": 2024,
+          "poll": 3.2,
+          "actual": 0.3,
+          "err": 2.9,
+          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Michigan",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 1
         },
         {
           "year": 2020,
@@ -197,19 +214,23 @@ window.ERVIN_DATA = {
           "err": 4.8,
           "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Michigan",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.8
         },
         {
-          "year": 2024,
-          "poll": 3.2,
-          "actual": 0.3,
-          "err": 2.9,
-          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Michigan",
+          "year": 2018,
+          "poll": 8.3,
+          "actual": 6.4,
+          "err": 1.9,
+          "url": "https://www.realclearpolling.com/polls/senate/general/2018/michigan/stabenow-vs-james",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.7
         }
       ],
-      "correction": 3.2,
+      "correction": 3.228,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
       "notes": "",
@@ -265,25 +286,40 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2022,
-          "poll": -7.4,
-          "actual": -6.1,
-          "err": -1.3,
-          "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_Ohio",
-          "kind": "Aggregate",
-          "notes": ""
-        },
-        {
           "year": 2024,
           "poll": -1,
           "actual": -3.6,
           "err": 2.6,
           "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Ohio",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 1
+        },
+        {
+          "year": 2022,
+          "poll": -7.4,
+          "actual": -6.1,
+          "err": -1.3,
+          "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_Ohio",
+          "kind": "Aggregate",
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.9
+        },
+        {
+          "year": 2020,
+          "poll": -0.9,
+          "actual": -8.2,
+          "err": 7.3,
+          "url": "https://www.270towin.com/2020-polls-biden-trump/ohio/",
+          "kind": "270toWin final average",
+          "notes": "46.7% Biden vs. 47.6% Trump.",
+          "office": "President",
+          "weight": 0.52
         }
       ],
-      "correction": 0.65,
+      "correction": 2.16,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Ohio",
       "notes": "",
@@ -339,13 +375,15 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2018,
-          "poll": -6.8,
-          "actual": -2.6,
-          "err": -4.2,
-          "url": "https://www.realclearpolling.com/polls/senate/general/2018/texas/cruz-vs-orourke",
+          "year": 2024,
+          "poll": -4,
+          "actual": -8.5,
+          "err": 4.5,
+          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Texas",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 1
         },
         {
           "year": 2020,
@@ -354,19 +392,23 @@ window.ERVIN_DATA = {
           "err": 3.95,
           "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Texas",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.8
         },
         {
-          "year": 2024,
-          "poll": -4,
-          "actual": -8.5,
-          "err": 4.5,
-          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Texas",
+          "year": 2018,
+          "poll": -6.8,
+          "actual": -2.6,
+          "err": -4.2,
+          "url": "https://www.realclearpolling.com/polls/senate/general/2018/texas/cruz-vs-orourke",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.7
         }
       ],
-      "correction": 1.42,
+      "correction": 1.888,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
       "notes": "",
@@ -422,22 +464,15 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2014,
-          "poll": -2.3,
-          "actual": -8.5,
-          "err": 6.2,
-          "url": "https://en.wikipedia.org/wiki/2014_United_States_Senate_election_in_Iowa",
-          "kind": "Aggregate",
-          "notes": ""
-        },
-        {
-          "year": 2020,
-          "poll": 2,
-          "actual": -6.6,
-          "err": 8.6,
-          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Iowa",
-          "kind": "Aggregate",
-          "notes": ""
+          "year": 2024,
+          "poll": -4.7,
+          "actual": -13.2,
+          "err": 8.5,
+          "url": "https://www.270towin.com/2024-presidential-election-polls/iowa/",
+          "kind": "270toWin final average",
+          "notes": "Harris–Trump statewide; replaces the older 2014 Senate comparison.",
+          "office": "President",
+          "weight": 0.65
         },
         {
           "year": 2022,
@@ -446,10 +481,23 @@ window.ERVIN_DATA = {
           "err": 2.3,
           "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_Iowa",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.9
+        },
+        {
+          "year": 2020,
+          "poll": 2,
+          "actual": -6.6,
+          "err": 8.6,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Iowa",
+          "kind": "Aggregate",
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.8
         }
       ],
-      "correction": 5.7,
+      "correction": 6.16,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Iowa",
       "notes": "",
@@ -505,13 +553,15 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2020,
-          "poll": -3,
-          "actual": -11.4,
-          "err": 8.4,
-          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Kansas",
-          "kind": "Aggregate",
-          "notes": ""
+          "year": 2024,
+          "poll": -5,
+          "actual": -16.2,
+          "err": 11.2,
+          "url": "https://www.270towin.com/2024-presidential-election-polls/kansas",
+          "kind": "Single late poll",
+          "notes": "Fort Hays State University (RV); lower confidence than aggregator averages.",
+          "office": "President",
+          "weight": 0.65
         },
         {
           "year": 2022,
@@ -520,10 +570,23 @@ window.ERVIN_DATA = {
           "err": 6.7,
           "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_Kansas",
           "kind": "Aggregate",
-          "notes": "Two final polls rather than aggregator"
+          "notes": "Two final polls rather than aggregator",
+          "office": "Senate",
+          "weight": 0.9
+        },
+        {
+          "year": 2020,
+          "poll": -3,
+          "actual": -11.4,
+          "err": 8.4,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Kansas",
+          "kind": "Aggregate",
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.8
         }
       ],
-      "correction": 7.55,
+      "correction": 8.523,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Kansas",
       "notes": "",
@@ -579,13 +642,15 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2018,
-          "poll": 9,
-          "actual": 10.6,
-          "err": -1.6,
-          "url": "https://en.wikipedia.org/wiki/2018_United_States_Senate_special_election_in_Minnesota",
+          "year": 2024,
+          "poll": 13.2,
+          "actual": 15.8,
+          "err": -2.6,
+          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Minnesota",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 1
         },
         {
           "year": 2020,
@@ -594,19 +659,23 @@ window.ERVIN_DATA = {
           "err": 4.3,
           "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Minnesota",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.8
         },
         {
-          "year": 2024,
-          "poll": 13.2,
-          "actual": 15.8,
-          "err": -2.6,
-          "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Minnesota",
+          "year": 2018,
+          "poll": 9,
+          "actual": 10.6,
+          "err": -1.6,
+          "url": "https://en.wikipedia.org/wiki/2018_United_States_Senate_special_election_in_Minnesota",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.7
         }
       ],
-      "correction": 0.03,
+      "correction": -0.112,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
       "notes": "September 30 270toWin estimate is older than the other source estimates; historic R correction provisional.",
@@ -662,16 +731,40 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
+          "year": 2024,
+          "poll": -8,
+          "actual": -13.1,
+          "err": 5.1,
+          "url": "https://www.270towin.com/2024-presidential-election-polls/alaska",
+          "kind": "Single late poll",
+          "notes": "Oct. 27 Alaska Survey Research; 43% Harris, 51% Trump.",
+          "office": "President",
+          "weight": 0.65
+        },
+        {
           "year": 2020,
           "poll": -4.7,
           "actual": -12.7,
-          "err": 8.0,
+          "err": 8,
           "url": "https://www.270towin.com/2020-senate-polls/alaska/",
           "kind": "Aggregate",
-          "notes": "270toWin final average"
+          "notes": "270toWin final average",
+          "office": "Senate",
+          "weight": 0.8
+        },
+        {
+          "year": 2020,
+          "poll": -5.6,
+          "actual": -10.1,
+          "err": 4.5,
+          "url": "https://www.270towin.com/2020-polls-biden-trump/alaska/",
+          "kind": "270toWin final average",
+          "notes": "Statewide presidential result, same cycle as 2020 Senate: not an independent cycle.",
+          "office": "President",
+          "weight": 0.52
         }
       ],
-      "correction": 8.0,
+      "correction": 6.119,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Alaska",
       "notes": "2026 Alaska uses ranked-choice voting. Two-candidate polling is not the same as final RCV round; confidence widened.",
@@ -727,13 +820,15 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2020,
-          "poll": 0.95,
-          "actual": -1.78,
-          "err": 2.73,
-          "url": "https://en.wikipedia.org/wiki/2020%E2%80%9321_United_States_Senate_election_in_Georgia",
-          "kind": "Aggregate",
-          "notes": "November general round only; NOT Jan runoff"
+          "year": 2024,
+          "poll": -1.2,
+          "actual": -2.2,
+          "err": 1,
+          "url": "https://www.270towin.com/2024-presidential-election-polls/georgia",
+          "kind": "270toWin final average",
+          "notes": "Harris–Trump final statewide average.",
+          "office": "President",
+          "weight": 0.65
         },
         {
           "year": 2022,
@@ -742,10 +837,23 @@ window.ERVIN_DATA = {
           "err": -2.3,
           "url": "https://www.realclearpolitics.com/epolls/2022/senate/Georgia.html",
           "kind": "Aggregate",
-          "notes": "November general round only; NOT Dec runoff"
+          "notes": "November general round only; NOT Dec runoff",
+          "office": "Senate",
+          "weight": 0.9
+        },
+        {
+          "year": 2020,
+          "poll": 0.95,
+          "actual": -1.78,
+          "err": 2.73,
+          "url": "https://en.wikipedia.org/wiki/2020%E2%80%9321_United_States_Senate_election_in_Georgia",
+          "kind": "Aggregate",
+          "notes": "November general round only; NOT Jan runoff",
+          "office": "Senate",
+          "weight": 0.8
         }
       ],
-      "correction": 2.52,
+      "correction": 0.325,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Georgia",
       "notes": "Georgia 2020 and 2022 comparisons use November general elections, not the subsequent runoffs.",
@@ -801,13 +909,15 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2020,
-          "poll": 2.6,
-          "actual": -1.8,
-          "err": 4.4,
-          "url": "https://www.realclearpolling.com/polls/senate/general/2020/north-carolina/tillis-vs-cunningham",
-          "kind": "Aggregate",
-          "notes": ""
+          "year": 2024,
+          "poll": -1.3,
+          "actual": -3.21,
+          "err": 1.91,
+          "url": "https://www.270towin.com/2024-presidential-election-polls/north-carolina",
+          "kind": "270toWin final average",
+          "notes": "2024 statewide election result from North Carolina State Board of Elections.",
+          "office": "President",
+          "weight": 0.65
         },
         {
           "year": 2022,
@@ -816,10 +926,23 @@ window.ERVIN_DATA = {
           "err": -1.87,
           "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_North_Carolina",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.9
+        },
+        {
+          "year": 2020,
+          "poll": 2.6,
+          "actual": -1.8,
+          "err": 4.4,
+          "url": "https://www.realclearpolling.com/polls/senate/general/2020/north-carolina/tillis-vs-cunningham",
+          "kind": "Aggregate",
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.8
         }
       ],
-      "correction": 1.27,
+      "correction": 1.31,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_North_Carolina",
       "notes": "",
@@ -875,16 +998,40 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
+          "year": 2024,
+          "poll": 5,
+          "actual": 2.8,
+          "err": 2.2,
+          "url": "https://www.270towin.com/2024-presidential-election-polls/new-hampshire/",
+          "kind": "270toWin final average",
+          "notes": "50.5% Harris vs. 45.5% Trump.",
+          "office": "President",
+          "weight": 0.65
+        },
+        {
           "year": 2022,
           "poll": 2.3,
           "actual": 9.1,
           "err": -6.8,
           "url": "https://en.wikipedia.org/wiki/2022_United_States_Senate_election_in_New_Hampshire",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.9
+        },
+        {
+          "year": 2020,
+          "poll": 11,
+          "actual": 7.3,
+          "err": 3.7,
+          "url": "https://www.270towin.com/2020-polls-biden-trump/new-hampshire/",
+          "kind": "270toWin final average",
+          "notes": "53.4% Biden vs. 42.4% Trump.",
+          "office": "President",
+          "weight": 0.52
         }
       ],
-      "correction": -6.8,
+      "correction": -1.336,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_New_Hampshire",
       "notes": "Single historical comparison; 270toWin average predates October polls.",
@@ -946,10 +1093,34 @@ window.ERVIN_DATA = {
           "err": 5.07,
           "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Nebraska",
           "kind": "Aggregate",
-          "notes": "2024 Fischer vs Osborn independent matchup"
+          "notes": "2024 Fischer vs Osborn independent matchup",
+          "office": "Senate",
+          "weight": 1
+        },
+        {
+          "year": 2024,
+          "poll": -15,
+          "actual": -20.5,
+          "err": 5.5,
+          "url": "https://www.270towin.com/2024-presidential-election-polls/nebraska",
+          "kind": "270toWin final average",
+          "notes": "Statewide 40% Harris 55% Trump; independent Senate matchups are not directly comparable.",
+          "office": "President",
+          "weight": 0.65
+        },
+        {
+          "year": 2020,
+          "poll": -12,
+          "actual": -19.1,
+          "err": 7.1,
+          "url": "https://www.270towin.com/2020-polls-biden-trump/nebraska/",
+          "kind": "Single late poll",
+          "notes": "Axios/SurveyMonkey Nov. 1 STATEWIDE 43% Biden 55% Trump; excludes 2nd district.",
+          "office": "President",
+          "weight": 0.52
         }
       ],
-      "correction": 5.07,
+      "correction": 5.685,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
       "notes": "2024 same independent Dan Osborn matchup is the only direct state historical comparison. No Democratic nominee in 2026; positive means Osborn, not Democrat.",
@@ -979,7 +1150,7 @@ window.ERVIN_DATA = {
           "note": ""
         },
         "win270": {
-          "value": -2.0,
+          "value": -2,
           "origin": "270toWin",
           "date": "Oct 23",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
@@ -987,7 +1158,7 @@ window.ERVIN_DATA = {
           "note": ""
         },
         "average": {
-          "value": -2.0,
+          "value": -2,
           "origin": "Wikipedia aggregator average",
           "date": "Oct 23",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
@@ -1005,16 +1176,40 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
+          "year": 2024,
+          "poll": -11.7,
+          "actual": -17.87,
+          "err": 6.17,
+          "url": "https://www.270towin.com/2024-presidential-election-polls/south-carolina/",
+          "kind": "270toWin final average",
+          "notes": "2024 statewide Harris–Trump 42.0%–53.7%.",
+          "office": "President",
+          "weight": 0.65
+        },
+        {
           "year": 2020,
           "poll": -3.7,
           "actual": -10.27,
           "err": 6.57,
           "url": "https://www.270towin.com/2020-senate-polls/south-carolina/",
           "kind": "Aggregate",
-          "notes": "270toWin polling vs certified results"
+          "notes": "270toWin polling vs certified results",
+          "office": "Senate",
+          "weight": 0.8
+        },
+        {
+          "year": 2020,
+          "poll": -7,
+          "actual": -11.7,
+          "err": 4.7,
+          "url": "https://www.270towin.com/2020-polls-biden-trump/south-carolina/",
+          "kind": "270toWin final average",
+          "notes": "2020 statewide Biden–Trump 43.3%–50.3%.",
+          "office": "President",
+          "weight": 0.52
         }
       ],
-      "correction": 6.57,
+      "correction": 5.944,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
       "notes": "2026 matchup names are from the current Wikipedia general-election aggregation table.",
@@ -1076,10 +1271,34 @@ window.ERVIN_DATA = {
           "err": 4.47,
           "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Mississippi",
           "kind": "Two-poll mean",
-          "notes": "Average of latest DFP R+3 and Civiqs R+8; NOT historical aggregator"
+          "notes": "Average of latest DFP R+3 and Civiqs R+8; NOT historical aggregator",
+          "office": "Senate",
+          "weight": 0.8
+        },
+        {
+          "year": 2018,
+          "poll": -7.5,
+          "actual": -7.26,
+          "err": -0.24,
+          "url": "https://en.wikipedia.org/wiki/2018_United_States_Senate_special_election_in_Mississippi",
+          "kind": "Two late polls",
+          "notes": "Hyde-Smith–Espy Nov. 27 runoff: Change Research R+5, JMC Analytics R+10. Mean R+7.5; certified R+7.26.",
+          "office": "Senate",
+          "weight": 0.7
+        },
+        {
+          "year": 2018,
+          "poll": -16,
+          "actual": -19.6,
+          "err": 3.6,
+          "url": "https://uselectionatlas.org/POLLS/SENATE/2018/polls.php?class=1&fips=28",
+          "kind": "Three-poll rolling average",
+          "notes": "Regular 2018 Wicker–Baria contest (NOT same race as the 2018 special runoff). Historical results shown by RCP.",
+          "office": "Senate",
+          "weight": 0.7
         }
       ],
-      "correction": 4.47,
+      "correction": 2.695,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Mississippi",
       "notes": "Few current polls; the source-specific tabs use explicitly labeled third-party polling proxies, not manufactured DDHQ/270/RCP series.",
@@ -1093,7 +1312,7 @@ window.ERVIN_DATA = {
       "party": "D",
       "sources": {
         "rcp": {
-          "value": -7.0,
+          "value": -7,
           "origin": "RealClearPolling",
           "date": "Oct 23",
           "url": "https://www.realclearpolling.com/polls/senate/general/2026/florida/moody-vs-nixon",
@@ -1109,7 +1328,7 @@ window.ERVIN_DATA = {
           "note": ""
         },
         "win270": {
-          "value": -7.0,
+          "value": -7,
           "origin": "270toWin",
           "date": "Oct 21",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Florida",
@@ -1135,13 +1354,15 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2018,
-          "poll": 2.4,
-          "actual": -0.2,
-          "err": 2.6,
-          "url": "https://www.realclearpolling.com/polls/senate/general/2018/florida/scott-vs-nelson",
-          "kind": "Aggregate",
-          "notes": ""
+          "year": 2024,
+          "poll": -6.2,
+          "actual": -13.1,
+          "err": 6.9,
+          "url": "https://www.270towin.com/2024-presidential-election-polls/florida",
+          "kind": "270toWin final average",
+          "notes": "2024 statewide presidential average.",
+          "office": "President",
+          "weight": 0.65
         },
         {
           "year": 2022,
@@ -1150,10 +1371,23 @@ window.ERVIN_DATA = {
           "err": 7.6,
           "url": "https://www.realclearpolling.com/polls/senate/general/2022/florida/rubio-vs-demings",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.9
+        },
+        {
+          "year": 2018,
+          "poll": 2.4,
+          "actual": -0.2,
+          "err": 2.6,
+          "url": "https://www.realclearpolling.com/polls/senate/general/2018/florida/scott-vs-nelson",
+          "kind": "Aggregate",
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.7
         }
       ],
-      "correction": 5.1,
+      "correction": 5.842,
       "history_mode": "standard",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_special_election_in_Florida",
       "notes": "",
@@ -1167,7 +1401,7 @@ window.ERVIN_DATA = {
       "party": "I",
       "sources": {
         "rcp": {
-          "value": -15.0,
+          "value": -15,
           "origin": "270toWin reference proxy",
           "date": "Oct 23",
           "url": "https://www.270towin.com/2026-senate-polls/south-dakota",
@@ -1175,7 +1409,7 @@ window.ERVIN_DATA = {
           "note": "RCP shows individual polls but no comparable aggregate; 270toWin two-poll average used."
         },
         "ddhq": {
-          "value": -15.0,
+          "value": -15,
           "origin": "270toWin reference proxy",
           "date": "Oct 23",
           "url": "https://www.270towin.com/2026-senate-polls/south-dakota",
@@ -1183,7 +1417,7 @@ window.ERVIN_DATA = {
           "note": "No matching DDHQ average verified; 270toWin two-poll average used."
         },
         "win270": {
-          "value": -15.0,
+          "value": -15,
           "origin": "270toWin",
           "date": "Oct 23",
           "url": "https://www.270towin.com/2026-senate-polls/south-dakota",
@@ -1209,16 +1443,40 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
+          "year": 2024,
+          "poll": -27,
+          "actual": -29.19,
+          "err": 2.19,
+          "url": "https://emersoncollegepolling.com/october-2024-south-dakota-poll-trump-62-harris-35/",
+          "kind": "Single late poll",
+          "notes": "October Emerson/KELO/The Hill survey (R+27); result R+29.19.",
+          "office": "President",
+          "weight": 0.65
+        },
+        {
           "year": 2020,
-          "poll": -17.0,
+          "poll": -17,
           "actual": -31.48,
           "err": 14.48,
           "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_South_Dakota",
           "kind": "Single late poll",
-          "notes": "Nielson Bros poll only; Democrat opponent in 2020, independent in 2026"
+          "notes": "Nielson Bros poll only; Democrat opponent in 2020, independent in 2026",
+          "office": "Senate",
+          "weight": 0.8
+        },
+        {
+          "year": 2020,
+          "poll": -10.5,
+          "actual": -26.2,
+          "err": 15.7,
+          "url": "https://www.270towin.com/2020-polls-biden-trump/south-dakota/",
+          "kind": "270toWin final average",
+          "notes": "2020 statewide; separate from Senate in same cycle.",
+          "office": "President",
+          "weight": 0.52
         }
       ],
-      "correction": 14.48,
+      "correction": 10.747,
       "history_mode": "not_comparable",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Dakota",
       "notes": "Independent candidate. Prior 2020 D-R error is shown for audit but NOT applied to Bengs vs Rounds; no comparable R-I calibration.",
@@ -1232,7 +1490,7 @@ window.ERVIN_DATA = {
       "party": "I",
       "sources": {
         "rcp": {
-          "value": -12.0,
+          "value": -12,
           "origin": "RealClearPolling",
           "date": "Oct 20",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
@@ -1248,7 +1506,7 @@ window.ERVIN_DATA = {
           "note": ""
         },
         "win270": {
-          "value": -18.0,
+          "value": -18,
           "origin": "270toWin",
           "date": "Oct 20",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
@@ -1256,7 +1514,7 @@ window.ERVIN_DATA = {
           "note": ""
         },
         "average": {
-          "value": -13.0,
+          "value": -13,
           "origin": "Wikipedia aggregator average",
           "date": "Oct 23",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
@@ -1274,25 +1532,40 @@ window.ERVIN_DATA = {
       },
       "historical": [
         {
-          "year": 2020,
-          "poll": -1.6,
-          "actual": -10.0,
-          "err": 8.4,
-          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Montana",
-          "kind": "Aggregate",
-          "notes": ""
-        },
-        {
           "year": 2024,
           "poll": -6.9,
           "actual": -7.1,
           "err": 0.2,
           "url": "https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Montana",
           "kind": "Aggregate",
-          "notes": ""
+          "notes": "",
+          "office": "Senate",
+          "weight": 1
+        },
+        {
+          "year": 2024,
+          "poll": -18.5,
+          "actual": -19.9,
+          "err": 1.4,
+          "url": "https://www.realclearpolling.com/polls/president/general/2024/montana/trump-vs-harris",
+          "kind": "RCP final average",
+          "notes": "2024 Trump–Harris average, independent 2026 Senate candidate requires separate modeling.",
+          "office": "President",
+          "weight": 0.65
+        },
+        {
+          "year": 2020,
+          "poll": -1.6,
+          "actual": -10,
+          "err": 8.4,
+          "url": "https://en.wikipedia.org/wiki/2020_United_States_Senate_election_in_Montana",
+          "kind": "Aggregate",
+          "notes": "",
+          "office": "Senate",
+          "weight": 0.8
         }
       ],
-      "correction": 4.3,
+      "correction": 3.196,
       "history_mode": "not_comparable",
       "sourceUrl": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Montana",
       "notes": "Three-way race: Alme (R), Bodnar (I), Bankhead (D). Polling margin is Bodnar minus Alme (top two), NOT Democrat minus Republican. Past D-R correction is not applied; uncertainty inflated.",
@@ -1337,18 +1610,18 @@ function renderTabs(){$('tabs').innerHTML=CONFIG.sourceList.map(s=>`<button type
  $('verifiedCount').textContent=proxies?`${states.length-proxies} publisher averages · ${proxies} clearly labeled reference proxies`:`${states.length} directly attributed source averages`;}
 function renderStats(){const v=states.map(evaluate),dem=v.filter(x=>x.adjusted>=0).length,rep=v.filter(x=>x.adjusted<0).length,close=v.filter(x=>Math.abs(x.adjusted)<=5).length,cross=v.filter(x=>x.crosses).length,closest=[...v].sort((a,b)=>Math.abs(a.adjusted)-Math.abs(b.adjusted))[0];
  $('stats').innerHTML=[['Non-Republican calls',dem,'blue','Includes independents'],['Republican calls',rep,'red','Directional & numerical'],['Within 5 points',close,'gold','Under Ervin margin rule'],['Closest contest',esc(closest.r.code),'',''+fmt(closest.adjusted,closest.r)]].map(([label,value,cl,foot])=>`<div class="stat"><div class="num ${cl}">${value}</div><p>${label}</p><small>${foot}</small></div>`).join('');
- $('gradeOverview').innerHTML=`<div class="grade-row"><span>States whose scenario band spans a tie</span><b>${cross} / 17</b></div><div class="grade-row"><span>Strongest evidence grade among tracked races</span><b class="grade B">B</b></div><div class="grade-row"><span>Publisher proxies in this tab</span><b>${states.filter(r=>r.sources[state.source].proxy).length}</b></div><div class="grade-row"><span>Historical observations audited</span><b>${states.reduce((n,r)=>n+r.historical.length,0)}</b></div><div class="grade-row"><span>Source overlap in Wikipedia consensus</span><b>Yes · not independent</b></div><p class="micro">Grade rules: A requires ≥4 elections &amp; ≤2.5-point MAE; B ≥3 &amp; ≤4; C ≥2 &amp; ≤6; other cases D, or F when MAE exceeds 8. A large margin is not itself a high grade.</p>`;
+ $('gradeOverview').innerHTML=`<div class="grade-row"><span>States whose scenario band spans a tie</span><b>${cross} / 17</b></div><div class="grade-row"><span>Strongest evidence grade among tracked races</span><b class="grade B">B</b></div><div class="grade-row"><span>Publisher proxies in this tab</span><b>${states.filter(r=>r.sources[state.source].proxy).length}</b></div><div class="grade-row"><span>Historical election comparisons audited</span><b>${states.reduce((n,r)=>n+r.historical.length,0)}</b></div><div class="grade-row"><span>Source overlap in Wikipedia consensus</span><b>Yes · not independent</b></div><p class="micro">Grade rules: A requires ≥4 elections &amp; ≤2.5-point MAE; B ≥3 &amp; ≤4; C ≥2 &amp; ≤6; other cases D, or F when MAE exceeds 8. A large margin is not itself a high grade.</p>`;
 }
 function renderMap(){let entries=Object.entries(cartogram);$('map').innerHTML=entries.map(([key,[x,y]])=>{const r=states.find(v=>v.code===key),v=r?evaluate(r):null;let kind=r?(Math.abs(v.adjusted)<1?'close':gradient(v.adjusted)):'';let title=r?`${r.state}: ${judge(v.adjusted,r)}. Select for details.`:`${key} not in expanded tracked set`;
  return `<button type="button" class="tile ${r?'tracked':''} ${kind} ${state.selected===key?'active':''} ${r&&v.poll.proxy?'pinned':''}" ${r?'':'disabled'} data-code="${key}" style="grid-column:${x+1};grid-row:${y+1}" title="${esc(title)}" aria-label="${esc(title)}">${key}</button>`}).join('');$('map').querySelectorAll('.tracked').forEach(b=>b.onclick=()=>focusRace(b.dataset.code));}
 function displayRange(v){const left=Math.max(-26,v.lo),right=Math.min(26,v.hi);return `<div class="range-chart"><div class="range-label"><span class="micro">${state.level}% error scenario</span><strong>${fmt(v.lo,v.r,1)} to ${fmt(v.hi,v.r,1)}</strong></div><div class="band"><div class="band-interval" style="left:${((left+26)/52)*100}%;width:${Math.max(0,(right-left)/52*100)}%"></div><div class="band-center" style="left:${Math.max(0,Math.min(100,(v.adjusted+26)/52*100))}%"></div></div><div class="range-bounds"><span>R +26</span><span>EVEN</span><span>${v.r.party==='I'?'I':'D'} +26</span></div></div>`}
 function detail(){const r=selected(),v=evaluate(r),p=v.poll,baseline=r.sources.rcp;
  const difference=(p.value-baseline.value),errMode=r.history_mode==='not_comparable';
- $('detail').innerHTML=`<div class="panel-title"><div class="section-label">RACE INTELLIGENCE / ${r.code}</div><span class="flag">${esc(p.proxy?'REFERENCE PROXY':'PUBLISHED AVERAGE')}</span></div><div class="detail-title"><div><h3>${esc(r.state)}</h3><div class="candidate">${esc(r.dem)} (${r.party}) <span style="color:var(--subtle)">vs</span> ${esc(r.rep)} (R)${r.special?' · Special election':''}</div></div><span class="grade ${v.grade}" title="Historical evidence grade">${v.grade}</span></div><div class="lead ${gradient(v.adjusted)==='close'?(v.adjusted>=0?'dem':'rep'):gradient(v.adjusted)}">${esc(judge(v.adjusted,r))}</div><div class="micro" style="margin-top:4px">${esc(v.support)} · ${Math.abs(v.adjusted)>5?'Magnitude suppressed by ±5 rule':'Numerical margin prediction'}</div><div class="mini-grid"><div class="mini"><small>Polling input</small><strong>${esc(fmt(p.value,r,1))}</strong></div><div class="mini"><small>${errMode?'Historical shift (not applied)':'Applied R shift'}</small><strong>${errMode?'0.00':v.correction.toFixed(2)} pts</strong></div><div class="mini"><small>Historical MAE</small><strong>${v.h.mae.toFixed(1)} pts</strong></div></div>${displayRange(v)}<div class="detail-note"><div class="grade-row"><span>Published source / proxy</span><strong>${esc(p.origin)}</strong></div><div class="grade-row"><span>Source date</span><strong>${esc(p.date)} 2026</strong></div><div class="grade-row"><span>RCP benchmark</span><strong>${esc(fmt(baseline.value,r,1))}${baseline.proxy?' · proxy':''}</strong></div><div class="grade-row"><span>Input difference vs. benchmark</span><strong>${difference>=0?'+':''}${difference.toFixed(2)} pts</strong></div><div class="grade-row"><span>Historical Senate comparisons</span><strong>${v.h.n} · ${esc(v.grade)} grade</strong></div>${errMode?`<p class="micro" style="color:var(--accent)">Independent matchup: historic D–R shift of ${r.correction.toFixed(2)} points is <b>not transferred</b> to this race.</p>`:''}${p.proxy?`<p class="micro" style="color:var(--accent)">Fallback detail: ${esc(p.note)}</p>`:''}${r.notes?`<p class="micro">${esc(r.notes)}</p>`:''}</div><div class="detail-refs"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">↗ Polling source</a><a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener noreferrer">↗ Source table</a><button class="button ghost" type="button" id="historyJump">Audit historical years ↓</button></div>`;
+ $('detail').innerHTML=`<div class="panel-title"><div class="section-label">RACE INTELLIGENCE / ${r.code}</div><span class="flag">${esc(p.proxy?'REFERENCE PROXY':'PUBLISHED AVERAGE')}</span></div><div class="detail-title"><div><h3>${esc(r.state)}</h3><div class="candidate">${esc(r.dem)} (${r.party}) <span style="color:var(--subtle)">vs</span> ${esc(r.rep)} (R)${r.special?' · Special election':''}</div></div><span class="grade ${v.grade}" title="Historical evidence grade">${v.grade}</span></div><div class="lead ${gradient(v.adjusted)==='close'?(v.adjusted>=0?'dem':'rep'):gradient(v.adjusted)}">${esc(judge(v.adjusted,r))}</div><div class="micro" style="margin-top:4px">${esc(v.support)} · ${Math.abs(v.adjusted)>5?'Magnitude suppressed by ±5 rule':'Numerical margin prediction'}</div><div class="mini-grid"><div class="mini"><small>Polling input</small><strong>${esc(fmt(p.value,r,1))}</strong></div><div class="mini"><small>${errMode?'Historical shift (not applied)':'Applied R shift'}</small><strong>${errMode?'0.00':v.correction.toFixed(2)} pts</strong></div><div class="mini"><small>Historical MAE</small><strong>${v.h.mae.toFixed(1)} pts</strong></div></div>${displayRange(v)}<div class="detail-note"><div class="grade-row"><span>Published source / proxy</span><strong>${esc(p.origin)}</strong></div><div class="grade-row"><span>Source date</span><strong>${esc(p.date)} 2026</strong></div><div class="grade-row"><span>RCP benchmark</span><strong>${esc(fmt(baseline.value,r,1))}${baseline.proxy?' · proxy':''}</strong></div><div class="grade-row"><span>Input difference vs. benchmark</span><strong>${difference>=0?'+':''}${difference.toFixed(2)} pts</strong></div><div class="grade-row"><span>Historical polling comparisons</span><strong>${v.h.n} · ${esc(v.grade)} grade</strong></div>${errMode?`<p class="micro" style="color:var(--accent)">Independent matchup: historic D–R shift of ${r.correction.toFixed(2)} points is <b>not transferred</b> to this race.</p>`:''}${p.proxy?`<p class="micro" style="color:var(--accent)">Fallback detail: ${esc(p.note)}</p>`:''}${r.notes?`<p class="micro">${esc(r.notes)}</p>`:''}</div><div class="detail-refs"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">↗ Polling source</a><a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener noreferrer">↗ Source table</a><button class="button ghost" type="button" id="historyJump">Audit historical years ↓</button></div>`;
  $('historyJump').onclick=()=>{$('historyHeading').scrollIntoView({behavior:'smooth',block:'center'})};
- $('historyHeading').textContent=`${r.state} · historical Senate errors`;
- $('histBars').innerHTML=r.historical.map(h=>{const ht=Math.min(92,Math.max(8,Math.abs(h.err)*6));return `<div class="hist-column"><b style="color:var(--text)">${h.err>=0?'R':'D'} +${Math.abs(h.err).toFixed(1)}</b><div class="vbar ${h.err<0?'neg':''}" style="height:${ht}px"></div><a href="${esc(h.url)}" target="_blank" rel="noopener noreferrer">${h.year} ↗</a></div>`}).join('');
- $('historyExplanation').innerHTML=`Mean historical R shift <b>${r.correction>=0?'R':'D'} +${Math.abs(r.correction).toFixed(2)}</b> from ${r.historical.length} election${r.historical.length===1?'':'s'}. MAE ${v.h.mae.toFixed(2)} pts; estimated historical dispersion ${Math.max(4.7,v.h.sd).toFixed(1)} pts (4.7-pt floor). ${errMode?'Not applied to this different-party matchup.':''} Each linked year shows the backing election source.`;
+ $('historyHeading').textContent=`${r.state} · historical polling errors`;
+ $('histBars').innerHTML=r.historical.map(h=>{const ht=Math.min(92,Math.max(8,Math.abs(h.err)*6));return `<div class="hist-column"><b style="color:var(--text)">${h.err>=0?'R':'D'} +${Math.abs(h.err).toFixed(1)}</b><div class="vbar ${h.err<0?'neg':''}" style="height:${ht}px"></div><a href="${esc(h.url)}" target="_blank" rel="noopener noreferrer">${h.year} ${h.office==='President'?'PRES':'SEN'} ↗</a></div>`}).join('');
+ $('historyExplanation').innerHTML=`Weighted historical R shift <b>${r.correction>=0?'R':'D'} +${Math.abs(r.correction).toFixed(2)}</b> from ${r.historical.length} election comparison${r.historical.length===1?'':'s'}. Senate events receive full weight; presidential events get 65% office weight; 2024 receives more weight than 2022, 2020, and 2018. MAE ${v.h.mae.toFixed(2)} pts; estimated historical dispersion ${Math.max(4.7,v.h.sd).toFixed(1)} pts (4.7-pt floor). ${errMode?'Not applied to this different-party matchup.':''} Each linked election shows the input source; Senate and presidential observations from the same year are correlated, not independent.`;
 }
 function renderBars(){let items=states.map(evaluate).sort((a,b)=>a.adjusted-b.adjusted);$('bars').innerHTML=items.map(v=>{const value=v.adjusted,width=Math.min(Math.abs(value),25)/25*50,begin=value>=0?50:50-width;
  return `<div class="barrow ${state.selected===v.r.code?'active':''}" role="button" tabindex="0" data-code="${v.r.code}" aria-label="${esc(v.r.state)} ${esc(judge(value,v.r))}"><span class="barname">${esc(v.r.state)}</span><div class="bartrack"><div class="barfill ${value<0?'r':'d'}" style="left:${begin}%;width:${Math.max(.5,width)}%"></div></div><b style="text-align:right;color:var(--${value<0?'red':'blue'})">${esc(fmt(value,v.r,1))}</b></div>`}).join('');$('bars').querySelectorAll('.barrow').forEach(b=>{b.onclick=()=>focusRace(b.dataset.code);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();focusRace(b.dataset.code)}}});}
@@ -1359,7 +1632,7 @@ function renderTable(){const rows=rowsFiltered();$('rows').innerHTML=rows.map(v=
 function focusRace(code){state.selected=code;renderMap();detail();renderBars();renderTable();}
 function render(){renderTabs();renderStats();renderMap();detail();renderBars();renderTable();}
 function snack(msg){const box=$('snack');box.textContent=msg;box.classList.add('show');setTimeout(()=>box.classList.remove('show'),2700)}
-function exportCSV(){const headers=['State','Party of non-R candidate','Source tab','Input margin non-R-minus-R','Input origin','Source date','Proxy flag','Applied R shift','Historical Senate errors N','Historical MAE','Evidence grade','Adjusted non-R-minus-R','Lower scenario bound','Upper scenario bound','Confidence statement'];let csv=[headers,...states.map(r=>{let v=evaluate(r);return [r.state,r.party,state.source,v.poll.value,v.poll.origin,v.poll.date,v.poll.proxy,v.correction,v.h.n,round(v.h.mae),v.grade,round(v.adjusted),round(v.lo),round(v.hi),v.support]})].map(a=>a.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf8;'}));a.download=`Ervin-Model-${state.source}-${new Date().toISOString().slice(0,10)}.csv`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);snack(`CSV exported with ${states.length} races and source flags`)}
+function exportCSV(){const headers=['State','Party of non-R candidate','Source tab','Input margin non-R-minus-R','Input origin','Source date','Proxy flag','Applied R shift','Historical polling errors N','Historical MAE','Evidence grade','Adjusted non-R-minus-R','Lower scenario bound','Upper scenario bound','Confidence statement'];let csv=[headers,...states.map(r=>{let v=evaluate(r);return [r.state,r.party,state.source,v.poll.value,v.poll.origin,v.poll.date,v.poll.proxy,v.correction,v.h.n,round(v.h.mae),v.grade,round(v.adjusted),round(v.lo),round(v.hi),v.support]})].map(a=>a.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf8;'}));a.download=`Ervin-Model-${state.source}-${new Date().toISOString().slice(0,10)}.csv`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);snack(`CSV exported with ${states.length} races and source flags`)}
 $('confidenceLevel').onchange=e=>{state.level=Number(e.target.value);render()};$('biasMode').onchange=e=>{state.biasMode=e.target.value;render()};$('raceFilter').onchange=e=>{state.filter=e.target.value;renderTable()};$('sort').onchange=e=>{state.sort=e.target.value;renderTable()};$('search').oninput=e=>{state.search=e.target.value;renderTable()};$('exportCSV').onclick=exportCSV;
 $('themeToggle').onclick=()=>{document.documentElement.classList.toggle('light');snack(document.documentElement.classList.contains('light')?'Light theme':'Dark theme')};
 function setFreshness(){
