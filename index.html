@@ -48,6 +48,11 @@ window.ERVIN_DATA = {
   "election": "November 3, 2026",
   "sourceList": [
     {
+      "key": "take",
+      "title": "Ervin’s Take ★",
+      "desc": "Overall picture: freshness-aware blend of directly attributed RCP, DDHQ, 270toWin and Silver polling averages, with publisher-overlap safeguards, followed by Ervin + historical calibration. Descriptive synthesis, not a validated probability."
+    },
+    {
       "key": "rcp",
       "title": "RCP Benchmark",
       "desc": "RealClearPolling is the benchmark; explicit independently published poll proxies used only where no matching RCP average was verified."
@@ -1737,7 +1742,7 @@ window.ERVIN_DATA = {
 const CONFIG=window.ERVIN_DATA;
 if(!CONFIG){document.body.innerHTML='<h1>Dashboard data did not load.</h1>';return;}
 const states=CONFIG.states;const $=(id)=>document.getElementById(id);
-const state={source:'average',selected:'MI',level:80,biasMode:'original',search:'',filter:'all',sort:'close'};
+const state={source:'take',selected:'MI',level:80,biasMode:'weighted',search:'',filter:'all',sort:'close'};
 const cartogram={AK:[0,7],HI:[1,7],WA:[1,0],OR:[1,1],CA:[1,2],NV:[2,2],ID:[2,1],MT:[3,0],WY:[3,1],UT:[3,2],AZ:[3,3],NM:[4,3],CO:[4,2],ND:[4,0],SD:[4,1],NE:[5,1],KS:[5,2],OK:[5,3],TX:[5,4],MN:[5,0],IA:[6,1],MO:[6,2],AR:[6,3],LA:[6,4],WI:[6,0],IL:[7,1],MS:[7,4],MI:[7,0],IN:[8,1],KY:[8,2],TN:[8,3],AL:[8,4],FL:[9,5],GA:[9,4],SC:[10,4],NC:[10,3],VA:[10,2],WV:[9,2],OH:[9,1],PA:[10,1],NY:[10,0],VT:[11,0],NH:[11,1],ME:[11,2],MA:[11,3],CT:[11,4],RI:[11,5],NJ:[10,5],DE:[10,6],MD:[9,3]};
 const esc=(a)=>String(a??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const round=(v,d=2)=>Number(v.toFixed(d));
@@ -1770,8 +1775,33 @@ function weightedCorrection(r){
  const trend=rt?recent.reduce((sum,h)=>sum+h.err*h.w,0)/rt:baseline;
  return .7*baseline+.3*trend;
 }
+function pollingPicture(r){
+ const weights={rcp:.40,ddhq:.25,win270:.15,silver:.20};
+ const seen=new Set(),inputs=[];
+ for(const [key,weight] of Object.entries(weights)){
+  const q=r.sources[key];if(!q||q.proxy||!Number.isFinite(Number(q.value)))continue;
+  // Entries with the exact same citation URL can reflect the same table.
+  // Retain only the highest-priority representation, not both.
+  const url=String(q.url||'').split('#')[0].replace(/\\/$/,'');
+  if(seen.has(url))continue;seen.add(url);
+  const parsed=new Date((q.date||'')+' 2026');
+  const age=Number.isNaN(+parsed)?21:Math.max(0,(Date.now()-parsed.getTime())/86400000);
+  const freshness=Math.max(.50,Math.exp(-age/35));
+  inputs.push({key,value:Number(q.value),weight:weight*freshness,source:q.origin});
+ }
+ const total=inputs.reduce((sum,x)=>sum+x.weight,0);
+ if(!total){
+  const fallback=r.sources.rcp||r.sources.average;
+  return {...fallback,proxy:true,origin:'RCP fallback — no independent blend',note:'No eligible independent publisher combination verified.'};
+ }
+ const mean=inputs.reduce((sum,x)=>sum+x.value*x.weight,0)/total;
+ // No source is counted twice, and the Wikipedia average-of-averages
+ // is not blended with its possible constituent publishers.
+ return {value:Math.round(mean*100)/100,origin:'Ervin’s Take · overlap-aware blend',date:'Current verified inputs',url:r.sourceUrl,proxy:inputs.length<2,nInputs:inputs.length,note:inputs.map(x=>x.key).join(', ')+(inputs.length<2?' · Single-source fallback':' · Shared underlying polls may remain')};
+}
+function getPoll(r,key){return key==='take'?pollingPicture(r):r.sources[key];}
 function evaluate(r){
- const h=historical(r),poll=r.sources[state.source],orig=Number(r.correction)||0;
+ const h=historical(r),poll=getPoll(r,state.source),orig=Number(r.correction)||0;
  const apply=r.history_mode!=='not_comparable',candidateRepeat=r.history_mode==='candidate_repeat';
  const correction=apply?(state.biasMode==='weighted'?weightedCorrection(r):state.biasMode==='shrink'?orig*(candidateRepeat?(r.code==='AK'?2/5:1/4):h.n/(h.n+3)):orig):0;
  const adjusted=poll.value-correction;
@@ -1788,11 +1818,11 @@ const sourceTitle=()=>CONFIG.sourceList.find(s=>s.key===state.source);
 function selected(){return states.find(s=>s.code===state.selected)||states[0]}
 function renderTabs(){$('tabs').innerHTML=CONFIG.sourceList.map(s=>`<button type="button" class="tab" role="tab" aria-selected="${state.source===s.key}" data-source="${esc(s.key)}">${esc(s.title)}</button>`).join('');$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{state.source=b.dataset.source;render()});
  $('sourceName').textContent=sourceTitle().title; $('sourceDescription').textContent=' — '+sourceTitle().desc;
- const proxies=states.filter(r=>r.sources[state.source].proxy).length;
+ const proxies=states.filter(r=>getPoll(r,state.source).proxy).length;
  $('verifiedCount').textContent=proxies?`${states.length-proxies} publisher averages · ${proxies} clearly labeled reference proxies`:`${states.length} directly attributed source averages`;}
 function renderStats(){const v=states.map(evaluate),dem=v.filter(x=>x.adjusted>=0).length,rep=v.filter(x=>x.adjusted<0).length,close=v.filter(x=>Math.abs(x.adjusted)<=5).length,cross=v.filter(x=>x.crosses).length,closest=[...v].sort((a,b)=>Math.abs(a.adjusted)-Math.abs(b.adjusted))[0];
  $('stats').innerHTML=[['Non-Republican calls',dem,'blue','Includes independents'],['Republican calls',rep,'red','Directional & numerical'],['Within 5 points',close,'gold','Under Ervin margin rule'],['Closest contest',esc(closest.r.code),'',''+fmt(closest.adjusted,closest.r)]].map(([label,value,cl,foot])=>`<div class="stat"><div class="num ${cl}">${value}</div><p>${label}</p><small>${foot}</small></div>`).join('');
- $('gradeOverview').innerHTML=`<div class="grade-row"><span>States whose scenario band spans a tie</span><b>${cross} / 17</b></div><div class="grade-row"><span>Strongest evidence grade among tracked races</span><b class="grade B">B</b></div><div class="grade-row"><span>Publisher proxies in this tab</span><b>${states.filter(r=>r.sources[state.source].proxy).length}</b></div><div class="grade-row"><span>Historical election comparisons audited</span><b>${states.reduce((n,r)=>n+r.historical.length,0)}</b></div><div class="grade-row"><span>Source overlap in Wikipedia consensus</span><b>Yes · not independent</b></div><p class="micro">Grade rules: A requires ≥4 elections &amp; ≤2.5-point MAE; B ≥3 &amp; ≤4; C ≥2 &amp; ≤6; other cases D, or F when MAE exceeds 8. A large margin is not itself a high grade.</p>`;
+ $('gradeOverview').innerHTML=`<div class="grade-row"><span>States whose scenario band spans a tie</span><b>${cross} / 17</b></div><div class="grade-row"><span>Strongest evidence grade among tracked races</span><b class="grade B">B</b></div><div class="grade-row"><span>Publisher proxies in this tab</span><b>${states.filter(r=>getPoll(r,state.source).proxy).length}</b></div><div class="grade-row"><span>Historical election comparisons audited</span><b>${states.reduce((n,r)=>n+r.historical.length,0)}</b></div><div class="grade-row"><span>Source overlap in Wikipedia consensus</span><b>Yes · not independent</b></div><p class="micro">Grade rules: A requires ≥4 elections &amp; ≤2.5-point MAE; B ≥3 &amp; ≤4; C ≥2 &amp; ≤6; other cases D, or F when MAE exceeds 8. A large margin is not itself a high grade.</p>`;
 }
 function renderMap(){let entries=Object.entries(cartogram);$('map').innerHTML=entries.map(([key,[x,y]])=>{const r=states.find(v=>v.code===key),v=r?evaluate(r):null;let kind=r?(Math.abs(v.adjusted)<1?'close':gradient(v.adjusted)):'';let title=r?`${r.state}: ${judge(v.adjusted,r)}. Select for details.`:`${key} not in expanded tracked set`;
  return `<button type="button" class="tile ${r?'tracked':''} ${kind} ${state.selected===key?'active':''} ${r&&v.poll.proxy?'pinned':''}" ${r?'':'disabled'} data-code="${key}" style="grid-column:${x+1};grid-row:${y+1}" title="${esc(title)}" aria-label="${esc(title)}">${key}</button>`}).join('');$('map').querySelectorAll('.tracked').forEach(b=>b.onclick=()=>focusRace(b.dataset.code));}
@@ -1821,7 +1851,7 @@ function renderInsights(){
  const display=(x)=>esc(fmt(x,r,2));
  const rating=r.externalRatings?.cook;
  $('insightStats').innerHTML=`<div class="insight-stat"><small>Publisher-average spread</small><strong>${spread===null?'—':spread.toFixed(2)+' pts'}</strong><small>${s.length} non-proxy source inputs · not independent surveys</small></div><div class="insight-stat"><small>Full historical correction</small><strong>${r.history_mode==='not_comparable'?'Not used':display(v.correction)}</strong><small>${v.h.n} historical entries; election types labeled in audit</small></div><div class="insight-stat"><small>Cook Political Report</small><strong style="font-size:23px">${rating?esc(rating.rating):'—'}</strong><small>As of ${rating?esc(rating.date):'unknown'} · external qualitative rating</small></div>`;
- $('insightSourceRows').innerHTML=CONFIG.sourceList.map(src=>{const p=r.sources[src.key],raw=p.value,full=r.history_mode==='not_comparable'?0:r.correction,shrunk=full*shrink;return `<tr><td><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(src.title)} ↗</a></td><td>${display(raw)}</td><td>${display(raw-full)}</td><td>${display(raw-shrunk)}</td><td>${display(raw-weightedCorrection(r))}</td><td><span class="tagline">${p.proxy?'Reference proxy':'Publisher'}</span></td></tr>`}).join('');
+ $('insightSourceRows').innerHTML=CONFIG.sourceList.map(src=>{const p=getPoll(r,src.key),raw=p.value,full=r.history_mode==='not_comparable'?0:r.correction,shrunk=full*shrink;return `<tr><td><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(src.title)} ↗</a></td><td>${display(raw)}</td><td>${display(raw-full)}</td><td>${display(raw-shrunk)}</td><td>${display(raw-weightedCorrection(r))}</td><td><span class="tagline">${p.proxy?'Reference proxy':'Publisher'}</span></td></tr>`}).join('');
  $('insightContext').textContent=`Historical error is subtracted from the raw non-Republican margin. ${candidateSpecific?'Candidate-specific comparison; the full shift is based on prior contests involving the same candidate. ':''}The shrinkage option retains ${Math.round(shrink*100)}% of the correction. Ervin + combines office relevance, whether an input is an aggregate or single poll, candidate continuity, recency, and a 30% tilt toward recent-election error; observations from the same year share weight. The Cook rating is a separate published assessment, not a numerical probability or an additional poll.`;
 }
 function render(){renderTabs();renderStats();renderMap();detail();renderBars();renderTable();renderInsights();}
