@@ -15,7 +15,10 @@ The dataset now contains **51 election comparisons across 17 races, 3 for every 
 - Polling error = forecast poll margin **minus** actual vote margin (positive = Republican strength understated by polling).
 - Weight historical Senate observations by **1.0** and presidential observations by **0.65**. Apply recency weights: **2018: 0.70; 2020: 0.80; 2022: 0.90; 2024: 1.00**. The calibration shift is the weighted mean of the historical polling error.
 - A Senate and presidential election from the same year are **correlated observations**, not independent calibration cycles. Three historical comparisons do not ensure three independent years.
-- For independent-versus-Republican 2026 contests in Nebraska, Montana and South Dakota, the D/R polling correction is **not transferred** mechanically; their three historical entries are retained for the evidence audit. Candidate-field and method changes further limit comparability.
+- **Nebraska — Dan Osborn:** Candidate-specific 2024 Senate average **Osborn −1.6** vs. actual **Osborn −6.67**, a **+5.07-point Republican polling understatement**, applied against his 2026 margin. The Republican opponent changes from Deb Fischer to Pete Ricketts. The 2020 and 2024 presidential comparisons remain audit context only.
+- **South Dakota — Brian Bengs:** Candidate-specific 2022 Senate poll **Bengs −25** vs. actual **Bengs −43.5**, a **+18.50-point Republican polling understatement**, applied as a **high-uncertainty single-observation scenario**. The 2026 contest has a new Republican opponent and Bengs runs as an independent rather than a Democrat. The 2020 Senate and 2024 presidential comparisons remain audit context only.
+- **Montana — Seth Bodnar:** No suitable repeat-candidate calibration; historical partisan D/R correction **not applied** to this 2026 independent matchup.
+- The **small-sample shrinkage** switch retains a stronger reduction (25% of raw candidate-specific error) for Nebraska and South Dakota. The 80%/90% uncertainty scenarios inflate uncertainty, especially in South Dakota. None of these adjustments represents a validated 2026 win probability.
 - Some safely Republican states have only **single polls** or **partisan-sponsored surveys**. Such inputs are labeled; grades and scenario bands are heuristic, not validated election probabilities.
 
 ### Audit files
