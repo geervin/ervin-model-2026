@@ -10,6 +10,8 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  pages: write
+  id-token: write
 concurrency:
   group: polling-refresh
   cancel-in-progress: false
@@ -37,3 +39,12 @@ jobs:
             git commit -m "Automatic 2026 Senate polling check"
             git push
           fi
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload refreshed website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy refreshed website
+        id: deployment
+        uses: actions/deploy-pages@v4
