@@ -1782,7 +1782,7 @@ function pollingPicture(r){
   const q=r.sources[key];if(!q||q.proxy||!Number.isFinite(Number(q.value)))continue;
   // Entries with the exact same citation URL can reflect the same table.
   // Retain only the highest-priority representation, not both.
-  const url=String(q.url||'').split('#')[0].replace(/\\/$/,'');
+  const url=String(q.url||'').split('#')[0].replace(/\/$/,'');
   if(seen.has(url))continue;seen.add(url);
   const parsed=new Date((q.date||'')+' 2026');
   const age=Number.isNaN(+parsed)?21:Math.max(0,(Date.now()-parsed.getTime())/86400000);
