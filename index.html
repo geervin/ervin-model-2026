@@ -31,18 +31,18 @@
   <div><b>Uncertainty: 80% or 90%</b><p>The shaded range is a model-based <em>scenario band</em> around the adjusted polling margin. 90% makes the band wider than 80%. These are <strong>not statistically validated confidence intervals</strong> or chances of winning; a band crossing zero means either candidate could lead within that range.</p></div>
   <div><b>Original Ervin</b><p>Applies the full historical state polling-error adjustment. A positive Republican error reduces the non-Republican polling lead; a negative error increases it. This assumes past error patterns carry forward.</p></div>
   <div><b>Shrink small samples</b><p>Pulls historical error toward zero when the sample is thin, limiting how much a few past elections change the forecast. It is a cautious alternative, not a new polling average.</p></div>
-  <div><b>Ervin +</b><p>Weights historical error by election recency, office, polling-source quality and repeat candidates, with extra attention to recent historical error. It's an experimental weighted adjustment, <strong>not a measure of current polling momentum</strong>.</p></div>
+  <div><b>Ervin +</b><p>Uses historical 2016–2024 Senate and presidential errors with recency, office, regional/national partial pooling, plus guarded repeat-candidate comparisons. It is an experimental, backtested adjustment, <strong>not a measure of current polling momentum</strong>.</p></div>
  </div>
  <p class="mode-explainer-foot">All modes start from the selected source's current polling margin. When sources overlap or use proxy figures, their estimates aren't independent. Different offices and ranked-choice elections may not be directly comparable.</p>
 </aside>
 <section class="stat-grid" id="stats" aria-label="Summary metrics"></section>
 <section class="two-col" id="map-area"><article class="panel"><div class="panel-title"><div><div class="section-label">02 &nbsp; THE ELECTORAL LANDSCAPE</div><h2>Interactive Senate cartogram</h2></div><span class="flag">17 WATCHED STATES</span></div><p class="micro">Schematic map of the 50 states (not a geographic boundary map). Select any highlighted state to inspect its polling and historical-error audit.</p><div class="map-wrap"><div class="cartogram" id="map" role="group" aria-label="Interactive U.S. state tile map"></div></div><div class="legend"><span><b style="background:#275f96"></b>Non-Republican model lead</span><span><b style="background:#94424b"></b>Republican model lead</span><span><b style="background:linear-gradient(130deg,#2a6388,#924a5b)"></b>Within 1 point</span><span><b style="background:#243244"></b>Other states</span></div></article><aside class="panel detail" id="detail" aria-live="polite"></aside></section>
 <section class="analysis-row section-gap"><article class="panel"><div class="panel-title"><div><div class="section-label">03 &nbsp; WHERE THE MODEL STANDS</div><h2>Adjusted prediction spread</h2></div><span class="micro">Click a race to inspect</span></div><p class="micro">The chart is centered on zero. Bars show mathematical adjusted margins; values exceeding five points are <b>direction-only</b> predictions in the Ervin Model.</p><div class="bars" id="bars"></div></article><article class="panel"><div class="section-label">04 &nbsp; BACKTEST QUALITY</div><h2>Historical-error report card</h2><p class="micro">Grades assess how well historical state polling captured the actual election result and how many comparable races are available. They are <b>not pollster grades</b>.</p><div class="breakdown" id="gradeOverview"></div><div class="archive"><h3 id="historyHeading">Historical errors</h3><div class="hist-bars" id="histBars" aria-label="Historical polling-error bars"></div><p class="micro" id="historyExplanation"></p></div></article></section>
-<section class="panel table-panel" id="researchLab"><div class="section-label">05 &nbsp; POLLING RESEARCH LAB</div><div class="insight-head"><div><h2>Cross-source intelligence</h2><p class="micro">Measure publisher disagreement, model sensitivity and an independent qualitative rating.</p></div><div class="insight-toolbar"><label class="fine" for="insightRace">Select race</label><select id="insightRace" class="select" aria-label="Research lab race"></select><button class="button ghost" id="shareForecast" type="button">Copy race link ↗</button></div></div><div class="insight-grid" id="insightStats"></div><div class="table-scroll"><table class="comparison-table"><thead><tr><th>Polling source</th><th>Raw lead</th><th>Original Ervin</th><th>Shrunk Ervin</th><th>Ervin +</th><th>Input status</th></tr></thead><tbody id="insightSourceRows"></tbody></table></div><p id="insightContext" class="insight-note"></p><div class="insight-note" style="border:1px solid var(--edge);border-radius:10px;padding:14px;margin-top:14px"><strong>Historical source ranking under the Ervin adjustment</strong><p style="margin:5px 0 10px">Same four matched 2024 Senate races, correcting each source with <em>pre-2024 election history only</em>. Lower errors are better. Ervin + is the default adjustment in Ervin's Take.</p><div class="table-scroll"><table class="comparison-table"><thead><tr><th>Rank by MAE</th><th>Source</th><th>Original Ervin error</th><th>Ervin + error</th></tr></thead><tbody><tr><td>1</td><td>DDHQ</td><td>3.77 pts</td><td><b>3.87 pts</b></td></tr><tr><td>2</td><td>RCP</td><td>3.95 pts</td><td>4.22 pts</td></tr><tr><td>3</td><td>270toWin</td><td>4.12 pts</td><td>4.40 pts</td></tr><tr><td>—</td><td>Silver Bulletin</td><td>Unranked</td><td>Unranked</td></tr></tbody></table></div><p style="margin:10px 0 0">Silver has no matched archived averages in this benchmark. Four races cannot establish statistically superior long-run accuracy; the ordering changes when individual races are omitted. Source weights therefore remain provisional. <a href="research/ervin_plus_2024_source_backtest.csv" download>Download Ervin + score audit ↓</a> · <a href="research/FOUR_SOURCE_FAIR_RANKING.md" target="_blank" rel="noopener noreferrer">Methodology ↗</a></p></div><p class="insight-note"><strong>Expanded backtest:</strong> A separate 61-race Senate raw-poll audit (2018–2024) found that an experimental past-only state polling-error correction worsened average historical accuracy. Gubernatorial error comparisons were also reviewed, but full historical DDHQ/Silver/270toWin aggregates are not yet sufficiently matched for a robust four-way score. <a href="research/EXPANDED_BACKTEST_2018_2024.md" target="_blank" rel="noopener noreferrer">Read the full expanded backtest and caveats ↗</a> · <a href="research/senate_2018_2024_walk_forward.csv" download>Download 61-race audit ↓</a>. The composite weights remain provisional.</p><p class="insight-note">Composite weights were adjusted using a small <a href="blend_backtest_2024.csv" download>2024 leave-one-year-out benchmark (CSV)</a>: 2024 OH, TX, FL, MT Senate races, three archived publisher averages per race. Original Ervin historical adjustment used only pre-2024 observations. Silver Bulletin is <b>not ranked by the test</b> because matching archived Silver Senate averages were not verified; its 20% starting allocation is held provisionally. The tiny sample does not establish which aggregator is generally most accurate.</p><p class="insight-note">Cook Political Report rating: snapshot dated October 20, 2026, not an automatically refreshed probability. <a href="https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1" target="_blank" rel="noopener noreferrer">Read its methodology and current rating ↗</a>. Source disagreement is descriptive only: publishers may share underlying polls, and proxy inputs are excluded from the spread.</p></section>
+<section class="panel table-panel" id="researchLab"><div class="section-label">05 &nbsp; POLLING RESEARCH LAB</div><div class="insight-head"><div><h2>Cross-source intelligence</h2><p class="micro">Measure publisher disagreement, model sensitivity and an independent qualitative rating.</p></div><div class="insight-toolbar"><label class="fine" for="insightRace">Select race</label><select id="insightRace" class="select" aria-label="Research lab race"></select><button class="button ghost" id="shareForecast" type="button">Copy race link ↗</button></div></div><div class="insight-grid" id="insightStats"></div><div class="table-scroll"><table class="comparison-table"><thead><tr><th>Polling source</th><th>Raw lead</th><th>Original Ervin</th><th>Shrunk Ervin</th><th>Ervin +</th><th>Input status</th></tr></thead><tbody id="insightSourceRows"></tbody></table></div><p id="insightContext" class="insight-note"></p><p id="calibrationDetail" class="insight-note"></p><p class="insight-note"><strong>2016–2024 historical calibration:</strong> 88 archived Senate/presidential observations across the 17 states, weighted by office, recency and source quality, capped to one state-cycle cluster. Shrinks sparse states toward the 17-state national and regional mean rather than copying each past polling miss at full strength. <a href="research/CALIBRATION_2016_2024_REPORT.md" target="_blank" rel="noopener noreferrer">Method & out-of-time test ↗</a> · <a href="research/calibration_events_2016_2024.json" target="_blank" rel="noopener noreferrer">Event data ↗</a>.</p><div class="insight-note" style="border:1px solid var(--edge);border-radius:10px;padding:14px;margin-top:14px"><strong>Historical source ranking under the Ervin adjustment</strong><p style="margin:5px 0 10px">Same four matched 2024 Senate races, correcting each source with <em>pre-2024 election history only</em>. Lower errors are better. Ervin + is the default adjustment in Ervin's Take.</p><div class="table-scroll"><table class="comparison-table"><thead><tr><th>Rank by MAE</th><th>Source</th><th>Original Ervin error</th><th>Ervin + error</th></tr></thead><tbody><tr><td>1</td><td>DDHQ</td><td>3.77 pts</td><td><b>3.87 pts</b></td></tr><tr><td>2</td><td>RCP</td><td>3.95 pts</td><td>4.22 pts</td></tr><tr><td>3</td><td>270toWin</td><td>4.12 pts</td><td>4.40 pts</td></tr><tr><td>—</td><td>Silver Bulletin</td><td>Unranked</td><td>Unranked</td></tr></tbody></table></div><p style="margin:10px 0 0">Silver has no matched archived averages in this benchmark. Four races cannot establish statistically superior long-run accuracy; the ordering changes when individual races are omitted. Source weights therefore remain provisional. <a href="research/ervin_plus_2024_source_backtest.csv" download>Download Ervin + score audit ↓</a> · <a href="research/FOUR_SOURCE_FAIR_RANKING.md" target="_blank" rel="noopener noreferrer">Methodology ↗</a></p></div><p class="insight-note"><strong>Expanded backtest:</strong> A separate 61-race Senate raw-poll audit (2018–2024) found that an experimental past-only state polling-error correction worsened average historical accuracy. Gubernatorial error comparisons were also reviewed, but full historical DDHQ/Silver/270toWin aggregates are not yet sufficiently matched for a robust four-way score. <a href="research/EXPANDED_BACKTEST_2018_2024.md" target="_blank" rel="noopener noreferrer">Read the full expanded backtest and caveats ↗</a> · <a href="research/senate_2018_2024_walk_forward.csv" download>Download 61-race audit ↓</a>. The composite weights remain provisional.</p><p class="insight-note">Composite weights were adjusted using a small <a href="blend_backtest_2024.csv" download>2024 leave-one-year-out benchmark (CSV)</a>: 2024 OH, TX, FL, MT Senate races, three archived publisher averages per race. Original Ervin historical adjustment used only pre-2024 observations. Silver Bulletin is <b>not ranked by the test</b> because matching archived Silver Senate averages were not verified; its 20% starting allocation is held provisionally. The tiny sample does not establish which aggregator is generally most accurate.</p><p class="insight-note">Cook Political Report rating: snapshot dated October 20, 2026, not an automatically refreshed probability. <a href="https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1" target="_blank" rel="noopener noreferrer">Read its methodology and current rating ↗</a>. Source disagreement is descriptive only: publishers may share underlying polls, and proxy inputs are excluded from the spread.</p></section>
 <section class="panel table-panel" id="races"><div class="section-label">05 &nbsp; THE FULL RACE BOARD</div><div class="table-top"><div><h2>All 17 Senate races</h2><p class="micro">Sortable calculations · Source provenance · Historical accuracy grades</p></div><div class="filters"><input class="search" id="search" type="search" aria-label="Search races" placeholder="Search state / candidate…"><select class="select" id="raceFilter" aria-label="Filter races"><option value="all">All 17 races</option><option value="close">Adjusted within ±5</option><option value="cross">Scenario band crosses zero</option><option value="proxy">Source fallback used</option><option value="independent">Independent matchups</option></select><select class="select" id="sort" aria-label="Sort races"><option value="close">Closest first</option><option value="name">State A–Z</option><option value="margin">Democratic / independent first</option><option value="error">Largest historical error</option><option value="grade">Strongest historical evidence</option></select></div></div><div class="table-scroll"><table><thead><tr><th>Race</th><th>Polling lead</th><th>Historical R shift</th><th>Ervin adjusted</th><th>Prediction</th><th>80/90% band</th><th>Evidence grade</th><th>Vs RCP</th><th>Input basis</th></tr></thead><tbody id="rows"></tbody></table></div><p class="fine" style="margin:13px 0 0">In Nebraska, South Dakota and Montana, “non-R” means the named independent, not the Democratic nominee. For Nebraska and South Dakota candidate-specific prior-election corrections are applied, while Montana's historical D-versus-R error is not applied.</p></section>
 <section class="panel table-panel" id="methodology"><div class="section-label">06 &nbsp; TRANSPARENCY & REPRODUCIBILITY</div><h2>What these predictions actually mean</h2><div class="method-grid"><div class="method-item"><b>01 / Historical correction</b><p>In D-versus-R races: <b>Adjusted D–R = current poll D–R − mean(past poll margin − past actual margin)</b>. Positive historical errors mean Republicans outperformed polling. The original Ervin ±5 directional rule is retained. An optional small-sample shrinkage toggle multiplies the historical correction by n/(n+3), yielding a separate sensitivity scenario.</p></div><div class="method-item"><b>02 / Evidence grades & intervals</b><p>Historical mean absolute error (MAE) is computed from the election-by-election audit. Grade thresholds include sample-size requirements. Uncertainty bands use a <b>conservative scenario formula</b> with a ≥4.7-point historical dispersion floor and wider bands for few elections, fallbacks, ranked-choice ballots and independents. <b>These are not formally calibrated statistical confidence intervals or win probabilities.</b></p></div><div class="method-item"><b>03 / RealClearPolling benchmark</b><p>RCP is the comparison reference; a separate source tab is never blended with RCP. If a publisher lacks an identifiable same-matchup polling average, we use a <b>named polling proxy</b> and flag it at the row and in the race detail. We do not relabel an outside estimate as a genuine RCP/DDHQ/270toWin average. Different sources can have different field dates.</p></div></div><p class="micro" style="margin-top:17px"><b>Overlap warning:</b> Wikipedia's average-of-aggregators uses aggregator averages that may contain many of the same underlying surveys. This is not equivalent to a unique-poll sample or five independent observations. <b>Uneven calibration:</b> all candidate fields and historical samples are documented, including mixed historical RCP/Wikipedia inputs inherited from the working model. Independent races and ranked-choice voting require more caution.</p><div class="source-links"><a href="https://www.realclearpolling.com/elections/senate/2026/toss-ups" target="_blank" rel="noopener noreferrer">↗ RealClearPolling</a><a href="https://www.270towin.com/2026-senate-polls/" target="_blank" rel="noopener noreferrer">↗ 270toWin</a><a href="https://en.wikipedia.org/wiki/2026_United_States_Senate_elections" target="_blank" rel="noopener noreferrer">↗ Wikipedia aggregator tables</a><a href="https://votes.decisiondeskhq.com/polls/2026" target="_blank" rel="noopener noreferrer">↗ Decision Desk HQ</a><a href="https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1" target="_blank" rel="noopener noreferrer">↗ Cook ratings</a><a href="historical_error_audit.csv" download>↓ Historical error data</a><a href="source_snapshot.csv" download>↓ Polling sources data</a></div></section>
 <footer class="foot"><span>THE ERVIN MODEL <span style="color:var(--accent)">/</span> 2026 RESEARCH EDITION</span><span><span id="siteVisitCount" aria-live="polite" title="Approximate page visits since counter installation">SITE VISITS —</span> · <span id="footerFreshness">Source snapshot October 23, 2026 · Automatic refreshing activates after GitHub Pages deployment</span> · Mechanical, experimental predictions</span></footer>
-</main><div class="snack" id="snack" role="status"></div><script>
+</main><div class="snack" id="snack" role="status"></div><script src="scripts/calibration_engine.js"></script><script>
 window.ERVIN_DATA = {
   "asof": "October 23, 2026",
   "election": "November 3, 2026",
@@ -1734,7 +1734,1154 @@ window.ERVIN_DATA = {
     "errors": [],
     "updated": [],
     "sources": "Wikipedia 2026 general-election aggregate tables; matching candidate pair required"
-  }
+  },
+  "calibrationEvents": [
+    {
+      "state": "AK",
+      "year": 2016,
+      "office": "President",
+      "poll": -4.075,
+      "actual": -14.731,
+      "error": 10.656,
+      "nPollsters": 4,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "602"
+    },
+    {
+      "state": "AK",
+      "year": 2020,
+      "office": "President",
+      "poll": -9,
+      "actual": -10.061,
+      "error": 1.061,
+      "nPollsters": 2,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6211"
+    },
+    {
+      "state": "AK",
+      "year": 2024,
+      "office": "President",
+      "poll": -8,
+      "actual": -13.1,
+      "error": 5.1,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "Single late presidential poll",
+      "url": "https://www.270towin.com/2024-presidential-election-polls/alaska",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "FL",
+      "year": 2016,
+      "office": "President",
+      "poll": 1.789,
+      "actual": -1.199,
+      "error": 2.988,
+      "nPollsters": 20,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "611"
+    },
+    {
+      "state": "FL",
+      "year": 2016,
+      "office": "Senate",
+      "poll": -5.144,
+      "actual": -7.666,
+      "error": 2.522,
+      "nPollsters": 18,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "93"
+    },
+    {
+      "state": "FL",
+      "year": 2018,
+      "office": "Senate",
+      "poll": 2.174,
+      "actual": -0.123,
+      "error": 2.297,
+      "nPollsters": 22,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "100"
+    },
+    {
+      "state": "FL",
+      "year": 2020,
+      "office": "President",
+      "poll": 2.385,
+      "actual": -3.358,
+      "error": 5.743,
+      "nPollsters": 32,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6220"
+    },
+    {
+      "state": "FL",
+      "year": 2022,
+      "office": "Senate",
+      "poll": -8.1,
+      "actual": -16.413,
+      "error": 8.313,
+      "nPollsters": 10,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "8924"
+    },
+    {
+      "state": "FL",
+      "year": 2024,
+      "office": "President",
+      "poll": -6.2,
+      "actual": -13.1,
+      "error": 6.9,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "270toWin final average",
+      "url": "https://www.270towin.com/2024-presidential-election-polls/florida",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "FL",
+      "year": 2024,
+      "office": "Senate",
+      "poll": -3.5,
+      "actual": -12.78,
+      "error": 9.28,
+      "nPollsters": 4,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "Whitcomb collection of RCP-listed Senate polls",
+      "url": "https://github.com/Jack-Whitcomb/All-US-Senate-polls-2006-2024/blob/main/2006_to_2024_senate_polls_with_actuals.csv",
+      "raceId": "2024-Senate-NA"
+    },
+    {
+      "state": "GA",
+      "year": 2016,
+      "office": "President",
+      "poll": -3.785,
+      "actual": -5.131,
+      "error": 1.346,
+      "nPollsters": 13,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "612"
+    },
+    {
+      "state": "GA",
+      "year": 2016,
+      "office": "Senate",
+      "poll": -9.978,
+      "actual": -13.751,
+      "error": 3.773,
+      "nPollsters": 9,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "88"
+    },
+    {
+      "state": "GA",
+      "year": 2020,
+      "office": "President",
+      "poll": 1.295,
+      "actual": 0.236,
+      "error": 1.059,
+      "nPollsters": 17,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6221"
+    },
+    {
+      "state": "GA",
+      "year": 2020,
+      "office": "Senate",
+      "poll": 1.738,
+      "actual": -1.779,
+      "error": 3.517,
+      "nPollsters": 12,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6271"
+    },
+    {
+      "state": "GA",
+      "year": 2020,
+      "office": "Senate",
+      "poll": 1.7,
+      "actual": 2.08,
+      "error": -0.38,
+      "nPollsters": 10,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "7781"
+    },
+    {
+      "state": "GA",
+      "year": 2020,
+      "office": "Senate",
+      "poll": 1.24,
+      "actual": 1.225,
+      "error": 0.015,
+      "nPollsters": 10,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "8737"
+    },
+    {
+      "state": "GA",
+      "year": 2022,
+      "office": "Senate",
+      "poll": 0.295,
+      "actual": 0.957,
+      "error": -0.662,
+      "nPollsters": 19,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "8925"
+    },
+    {
+      "state": "GA",
+      "year": 2022,
+      "office": "Senate",
+      "poll": 2.645,
+      "actual": 2.806,
+      "error": -0.161,
+      "nPollsters": 11,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "9552"
+    },
+    {
+      "state": "GA",
+      "year": 2024,
+      "office": "President",
+      "poll": -1.2,
+      "actual": -2.2,
+      "error": 1,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "270toWin final average",
+      "url": "https://www.270towin.com/2024-presidential-election-polls/georgia",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "IA",
+      "year": 2016,
+      "office": "President",
+      "poll": -2.2,
+      "actual": -9.41,
+      "error": 7.21,
+      "nPollsters": 8,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "614"
+    },
+    {
+      "state": "IA",
+      "year": 2016,
+      "office": "Senate",
+      "poll": -20.64,
+      "actual": -24.435,
+      "error": 3.795,
+      "nPollsters": 5,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "92"
+    },
+    {
+      "state": "IA",
+      "year": 2020,
+      "office": "President",
+      "poll": -0.146,
+      "actual": -8.198,
+      "error": 8.051,
+      "nPollsters": 13,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6223"
+    },
+    {
+      "state": "IA",
+      "year": 2020,
+      "office": "Senate",
+      "poll": 1.208,
+      "actual": -6.588,
+      "error": 7.796,
+      "nPollsters": 12,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6272"
+    },
+    {
+      "state": "IA",
+      "year": 2022,
+      "office": "Senate",
+      "poll": -10,
+      "actual": -12.179,
+      "error": 2.179,
+      "nPollsters": 2,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "8930"
+    },
+    {
+      "state": "IA",
+      "year": 2024,
+      "office": "President",
+      "poll": -4.7,
+      "actual": -13.2,
+      "error": 8.5,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "270toWin final average",
+      "url": "https://www.270towin.com/2024-presidential-election-polls/iowa/",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "KS",
+      "year": 2016,
+      "office": "President",
+      "poll": -16.026,
+      "actual": -20.602,
+      "error": 4.576,
+      "nPollsters": 5,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "618"
+    },
+    {
+      "state": "KS",
+      "year": 2016,
+      "office": "Senate",
+      "poll": -23,
+      "actual": -29.937,
+      "error": 6.937,
+      "nPollsters": 2,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "60"
+    },
+    {
+      "state": "KS",
+      "year": 2020,
+      "office": "President",
+      "poll": -10.667,
+      "actual": -14.653,
+      "error": 3.986,
+      "nPollsters": 3,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6227"
+    },
+    {
+      "state": "KS",
+      "year": 2020,
+      "office": "Senate",
+      "poll": -4.523,
+      "actual": -11.437,
+      "error": 6.914,
+      "nPollsters": 3,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6275"
+    },
+    {
+      "state": "KS",
+      "year": 2024,
+      "office": "President",
+      "poll": -5,
+      "actual": -16.2,
+      "error": 11.2,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "Single late poll",
+      "url": "https://www.270towin.com/2024-presidential-election-polls/kansas",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "ME",
+      "year": 2016,
+      "office": "President",
+      "poll": 6.658,
+      "actual": 2.96,
+      "error": 3.698,
+      "nPollsters": 6,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "623"
+    },
+    {
+      "state": "ME",
+      "year": 2020,
+      "office": "President",
+      "poll": 12.68,
+      "actual": 9.071,
+      "error": 3.609,
+      "nPollsters": 5,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6232"
+    },
+    {
+      "state": "ME",
+      "year": 2020,
+      "office": "Senate",
+      "poll": 3.75,
+      "actual": -8.597,
+      "error": 12.347,
+      "nPollsters": 4,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6279"
+    },
+    {
+      "state": "ME",
+      "year": 2024,
+      "office": "President",
+      "poll": 8.6,
+      "actual": 6.9,
+      "error": 1.7,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "270toWin final average",
+      "url": "https://www.270towin.com/2024-presidential-election-polls/maine/",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "MI",
+      "year": 2016,
+      "office": "President",
+      "poll": 4.142,
+      "actual": -0.223,
+      "error": 4.365,
+      "nPollsters": 10,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "624"
+    },
+    {
+      "state": "MI",
+      "year": 2018,
+      "office": "Senate",
+      "poll": 10.01,
+      "actual": 6.506,
+      "error": 3.504,
+      "nPollsters": 10,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "106"
+    },
+    {
+      "state": "MI",
+      "year": 2020,
+      "office": "President",
+      "poll": 7.813,
+      "actual": 2.784,
+      "error": 5.03,
+      "nPollsters": 26,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6233"
+    },
+    {
+      "state": "MI",
+      "year": 2020,
+      "office": "Senate",
+      "poll": 8.108,
+      "actual": 1.685,
+      "error": 6.423,
+      "nPollsters": 19,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6280"
+    },
+    {
+      "state": "MI",
+      "year": 2024,
+      "office": "Senate",
+      "poll": 3.368,
+      "actual": 0.34,
+      "error": 3.028,
+      "nPollsters": 19,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "Whitcomb collection of RCP-listed Senate polls",
+      "url": "https://github.com/Jack-Whitcomb/All-US-Senate-polls-2006-2024/blob/main/2006_to_2024_senate_polls_with_actuals.csv",
+      "raceId": "2024-Senate-NA"
+    },
+    {
+      "state": "MN",
+      "year": 2016,
+      "office": "President",
+      "poll": 8.383,
+      "actual": 1.52,
+      "error": 6.863,
+      "nPollsters": 6,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "625"
+    },
+    {
+      "state": "MN",
+      "year": 2018,
+      "office": "Senate",
+      "poll": 21.4,
+      "actual": 24.096,
+      "error": -2.696,
+      "nPollsters": 5,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "107"
+    },
+    {
+      "state": "MN",
+      "year": 2018,
+      "office": "Senate",
+      "poll": 9.6,
+      "actual": 10.619,
+      "error": -1.019,
+      "nPollsters": 5,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "129"
+    },
+    {
+      "state": "MN",
+      "year": 2020,
+      "office": "President",
+      "poll": 9.967,
+      "actual": 7.11,
+      "error": 2.857,
+      "nPollsters": 12,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6234"
+    },
+    {
+      "state": "MN",
+      "year": 2020,
+      "office": "Senate",
+      "poll": 9.7,
+      "actual": 5.238,
+      "error": 4.462,
+      "nPollsters": 10,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6281"
+    },
+    {
+      "state": "MN",
+      "year": 2024,
+      "office": "Senate",
+      "poll": 13,
+      "actual": 15.7,
+      "error": -2.7,
+      "nPollsters": 4,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "Whitcomb collection of RCP-listed Senate polls",
+      "url": "https://github.com/Jack-Whitcomb/All-US-Senate-polls-2006-2024/blob/main/2006_to_2024_senate_polls_with_actuals.csv",
+      "raceId": "2024-Senate-NA"
+    },
+    {
+      "state": "MS",
+      "year": 2016,
+      "office": "President",
+      "poll": -10.387,
+      "actual": -17.826,
+      "error": 7.44,
+      "nPollsters": 3,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "627"
+    },
+    {
+      "state": "MS",
+      "year": 2018,
+      "office": "Senate",
+      "poll": -7.5,
+      "actual": -7.267,
+      "error": -0.233,
+      "nPollsters": 2,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6209"
+    },
+    {
+      "state": "MS",
+      "year": 2020,
+      "office": "President",
+      "poll": -17.333,
+      "actual": -16.545,
+      "error": -0.788,
+      "nPollsters": 3,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6236"
+    },
+    {
+      "state": "MS",
+      "year": 2020,
+      "office": "Senate",
+      "poll": -5.5,
+      "actual": -9.976,
+      "error": 4.476,
+      "nPollsters": 2,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6282"
+    },
+    {
+      "state": "MT",
+      "year": 2016,
+      "office": "President",
+      "poll": -17.77,
+      "actual": -20.423,
+      "error": 2.653,
+      "nPollsters": 3,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "628"
+    },
+    {
+      "state": "MT",
+      "year": 2018,
+      "office": "Senate",
+      "poll": 2.6,
+      "actual": 3.551,
+      "error": -0.951,
+      "nPollsters": 3,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "110"
+    },
+    {
+      "state": "MT",
+      "year": 2020,
+      "office": "President",
+      "poll": -6,
+      "actual": -16.369,
+      "error": 10.369,
+      "nPollsters": 6,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6237"
+    },
+    {
+      "state": "MT",
+      "year": 2020,
+      "office": "Senate",
+      "poll": -1.8,
+      "actual": -10.024,
+      "error": 8.224,
+      "nPollsters": 5,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6283"
+    },
+    {
+      "state": "MT",
+      "year": 2024,
+      "office": "President",
+      "poll": -18.5,
+      "actual": -19.9,
+      "error": 1.4,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "RCP final average",
+      "url": "https://www.realclearpolling.com/polls/president/general/2024/montana/trump-vs-harris",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "MT",
+      "year": 2024,
+      "office": "Senate",
+      "poll": -7.5,
+      "actual": -7.14,
+      "error": -0.36,
+      "nPollsters": 2,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "Whitcomb collection of RCP-listed Senate polls",
+      "url": "https://github.com/Jack-Whitcomb/All-US-Senate-polls-2006-2024/blob/main/2006_to_2024_senate_polls_with_actuals.csv",
+      "raceId": "2024-Senate-NA"
+    },
+    {
+      "state": "NC",
+      "year": 2016,
+      "office": "President",
+      "poll": 1.564,
+      "actual": -3.655,
+      "error": 5.22,
+      "nPollsters": 14,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "629"
+    },
+    {
+      "state": "NC",
+      "year": 2016,
+      "office": "Senate",
+      "poll": -1.3,
+      "actual": -5.696,
+      "error": 4.396,
+      "nPollsters": 12,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "62"
+    },
+    {
+      "state": "NC",
+      "year": 2020,
+      "office": "President",
+      "poll": 1.741,
+      "actual": -1.348,
+      "error": 3.089,
+      "nPollsters": 29,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6238"
+    },
+    {
+      "state": "NC",
+      "year": 2020,
+      "office": "Senate",
+      "poll": 3.87,
+      "actual": -1.747,
+      "error": 5.617,
+      "nPollsters": 23,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6284"
+    },
+    {
+      "state": "NC",
+      "year": 2022,
+      "office": "Senate",
+      "poll": -3.575,
+      "actual": -3.226,
+      "error": -0.349,
+      "nPollsters": 8,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "8940"
+    },
+    {
+      "state": "NC",
+      "year": 2024,
+      "office": "President",
+      "poll": -1.3,
+      "actual": -3.21,
+      "error": 1.91,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "270toWin final average",
+      "url": "https://www.270towin.com/2024-presidential-election-polls/north-carolina",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "NE",
+      "year": 2016,
+      "office": "President",
+      "poll": -17.083,
+      "actual": -25.049,
+      "error": 7.965,
+      "nPollsters": 3,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "631"
+    },
+    {
+      "state": "NE",
+      "year": 2024,
+      "office": "President",
+      "poll": -15,
+      "actual": -20.5,
+      "error": 5.5,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "270toWin final average",
+      "url": "https://www.270towin.com/2024-presidential-election-polls/nebraska",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "NH",
+      "year": 2016,
+      "office": "President",
+      "poll": 2.979,
+      "actual": 0.368,
+      "error": 2.612,
+      "nPollsters": 14,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "632"
+    },
+    {
+      "state": "NH",
+      "year": 2016,
+      "office": "Senate",
+      "poll": -0.162,
+      "actual": 0.138,
+      "error": -0.299,
+      "nPollsters": 13,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "85"
+    },
+    {
+      "state": "NH",
+      "year": 2020,
+      "office": "President",
+      "poll": 10.8,
+      "actual": 7.353,
+      "error": 3.447,
+      "nPollsters": 5,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6241"
+    },
+    {
+      "state": "NH",
+      "year": 2020,
+      "office": "Senate",
+      "poll": 15.5,
+      "actual": 15.649,
+      "error": -0.149,
+      "nPollsters": 4,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6286"
+    },
+    {
+      "state": "NH",
+      "year": 2022,
+      "office": "Senate",
+      "poll": 2.644,
+      "actual": 9.061,
+      "error": -6.416,
+      "nPollsters": 9,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "8938"
+    },
+    {
+      "state": "NH",
+      "year": 2024,
+      "office": "President",
+      "poll": 5,
+      "actual": 2.8,
+      "error": 2.2,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "270toWin final average",
+      "url": "https://www.270towin.com/2024-presidential-election-polls/new-hampshire/",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "OH",
+      "year": 2016,
+      "office": "President",
+      "poll": -2.06,
+      "actual": -8.13,
+      "error": 6.07,
+      "nPollsters": 11,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "637"
+    },
+    {
+      "state": "OH",
+      "year": 2016,
+      "office": "Senate",
+      "poll": -17.071,
+      "actual": -20.871,
+      "error": 3.8,
+      "nPollsters": 7,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "67"
+    },
+    {
+      "state": "OH",
+      "year": 2018,
+      "office": "Senate",
+      "poll": 11.45,
+      "actual": 6.846,
+      "error": 4.604,
+      "nPollsters": 6,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "117"
+    },
+    {
+      "state": "OH",
+      "year": 2020,
+      "office": "President",
+      "poll": -1.916,
+      "actual": -8.032,
+      "error": 6.116,
+      "nPollsters": 13,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6246"
+    },
+    {
+      "state": "OH",
+      "year": 2022,
+      "office": "Senate",
+      "poll": -5.211,
+      "actual": -6.112,
+      "error": 0.901,
+      "nPollsters": 9,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "8942"
+    },
+    {
+      "state": "OH",
+      "year": 2024,
+      "office": "Senate",
+      "poll": -1,
+      "actual": -3.62,
+      "error": 2.62,
+      "nPollsters": 5,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "Whitcomb collection of RCP-listed Senate polls",
+      "url": "https://github.com/Jack-Whitcomb/All-US-Senate-polls-2006-2024/blob/main/2006_to_2024_senate_polls_with_actuals.csv",
+      "raceId": "2024-Senate-NA"
+    },
+    {
+      "state": "SC",
+      "year": 2016,
+      "office": "President",
+      "poll": -7.364,
+      "actual": -14.266,
+      "error": 6.902,
+      "nPollsters": 5,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "642"
+    },
+    {
+      "state": "SC",
+      "year": 2020,
+      "office": "President",
+      "poll": -8.276,
+      "actual": -11.68,
+      "error": 3.404,
+      "nPollsters": 7,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6251"
+    },
+    {
+      "state": "SC",
+      "year": 2020,
+      "office": "Senate",
+      "poll": -3.39,
+      "actual": -10.27,
+      "error": 6.88,
+      "nPollsters": 6,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6292"
+    },
+    {
+      "state": "SC",
+      "year": 2024,
+      "office": "President",
+      "poll": -11.7,
+      "actual": -17.87,
+      "error": 6.17,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "270toWin final average",
+      "url": "https://www.270towin.com/2024-presidential-election-polls/south-carolina/",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "SD",
+      "year": 2016,
+      "office": "President",
+      "poll": -15.668,
+      "actual": -29.793,
+      "error": 14.125,
+      "nPollsters": 6,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "643"
+    },
+    {
+      "state": "SD",
+      "year": 2016,
+      "office": "Senate",
+      "poll": -28,
+      "actual": -43.656,
+      "error": 15.656,
+      "nPollsters": 4,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "79"
+    },
+    {
+      "state": "SD",
+      "year": 2020,
+      "office": "President",
+      "poll": -17.667,
+      "actual": -26.164,
+      "error": 8.497,
+      "nPollsters": 3,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6252"
+    },
+    {
+      "state": "SD",
+      "year": 2024,
+      "office": "President",
+      "poll": -27,
+      "actual": -29.19,
+      "error": 2.19,
+      "nPollsters": null,
+      "kind": "published-snapshot",
+      "source": "Single late poll",
+      "url": "https://emersoncollegepolling.com/october-2024-south-dakota-poll-trump-62-harris-35/",
+      "raceId": "2024-President-curated"
+    },
+    {
+      "state": "TX",
+      "year": 2016,
+      "office": "President",
+      "poll": -8.327,
+      "actual": -8.999,
+      "error": 0.672,
+      "nPollsters": 7,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "645"
+    },
+    {
+      "state": "TX",
+      "year": 2018,
+      "office": "Senate",
+      "poll": -5.54,
+      "actual": -2.567,
+      "error": -2.973,
+      "nPollsters": 5,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "121"
+    },
+    {
+      "state": "TX",
+      "year": 2020,
+      "office": "President",
+      "poll": -1.507,
+      "actual": -5.579,
+      "error": 4.072,
+      "nPollsters": 16,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6254"
+    },
+    {
+      "state": "TX",
+      "year": 2020,
+      "office": "Senate",
+      "poll": -5.764,
+      "actual": -9.639,
+      "error": 3.875,
+      "nPollsters": 14,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "FiveThirtyEight archived raw pollster ratings",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/raw_polls.csv",
+      "raceId": "6295"
+    },
+    {
+      "state": "TX",
+      "year": 2024,
+      "office": "Senate",
+      "poll": -3.833,
+      "actual": -8.49,
+      "error": 4.657,
+      "nPollsters": 6,
+      "kind": "nonpartisan-late-pollster-average",
+      "source": "Whitcomb collection of RCP-listed Senate polls",
+      "url": "https://github.com/Jack-Whitcomb/All-US-Senate-polls-2006-2024/blob/main/2006_to_2024_senate_polls_with_actuals.csv",
+      "raceId": "2024-Senate-NA"
+    }
+  ],
+  "calibrationVersion": "2016–2024 partially pooled pilot · 88 archived observations"
 };
 
 </script><script>
@@ -1762,19 +2909,13 @@ function evidenceWeight(h,r){
  const continuity=r.code==='AK'?(isMatch?1.35:h.office==='Senate'?.60:h.office==='President'?.35:0):r.history_mode==='candidate_repeat'?(isMatch?1.35:0):1;
  return Math.max(0,Number(h.weight||1)*office*quality*continuity);
 }
-function weightedCorrection(r){
- if(r.history_mode==='not_comparable')return 0;
- let hs=r.historical.map(h=>({...h,w:evidenceWeight(h,r)})).filter(h=>h.w>0);
- const perYear={};for(const h of hs)perYear[h.year]=(perYear[h.year]||0)+1;
- hs=hs.map(h=>({...h,w:h.w/perYear[h.year]}));
- const total=hs.reduce((sum,h)=>sum+h.w,0);
- if(!total)return Number(r.correction)||0;
- const baseline=hs.reduce((sum,h)=>sum+h.err*h.w,0)/total;
- const recent=hs.filter(h=>h.year>=2022);
- const rt=recent.reduce((sum,h)=>sum+h.w,0);
- const trend=rt?recent.reduce((sum,h)=>sum+h.err*h.w,0)/rt:baseline;
- return .7*baseline+.3*trend;
+function weightedCalibration(r){
+ const model=window.ERVIN_ENGINE?.forecast(CONFIG.calibrationEvents||[],r,2026);
+ if(model)return model;
+ return {correction:Number(r.correction)||0,cycles:0,method:'Fallback: archived calibration script unavailable'};
 }
+function weightedCorrection(r){return weightedCalibration(r).correction;}
+
 function pollingPicture(r){
  const weights={rcp:.35,ddhq:.26,win270:.19,silver:.20};
  const seen=new Set(),inputs=[];
@@ -1849,10 +2990,11 @@ function renderInsights(){
  const r=selected(),v=evaluate(r),s=Object.entries(r.sources).filter(([k,p])=>!p.proxy),vals=s.map(([k,p])=>p.value),spread=vals.length>=2?Math.max(...vals)-Math.min(...vals):null;
  const candidateSpecific=r.history_mode==='candidate_repeat',shrink=candidateSpecific?(r.code==='AK'?.4:.25):v.h.n/(v.h.n+3);
  const display=(x)=>esc(fmt(x,r,2));
- const rating=r.externalRatings?.cook;
+ const rating=r.externalRatings?.cook;const calibration=weightedCalibration(r);
  $('insightStats').innerHTML=`<div class="insight-stat"><small>Publisher-average spread</small><strong>${spread===null?'—':spread.toFixed(2)+' pts'}</strong><small>${s.length} non-proxy source inputs · not independent surveys</small></div><div class="insight-stat"><small>Full historical correction</small><strong>${r.history_mode==='not_comparable'?'Not used':display(v.correction)}</strong><small>${v.h.n} historical entries; election types labeled in audit</small></div><div class="insight-stat"><small>Cook Political Report</small><strong style="font-size:23px">${rating?esc(rating.rating):'—'}</strong><small>As of ${rating?esc(rating.date):'unknown'} · external qualitative rating</small></div>`;
  $('insightSourceRows').innerHTML=CONFIG.sourceList.map(src=>{const p=getPoll(r,src.key),raw=p.value,full=r.history_mode==='not_comparable'?0:r.correction,shrunk=full*shrink;return `<tr><td><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(src.title)} ↗</a></td><td>${display(raw)}</td><td>${display(raw-full)}</td><td>${display(raw-shrunk)}</td><td>${display(raw-weightedCorrection(r))}</td><td><span class="tagline">${p.proxy?'Reference proxy':'Publisher'}</span></td></tr>`}).join('');
- $('insightContext').textContent=`Historical error is subtracted from the raw non-Republican margin. ${candidateSpecific?'Candidate-specific comparison; the full shift is based on prior contests involving the same candidate. ':''}The shrinkage option retains ${Math.round(shrink*100)}% of the correction. Ervin + combines office relevance, whether an input is an aggregate or single poll, candidate continuity, recency, and a 30% tilt toward recent-election error; observations from the same year share weight. The Cook rating is a separate published assessment, not a numerical probability or an additional poll.`;
+ $('calibrationDetail').textContent=`Ervin + for ${r.state}: ${calibration.cycles} historical state election cycles · pooled baseline ${Number(calibration.pooled||0).toFixed(2)} points R-oriented error · final guarded correction ${Number(calibration.correction).toFixed(2)} points. ${calibration.method||''} Positive corrections are subtracted from the non-Republican polling lead.`;
+ $('insightContext').textContent=`Historical error is subtracted from the raw non-Republican margin. ${candidateSpecific?'Candidate-specific comparison; the full shift is based on prior contests involving the same candidate. ':''}The shrinkage option retains ${Math.round(shrink*100)}% of the correction. Ervin + now uses a 2016–2024 Senate/presidential archive and partially pools state-year polling errors toward regional and national patterns; repeat-candidate scenarios remain separate. The Cook rating is a separate published assessment, not a numerical probability or an additional poll.`;
 }
 function render(){renderTabs();renderStats();renderMap();detail();renderBars();renderTable();renderInsights();}
 function snack(msg){const box=$('snack');box.textContent=msg;box.classList.add('show');setTimeout(()=>box.classList.remove('show'),2700)}
