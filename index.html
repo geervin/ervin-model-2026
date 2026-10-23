@@ -25,7 +25,7 @@
 <section class="analysis-row section-gap"><article class="panel"><div class="panel-title"><div><div class="section-label">03 &nbsp; WHERE THE MODEL STANDS</div><h2>Adjusted prediction spread</h2></div><span class="micro">Click a race to inspect</span></div><p class="micro">The chart is centered on zero. Bars show mathematical adjusted margins; values exceeding five points are <b>direction-only</b> predictions in the Ervin Model.</p><div class="bars" id="bars"></div></article><article class="panel"><div class="section-label">04 &nbsp; BACKTEST QUALITY</div><h2>Historical-error report card</h2><p class="micro">Grades assess how well historical state polling captured the actual election result and how many comparable races are available. They are <b>not pollster grades</b>.</p><div class="breakdown" id="gradeOverview"></div><div class="archive"><h3 id="historyHeading">Historical errors</h3><div class="hist-bars" id="histBars" aria-label="Historical polling-error bars"></div><p class="micro" id="historyExplanation"></p></div></article></section>
 <section class="panel table-panel" id="races"><div class="section-label">05 &nbsp; THE FULL RACE BOARD</div><div class="table-top"><div><h2>All 17 Senate races</h2><p class="micro">Sortable calculations · Source provenance · Historical accuracy grades</p></div><div class="filters"><input class="search" id="search" type="search" aria-label="Search races" placeholder="Search state / candidate…"><select class="select" id="raceFilter" aria-label="Filter races"><option value="all">All 17 races</option><option value="close">Adjusted within ±5</option><option value="cross">Scenario band crosses zero</option><option value="proxy">Source fallback used</option><option value="independent">Independent matchups</option></select><select class="select" id="sort" aria-label="Sort races"><option value="close">Closest first</option><option value="name">State A–Z</option><option value="margin">Democratic / independent first</option><option value="error">Largest historical error</option><option value="grade">Strongest historical evidence</option></select></div></div><div class="table-scroll"><table><thead><tr><th>Race</th><th>Polling lead</th><th>Historical R shift</th><th>Ervin adjusted</th><th>Prediction</th><th>80/90% band</th><th>Evidence grade</th><th>Vs RCP</th><th>Input basis</th></tr></thead><tbody id="rows"></tbody></table></div><p class="fine" style="margin:13px 0 0">In Nebraska, South Dakota and Montana, “non-R” means the named independent, not the Democratic nominee. For South Dakota and Montana the historical D-versus-R error is shown but <b>not applied</b> to the independent matchup.</p></section>
 <section class="panel table-panel" id="methodology"><div class="section-label">06 &nbsp; TRANSPARENCY & REPRODUCIBILITY</div><h2>What these predictions actually mean</h2><div class="method-grid"><div class="method-item"><b>01 / Historical correction</b><p>In D-versus-R races: <b>Adjusted D–R = current poll D–R − mean(past poll margin − past actual margin)</b>. Positive historical errors mean Republicans outperformed polling. The original Ervin ±5 directional rule is retained. An optional small-sample shrinkage toggle multiplies the historical correction by n/(n+3), yielding a separate sensitivity scenario.</p></div><div class="method-item"><b>02 / Evidence grades & intervals</b><p>Historical mean absolute error (MAE) is computed from the election-by-election audit. Grade thresholds include sample-size requirements. Uncertainty bands use a <b>conservative scenario formula</b> with a ≥4.7-point historical dispersion floor and wider bands for few elections, fallbacks, ranked-choice ballots and independents. <b>These are not formally calibrated statistical confidence intervals or win probabilities.</b></p></div><div class="method-item"><b>03 / RealClearPolling benchmark</b><p>RCP is the comparison reference; a separate source tab is never blended with RCP. If a publisher lacks an identifiable same-matchup polling average, we use a <b>named polling proxy</b> and flag it at the row and in the race detail. We do not relabel an outside estimate as a genuine RCP/DDHQ/270toWin average. Different sources can have different field dates.</p></div></div><p class="micro" style="margin-top:17px"><b>Overlap warning:</b> Wikipedia's average-of-aggregators uses aggregator averages that may contain many of the same underlying surveys. This is not equivalent to a unique-poll sample or five independent observations. <b>Uneven calibration:</b> all candidate fields and historical samples are documented, including mixed historical RCP/Wikipedia inputs inherited from the working model. Independent races and ranked-choice voting require more caution.</p><div class="source-links"><a href="https://www.realclearpolling.com/elections/senate/2026/toss-ups" target="_blank" rel="noopener noreferrer">↗ RealClearPolling</a><a href="https://www.270towin.com/2026-senate-polls/" target="_blank" rel="noopener noreferrer">↗ 270toWin</a><a href="https://en.wikipedia.org/wiki/2026_United_States_Senate_elections" target="_blank" rel="noopener noreferrer">↗ Wikipedia aggregator tables</a><a href="https://votes.decisiondeskhq.com/polls/2026" target="_blank" rel="noopener noreferrer">↗ Decision Desk HQ</a><a href="https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1" target="_blank" rel="noopener noreferrer">↗ Cook ratings</a><a href="historical_error_audit.csv" download>↓ Historical error data</a><a href="source_snapshot.csv" download>↓ Polling sources data</a></div></section>
-<footer class="foot"><span>THE ERVIN MODEL <span style="color:var(--accent)">/</span> 2026 RESEARCH EDITION</span><span><span id="footerFreshness">Source snapshot October 23, 2026 · Automatic refreshing activates after GitHub Pages deployment</span> · Mechanical, experimental predictions</span></footer>
+<footer class="foot"><span>THE ERVIN MODEL <span style="color:var(--accent)">/</span> 2026 RESEARCH EDITION</span><span><span id="siteVisitCount" aria-live="polite" title="Approximate page visits since counter installation">SITE VISITS —</span> · <span id="footerFreshness">Source snapshot October 23, 2026 · Automatic refreshing activates after GitHub Pages deployment</span> · Mechanical, experimental predictions</span></footer>
 </main><div class="snack" id="snack" role="status"></div><script>
 window.ERVIN_DATA = {
   "asof": "October 23, 2026",
@@ -1666,4 +1666,29 @@ setFreshness();
 render();
 })();
 
+</script><script>
+/* Privacy-light third-party aggregate page counter (not unique visitor analytics).
+   Read-only for repeated renders during the same tab session. */
+(async function() {
+  const label = document.getElementById('siteVisitCount');
+  if (!label) return;
+  const key = 'ervin_model_2026_counter_hit_session_v1';
+  const base = 'https://abacus.jasoncameron.dev/';
+  let hit = false;
+  try {
+    hit = sessionStorage.getItem(key) !== '1';
+  } catch(e) { hit = true; }
+  try {
+    const url = base + (hit ? 'hit/' : 'get/') + 'geervin-ervin-model-2026/site-visits';
+    const resp = await fetch(url, {mode:'cors',cache:'no-store'});
+    if (!resp.ok) throw new Error('Counter unavailable');
+    const data = await resp.json();
+    if (typeof data.value !== 'number' || !Number.isFinite(data.value)) throw new Error('Invalid count');
+    if (hit) { try { sessionStorage.setItem(key, '1'); } catch(e) {} }
+    label.textContent = 'SITE VISITS ' + Math.max(0,Math.round(data.value)).toLocaleString('en-US');
+  } catch(e) {
+    label.textContent = 'SITE VISITS —';
+    label.title = 'Visit counter temporarily unavailable';
+  }
+})();
 </script></body></html>
