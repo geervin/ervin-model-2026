@@ -1,9 +1,22 @@
 {
-  "checkedAt": "2026-10-23T21:51:45.066414+00:00",
+  "checkedAt": "2026-10-24T04:33:27.217876+00:00",
   "pagesParsed": 15,
-  "changes": 0,
+  "changes": 2,
   "observationsFound": 54,
   "errors": [],
-  "updated": [],
+  "updated": [
+    {
+      "state": "TX",
+      "source": "win270",
+      "margin": 2.0,
+      "published": "Oct 23"
+    },
+    {
+      "state": "NE",
+      "source": "ddhq",
+      "margin": -1.7,
+      "published": "Oct 23"
+    }
+  ],
   "sources": "Wikipedia 2026 general-election aggregate tables; matching candidate pair required"
 }

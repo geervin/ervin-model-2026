@@ -47,7 +47,7 @@
 <footer class="foot"><span>THE ERVIN MODEL <span style="color:var(--accent)">/</span> 2026 RESEARCH EDITION</span><span><span id="siteVisitCount" aria-live="polite" title="Approximate page visits since counter installation">SITE VISITS —</span> · <span id="footerFreshness">Source snapshot October 23, 2026 · Automatic refreshing activates after GitHub Pages deployment</span> · Mechanical, experimental predictions</span></footer>
 </main><div class="snack" id="snack" role="status"></div><script src="scripts/calibration_engine.js"></script><script>
 window.ERVIN_DATA = {
-  "asof": "October 23, 2026",
+  "asof": "October 24, 2026",
   "election": "November 3, 2026",
   "sourceList": [
     {
@@ -394,7 +394,7 @@ window.ERVIN_DATA = {
           "note": "Verified from Wikipedia general-election aggregator table; individual underlying polls may overlap."
         },
         "win270": {
-          "value": 1.6,
+          "value": 2.0,
           "origin": "270toWin",
           "date": "Oct 23",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
@@ -1165,12 +1165,12 @@ window.ERVIN_DATA = {
           "note": "No same-matchup RCP poll average verified; uses 270toWin published margin."
         },
         "ddhq": {
-          "value": -2.5,
+          "value": -1.7,
           "origin": "Decision Desk HQ",
           "date": "Oct 23",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
           "proxy": false,
-          "note": ""
+          "note": "Verified from Wikipedia general-election aggregator table; individual underlying polls may overlap."
         },
         "win270": {
           "value": -2.3,
@@ -1730,12 +1730,25 @@ window.ERVIN_DATA = {
   "ratings": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1",
   "errorResearch": "https://www.pollingforecast.com/research/us-polling-error",
   "liveMeta": {
-    "checkedAt": "2026-10-23T21:51:45.066414+00:00",
+    "checkedAt": "2026-10-24T04:33:27.217876+00:00",
     "pagesParsed": 15,
-    "changes": 0,
+    "changes": 2,
     "observationsFound": 54,
     "errors": [],
-    "updated": [],
+    "updated": [
+      {
+        "state": "TX",
+        "source": "win270",
+        "margin": 2.0,
+        "published": "Oct 23"
+      },
+      {
+        "state": "NE",
+        "source": "ddhq",
+        "margin": -1.7,
+        "published": "Oct 23"
+      }
+    ],
     "sources": "Wikipedia 2026 general-election aggregate tables; matching candidate pair required"
   },
   "calibrationEvents": [
