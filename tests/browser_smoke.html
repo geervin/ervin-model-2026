@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Ervin dashboard browser smoke test</title></head>
+<body><h1>Dashboard browser smoke test</h1><pre id="report" data-status="RUNNING">Running tests…</pre>
+<script>
+(async()=>{
+ const report=document.getElementById('report'),errors=[],checks=[];
+ const check=(condition,message)=>{if(!condition)throw new Error(message);checks.push(message)};
+ const iframe=document.createElement('iframe');
+ iframe.id='dashboard';iframe.title='Ervin dashboard';
+ iframe.style.width='1180px';iframe.style.height='950px';iframe.style.border='0';
+ window.addEventListener('error',e=>errors.push(e.message));
+ const ready=new Promise((resolve,reject)=>{
+  iframe.onload=()=>resolve();
+  iframe.onerror=()=>reject(new Error('Could not load dashboard iframe'));
+ });
+ document.body.append(iframe);
+ iframe.src='../index.html?race=MI';
+ try{
+  await ready;
+  const win=iframe.contentWindow,doc=iframe.contentDocument;
+  const el=id=>doc.getElementById(id);
+  const dispatch=(node,type='change')=>node.dispatchEvent(new win.Event(type,{bubbles:true}));
+  const source=k=>doc.querySelector('#tabs button[data-source="'+k+'"]');
+  check(!!el('map')&&!!el('bars')&&!!el('rows'),'Map, bars and table rendered');
+  check(doc.querySelectorAll('#tabs button').length===6,'All six polling tabs rendered');
+  check(source('take')?.getAttribute('aria-selected')==='true','Ervin Take default selected');
+  check(el('biasMode').value==='weighted','Ervin plus default visible in select');
+  const ds=win.ERVIN_DATA.states.find(r=>r.code==='MI');
+  const shares={rcp:.40,ddhq:.29,win270:.21,silver:.10};
+  const considered=Object.entries(shares).filter(([k])=>!ds.sources[k].proxy);
+  const weigh=([k,w])=>{
+   let d=ds.sources[k].date;
+   let parsed=Date.parse(/\\b20\\d{2}\\b/.test(d)?d:d+', 2026');
+   let age=Number.isFinite(parsed)?Math.max(0,(Date.now()-parsed)/86400000):21;
+   return w*Math.max(.50,Math.exp(-age/35));
+  };
+  const total=considered.reduce((sum,p)=>sum+weigh(p),0);
+  const expected=considered.reduce((sum,[k,w])=>sum+weigh([k,w])*ds.sources[k].value,0)/total;
+  const displayed=el('detail').querySelector('.mini strong').textContent;
+  const actual=Number((displayed.match(/\\d+\\.\\d+/)||[])[0]);
+  check(considered.length===4&&Math.abs(expected-ds.sources.rcp.value)>.15,'Four distinct publisher averages contribute despite shared Wikipedia URL');
+  check(Math.abs(actual-expected)<.061,'Visible blended MI input matches weighted four-source average');
+  check(doc.querySelectorAll('#map .tile.tracked').length===17,'All 17 tracked map states are interactive');
+  const before=el('map').querySelector('[data-code="AK"]');
+  const mapIdentity=before;
+  before.click();
+  check(doc.querySelector('#map .tile.active')?.dataset.code==='AK','Clicking Alaska highlights Alaska');
+  check(el('insightRace').value==='AK','Clicking a map state syncs Research Lab selector');
+  check(before===mapIdentity&&doc.querySelector('#map [data-code="AK"]')===before,'Race selection does not replace map elements');
+  el('insightRace').value='OH';dispatch(el('insightRace'));
+  check(doc.querySelector('#map .tile.active')?.dataset.code==='OH','Research Lab dropdown changes the active race');
+  el('biasMode').value='original';dispatch(el('biasMode'));
+  check(doc.querySelector('#map .tile.active')?.dataset.code==='OH','Mode change preserves selected race');
+  el('confidenceLevel').value='90';dispatch(el('confidenceLevel'));
+  check(el('detail').textContent.includes('90% error scenario'),'Uncertainty control redraws selected range');
+  source('ddhq').click();
+  check(source('ddhq').getAttribute('aria-selected')==='true','Polling tab switch works');
+  source('take').click();
+  check(source('take').getAttribute('aria-selected')==='true','Can return to Ervin Take');
+  const filter=el('raceFilter');filter.value='independent';dispatch(filter);
+  check(el('rows').querySelectorAll('tr[data-id]').length>=1,'Independent race filter works');
+  filter.value='all';dispatch(filter);
+  const search=el('search');search.value='Michigan';dispatch(search,'input');
+  check(el('rows').querySelectorAll('tr[data-id]').length===1,'Race search filters without errors');
+  search.value='';dispatch(search,'input');
+  el('themeToggle').click();
+  check(doc.documentElement.classList.contains('light'),'Light theme toggle works');
+  let start=performance.now();
+  for(const code of ['MI','OH','TX','ME','AK','GA','NC','MI','FL','NH']){
+   doc.querySelector('#map [data-code="'+code+'"]').click();
+  }
+  const duration=Math.round(performance.now()-start);
+  check(duration<4000,'Ten race selections stay responsive in browser');
+  check(errors.length===0,'No browser script errors');
+  report.dataset.status='PASS';
+  report.textContent='PASS '+checks.length+' checks; ten selections '+duration+'ms.\n'+checks.map(x=>'✓ '+x).join('\n');
+ }catch(error){
+  report.dataset.status='FAIL';
+  report.textContent='FAIL: '+error.stack+'\n'+errors.join('\n');
+ }
+})();
+</script></body></html>
