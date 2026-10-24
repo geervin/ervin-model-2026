@@ -1,58 +1,9 @@
 {
-  "checkedAt": "2026-10-24T15:55:37.992074+00:00",
+  "checkedAt": "2026-10-24T20:46:21.371628+00:00",
   "pagesParsed": 15,
-  "changes": 8,
+  "changes": 0,
   "observationsFound": 55,
   "errors": [],
-  "updated": [
-    {
-      "state": "NC",
-      "source": "ddhq",
-      "margin": 11.3,
-      "published": "Oct 22"
-    },
-    {
-      "state": "NC",
-      "source": "rcp",
-      "margin": 9.9,
-      "published": "Oct 22"
-    },
-    {
-      "state": "NC",
-      "source": "silver",
-      "margin": 9.7,
-      "published": "Oct 22"
-    },
-    {
-      "state": "NH",
-      "source": "win270",
-      "margin": 6.9,
-      "published": "Oct 22"
-    },
-    {
-      "state": "NH",
-      "source": "ddhq",
-      "margin": 7.3,
-      "published": "Oct 22"
-    },
-    {
-      "state": "NH",
-      "source": "rcp",
-      "margin": 6.5,
-      "published": "Oct 22"
-    },
-    {
-      "state": "NH",
-      "source": "silver",
-      "margin": 7.3,
-      "published": "Oct 22"
-    },
-    {
-      "state": "SD",
-      "source": "silver",
-      "margin": -11.0,
-      "published": "Oct 22"
-    }
-  ],
+  "updated": [],
   "sources": "Wikipedia 2026 general-election aggregate tables; matching candidate pair required"
 }
