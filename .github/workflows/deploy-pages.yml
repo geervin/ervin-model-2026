@@ -30,6 +30,17 @@ jobs:
           node --check scripts/backtest_calibration.js
           node scripts/validate_calibration.js
           node scripts/backtest_calibration.js
+      - name: Browser smoke test (Chromium)
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$BROWSER" || { echo "Chromium/Chrome unavailable"; exit 1; }
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/ervin-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          timeout 55s "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --disable-background-networking --no-first-run --virtual-time-budget=10000 --dump-dom http://127.0.0.1:8765/tests/browser_smoke.html > /tmp/ervin-smoke.html 2>/tmp/ervin-chrome.err
+          python3 -c 'from pathlib import Path; import re,sys; html=Path("/tmp/ervin-smoke.html").read_text(); m=re.search(r"<pre[^>]*data-status=\"(PASS|FAIL)\"[^>]*>(.*?)</pre>",html,re.S); print((re.sub(r"<[^>]+>","",m.group(2)) if m else "Missing browser result")[:4000]); sys.exit(0 if m and m.group(1)=="PASS" else 1)'
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
