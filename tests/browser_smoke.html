@@ -29,14 +29,14 @@
   const considered=Object.entries(shares).filter(([k])=>!ds.sources[k].proxy);
   const weigh=([k,w])=>{
    let d=ds.sources[k].date;
-   let parsed=Date.parse(/\\b20\\d{2}\\b/.test(d)?d:d+', 2026');
+   let parsed=Date.parse(/\b20\d{2}\b/.test(d)?d:d+', 2026');
    let age=Number.isFinite(parsed)?Math.max(0,(Date.now()-parsed)/86400000):21;
    return w*Math.max(.50,Math.exp(-age/35));
   };
   const total=considered.reduce((sum,p)=>sum+weigh(p),0);
   const expected=considered.reduce((sum,[k,w])=>sum+weigh([k,w])*ds.sources[k].value,0)/total;
   const displayed=el('detail').querySelector('.mini strong').textContent;
-  const actual=Number((displayed.match(/\\d+\\.\\d+/)||[])[0]);
+  const actual=Number((displayed.match(/\d+\.\d+/)||[])[0]);
   check(considered.length===4&&Math.abs(expected-ds.sources.rcp.value)>.15,'Four distinct publisher averages contribute despite shared Wikipedia URL');
   check(Math.abs(actual-expected)<.061,'Visible blended MI input matches weighted four-source average');
   check(doc.querySelectorAll('#map .tile.tracked').length===17,'All 17 tracked map states are interactive');
