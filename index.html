@@ -18,6 +18,7 @@
 .insight-head{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.insight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0}.insight-stat{background:var(--surface2);border:1px solid var(--edge);border-radius:12px;padding:16px}.insight-stat strong{font:700 27px 'Space Grotesk',sans-serif;display:block;margin:5px 0}.insight-stat small{color:var(--muted)}.comparison-table{width:100%;border-collapse:collapse}.comparison-table th,.comparison-table td{padding:10px;border-bottom:1px solid var(--edge);text-align:left;font-size:12px}.comparison-table th{color:var(--muted)}.insight-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.tagline{border:1px solid var(--edge);border-radius:6px;padding:3px 8px;color:var(--muted);font-size:11px;display:inline-block}.insight-note{color:var(--muted);font-size:12px;margin-top:10px}@media(max-width:700px){.insight-grid{grid-template-columns:1fr}.comparison-table{min-width:540px}}
 
 .mode-explainer{border:1px solid var(--edge);background:var(--surface);border-radius:14px;padding:19px 22px;margin:14px 0 20px;box-shadow:0 12px 27px #00000012}.mode-explainer-heading{display:flex;align-items:center;gap:12px;margin-bottom:14px}.mode-explainer-heading strong{font:700 17px 'Space Grotesk',sans-serif;display:block}.mode-explainer-heading span:not(.mode-explainer-mark){display:block;font-size:12px;color:var(--muted)}.mode-explainer-mark{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1px solid var(--accent);color:var(--accent);font-weight:800;font-size:17px}.mode-explainer-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.mode-explainer-grid>div{border-left:2px solid var(--edge);padding-left:13px}.mode-explainer-grid b{font-size:12px;color:var(--text)}.mode-explainer-grid p{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.6}.mode-explainer-foot{border-top:1px solid var(--edge);margin:16px 0 0;padding-top:10px;color:var(--subtle);font-size:11px}@media(max-width:1000px){.mode-explainer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:550px){.mode-explainer-grid{grid-template-columns:1fr}.mode-explainer{padding:16px}}
+@media(max-width:670px){.topbar{backdrop-filter:none}.tile.tracked:hover{transform:none}.shell{contain:layout style}}@media(prefers-reduced-motion:reduce){.tile{transition:none!important}.topbar{backdrop-filter:none}} 
 </style></head>
 <body>
 <header class="topbar"><div class="shell navinner"><div class="logo"><div class="logo-symbol" aria-hidden="true">E</div><span>ERVIN <b>MODEL</b></span></div><nav class="navend" aria-label="Page sections"><a href="#map-area">THE MAP</a><a href="#races">17 RACES</a><a href="#methodology">METHODOLOGY</a><span class="badge"><span class="dot-live"></span><span id="freshnessLabel">OCT 23 RESEARCH SNAPSHOT</span></span><button class="button ghost" id="themeToggle" aria-label="Toggle light or dark appearance">☀ / ☾</button></nav></div></header>
@@ -2890,6 +2891,11 @@ const CONFIG=window.ERVIN_DATA;
 if(!CONFIG){document.body.innerHTML='<h1>Dashboard data did not load.</h1>';return;}
 const states=CONFIG.states;const $=(id)=>document.getElementById(id);
 const state={source:'take',selected:'MI',level:80,biasMode:'weighted',search:'',filter:'all',sort:'close'};
+// Historical and polling inputs do not change during a page session.
+// Cache the four-source blend and expensive historical corrections so clicking
+// between races never recomputes a 17-state model dozens of times.
+const pollingCache=new Map(),historyCache=new Map(),calibrationCache=new Map(),evaluationCache=new Map();
+
 const cartogram={AK:[0,7],HI:[1,7],WA:[1,0],OR:[1,1],CA:[1,2],NV:[2,2],ID:[2,1],MT:[3,0],WY:[3,1],UT:[3,2],AZ:[3,3],NM:[4,3],CO:[4,2],ND:[4,0],SD:[4,1],NE:[5,1],KS:[5,2],OK:[5,3],TX:[5,4],MN:[5,0],IA:[6,1],MO:[6,2],AR:[6,3],LA:[6,4],WI:[6,0],IL:[7,1],MS:[7,4],MI:[7,0],IN:[8,1],KY:[8,2],TN:[8,3],AL:[8,4],FL:[9,5],GA:[9,4],SC:[10,4],NC:[10,3],VA:[10,2],WV:[9,2],OH:[9,1],PA:[10,1],NY:[10,0],VT:[11,0],NH:[11,1],ME:[11,2],MA:[11,3],CT:[11,4],RI:[11,5],NJ:[10,5],DE:[10,6],MD:[9,3]};
 const esc=(a)=>String(a??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const round=(v,d=2)=>Number(v.toFixed(d));
@@ -2910,39 +2916,52 @@ function evidenceWeight(h,r){
  return Math.max(0,Number(h.weight||1)*office*quality*continuity);
 }
 function weightedCalibration(r){
- const model=window.ERVIN_ENGINE?.forecast(CONFIG.calibrationEvents||[],r,2026);
- if(model)return model;
- return {correction:Number(r.correction)||0,cycles:0,method:'Fallback: archived calibration script unavailable'};
+ if(calibrationCache.has(r.code))return calibrationCache.get(r.code);
+ const model=window.ERVIN_ENGINE?.forecast(CONFIG.calibrationEvents||[],r,2026)
+   || {correction:Number(r.correction)||0,cycles:0,method:'Fallback: archived calibration script unavailable'};
+ calibrationCache.set(r.code,model);
+ return model;
 }
 function weightedCorrection(r){return weightedCalibration(r).correction;}
 
 function pollingPicture(r){
+ if(pollingCache.has(r.code))return pollingCache.get(r.code);
  const weights={rcp:.40,ddhq:.29,win270:.21,silver:.10};
  const seen=new Set(),inputs=[];
  for(const [key,weight] of Object.entries(weights)){
   const q=r.sources[key];if(!q||q.proxy||!Number.isFinite(Number(q.value)))continue;
-  // Entries with the exact same citation URL can reflect the same table.
-  // Retain only the highest-priority representation, not both.
-  const url=String(q.url||'').split('#')[0].replace(/\/$/,'');
-  if(seen.has(url))continue;seen.add(url);
-  const parsed=new Date((q.date||'')+' 2026');
-  const age=Number.isNaN(+parsed)?21:Math.max(0,(Date.now()-parsed.getTime())/86400000);
+  // Wikipedia can cite four *different* publisher-average rows from one
+  // article. A shared citation URL is NOT the same as duplicate data.
+  // Only deduplicate explicit same-publisher aliases, never source pages.
+  const identity=String(q.publisherId||q.origin||key).trim().toLowerCase();
+  if(seen.has(identity))continue;seen.add(identity);
+  const rawDate=String(q.date||'').trim();
+  const parsed=Date.parse(/\b20\d{2}\b/.test(rawDate)?rawDate:rawDate+', 2026');
+  const age=Number.isFinite(parsed)?Math.max(0,(Date.now()-parsed)/86400000):21;
   const freshness=Math.max(.50,Math.exp(-age/35));
   inputs.push({key,value:Number(q.value),weight:weight*freshness,source:q.origin});
  }
  const total=inputs.reduce((sum,x)=>sum+x.weight,0);
  if(!total){
   const fallback=r.sources.rcp||r.sources.average;
-  return {...fallback,proxy:true,origin:'RCP fallback — no independent blend',note:'No eligible independent publisher combination verified.'};
+  const result={...fallback,proxy:true,origin:'Polling-reference fallback — no independently attributed blend',nInputs:0,note:'No eligible publisher averages found; fallback is not a four-way composite.'};
+  pollingCache.set(r.code,result);
+  return result;
  }
  const mean=inputs.reduce((sum,x)=>sum+x.value*x.weight,0)/total;
  // No source is counted twice, and the Wikipedia average-of-averages
  // is not blended with its possible constituent publishers.
- return {value:Math.round(mean*100)/100,origin:'Ervin’s Take · overlap-aware blend',date:'Current verified inputs',url:r.sourceUrl,proxy:inputs.length<2,nInputs:inputs.length,note:inputs.map(x=>x.key).join(', ')+(inputs.length<2?' · Single-source fallback':' · Shared underlying polls may remain')};
+ const result={value:Math.round(mean*100)/100,origin:'Ervin’s Take · multi-publisher blend',date:'Oct 23',url:r.sourceUrl,proxy:inputs.length<2,nInputs:inputs.length,note:inputs.map(x=>x.key).join(', ')+(inputs.length<2?' · Single-source fallback':' · Publisher averages may share underlying polls')};
+ pollingCache.set(r.code,result);
+ return result;
 }
 function getPoll(r,key){return key==='take'?pollingPicture(r):r.sources[key];}
 function evaluate(r){
- const h=historical(r),poll=getPoll(r,state.source),orig=Number(r.correction)||0;
+ const cacheKey=r.code+'|'+state.source+'|'+state.biasMode+'|'+state.level;
+ if(evaluationCache.has(cacheKey))return evaluationCache.get(cacheKey);
+ let h=historyCache.get(r.code);
+ if(!h){h=historical(r);historyCache.set(r.code,h);}
+ const poll=getPoll(r,state.source),orig=Number(r.correction)||0;
  const apply=r.history_mode!=='not_comparable',candidateRepeat=r.history_mode==='candidate_repeat';
  const correction=apply?(state.biasMode==='weighted'?weightedCorrection(r):state.biasMode==='shrink'?orig*(candidateRepeat?(r.code==='AK'?2/5:1/4):h.n/(h.n+3)):orig):0;
  const adjusted=poll.value-correction;
@@ -2953,14 +2972,33 @@ function evaluate(r){
  const z=state.level===90?1.645:1.282,half=z*sigma,lo=adjusted-half,hi=adjusted+half;
  const crosses=lo<=0&&hi>=0;
  const support=crosses?'Uncertain':h.n>=3&&!poll.proxy&&r.party==='D'?'Directional signal':'Tentative direction';
- return {r,poll,h,correction,adjusted,half,lo,hi,crosses,support,grade:h.grade,backtest:h.mae};
+ const result={r,poll,h,correction,adjusted,half,lo,hi,crosses,support,grade:h.grade,backtest:h.mae};
+ evaluationCache.set(cacheKey,result);
+ return result;
 }
 const sourceTitle=()=>CONFIG.sourceList.find(s=>s.key===state.source);
 function selected(){return states.find(s=>s.code===state.selected)||states[0]}
-function renderTabs(){$('tabs').innerHTML=CONFIG.sourceList.map(s=>`<button type="button" class="tab" role="tab" aria-selected="${state.source===s.key}" data-source="${esc(s.key)}">${esc(s.title)}</button>`).join('');$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{state.source=b.dataset.source;render()});
+function renderTabs(){
+ const tabs=$('tabs');
+ if(!tabs.children.length){
+  tabs.innerHTML=CONFIG.sourceList.map(s=>`<button type="button" class="tab" role="tab" aria-selected="false" data-source="${esc(s.key)}">${esc(s.title)}</button>`).join('');
+  tabs.addEventListener('click',event=>{
+   const button=event.target.closest('button[data-source]');
+   if(!button||state.source===button.dataset.source)return;
+   state.source=button.dataset.source;render();
+  });
+ }
+ tabs.querySelectorAll('button').forEach(button=>button.setAttribute('aria-selected',String(state.source===button.dataset.source)));
  $('sourceName').textContent=sourceTitle().title; $('sourceDescription').textContent=' — '+sourceTitle().desc;
- const proxies=states.filter(r=>getPoll(r,state.source).proxy).length;
- $('verifiedCount').textContent=proxies?`${states.length-proxies} publisher averages · ${proxies} clearly labeled reference proxies`:`${states.length} directly attributed source averages`;}
+ const available=states.map(r=>getPoll(r,state.source));
+ const proxies=available.filter(p=>p.proxy).length;
+ if(state.source==='take'){
+  const multi=available.filter(p=>p.nInputs>=2).length,single=available.filter(p=>p.nInputs===1).length;
+  $('verifiedCount').textContent=`${multi} blended races · ${single} single-source · ${proxies-single} proxy-only`;
+ }else{
+  $('verifiedCount').textContent=proxies?`${states.length-proxies} publisher averages · ${proxies} clearly labeled reference proxies`:`${states.length} directly attributed source averages`;
+ }
+}
 function renderStats(){const v=states.map(evaluate),dem=v.filter(x=>x.adjusted>=0).length,rep=v.filter(x=>x.adjusted<0).length,close=v.filter(x=>Math.abs(x.adjusted)<=5).length,cross=v.filter(x=>x.crosses).length,closest=[...v].sort((a,b)=>Math.abs(a.adjusted)-Math.abs(b.adjusted))[0];
  $('stats').innerHTML=[['Non-Republican calls',dem,'blue','Includes independents'],['Republican calls',rep,'red','Directional & numerical'],['Within 5 points',close,'gold','Under Ervin margin rule'],['Closest contest',esc(closest.r.code),'',''+fmt(closest.adjusted,closest.r)]].map(([label,value,cl,foot])=>`<div class="stat"><div class="num ${cl}">${value}</div><p>${label}</p><small>${foot}</small></div>`).join('');
  $('gradeOverview').innerHTML=`<div class="grade-row"><span>States whose scenario band spans a tie</span><b>${cross} / 17</b></div><div class="grade-row"><span>Strongest evidence grade among tracked races</span><b class="grade B">B</b></div><div class="grade-row"><span>Publisher proxies in this tab</span><b>${states.filter(r=>getPoll(r,state.source).proxy).length}</b></div><div class="grade-row"><span>Historical election comparisons audited</span><b>${states.reduce((n,r)=>n+r.historical.length,0)}</b></div><div class="grade-row"><span>Source overlap in Wikipedia consensus</span><b>Yes · not independent</b></div><p class="micro">Grade rules: A requires ≥4 elections &amp; ≤2.5-point MAE; B ≥3 &amp; ≤4; C ≥2 &amp; ≤6; other cases D, or F when MAE exceeds 8. A large margin is not itself a high grade.</p>`;
@@ -2970,29 +3008,38 @@ function renderMap(){let entries=Object.entries(cartogram);$('map').innerHTML=en
 function displayRange(v){const left=Math.max(-26,v.lo),right=Math.min(26,v.hi);return `<div class="range-chart"><div class="range-label"><span class="micro">${state.level}% error scenario</span><strong>${fmt(v.lo,v.r,1)} to ${fmt(v.hi,v.r,1)}</strong></div><div class="band"><div class="band-interval" style="left:${((left+26)/52)*100}%;width:${Math.max(0,(right-left)/52*100)}%"></div><div class="band-center" style="left:${Math.max(0,Math.min(100,(v.adjusted+26)/52*100))}%"></div></div><div class="range-bounds"><span>R +26</span><span>EVEN</span><span>${v.r.party==='I'?'I':'D'} +26</span></div></div>`}
 function detail(){const r=selected(),v=evaluate(r),p=v.poll,baseline=r.sources.rcp;
  const difference=(p.value-baseline.value),errMode=r.history_mode==='not_comparable';
- $('detail').innerHTML=`<div class="panel-title"><div class="section-label">RACE INTELLIGENCE / ${r.code}</div><span class="flag">${esc(p.proxy?'REFERENCE PROXY':'PUBLISHED AVERAGE')}</span></div><div class="detail-title"><div><h3>${esc(r.state)}</h3><div class="candidate">${esc(r.dem)} (${r.party}) <span style="color:var(--subtle)">vs</span> ${esc(r.rep)} (R)${r.special?' · Special election':''}</div></div><span class="grade ${v.grade}" title="Historical evidence grade">${v.grade}</span></div><div class="lead ${gradient(v.adjusted)==='close'?(v.adjusted>=0?'dem':'rep'):gradient(v.adjusted)}">${esc(judge(v.adjusted,r))}</div><div class="micro" style="margin-top:4px">${esc(v.support)} · ${Math.abs(v.adjusted)>5?'Magnitude suppressed by ±5 rule':'Numerical margin prediction'}</div><div class="mini-grid"><div class="mini"><small>Polling input</small><strong>${esc(fmt(p.value,r,1))}</strong></div><div class="mini"><small>${errMode?'Historical shift (not applied)':'Applied R shift'}</small><strong>${errMode?'0.00':v.correction.toFixed(2)} pts</strong></div><div class="mini"><small>Historical MAE</small><strong>${v.h.mae.toFixed(1)} pts</strong></div></div>${displayRange(v)}<div class="detail-note"><div class="grade-row"><span>Published source / proxy</span><strong>${esc(p.origin)}</strong></div><div class="grade-row"><span>Source date</span><strong>${esc(p.date)} 2026</strong></div><div class="grade-row"><span>RCP benchmark</span><strong>${esc(fmt(baseline.value,r,1))}${baseline.proxy?' · proxy':''}</strong></div><div class="grade-row"><span>Input difference vs. benchmark</span><strong>${difference>=0?'+':''}${difference.toFixed(2)} pts</strong></div><div class="grade-row"><span>Historical polling comparisons</span><strong>${v.h.n} · ${esc(v.grade)} grade</strong></div>${errMode?`<p class="micro" style="color:var(--accent)">Independent matchup: historic D–R shift of ${r.correction.toFixed(2)} points is <b>not transferred</b> to this race.</p>`:''}${p.proxy?`<p class="micro" style="color:var(--accent)">Fallback detail: ${esc(p.note)}</p>`:''}${r.notes?`<p class="micro">${esc(r.notes)}</p>`:''}</div><div class="detail-refs"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">↗ Polling source</a><a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener noreferrer">↗ Source table</a><button class="button ghost" type="button" id="historyJump">Audit historical years ↓</button></div>`;
+ $('detail').innerHTML=`<div class="panel-title"><div class="section-label">RACE INTELLIGENCE / ${r.code}</div><span class="flag">${esc(p.proxy?'REFERENCE PROXY':'PUBLISHED AVERAGE')}</span></div><div class="detail-title"><div><h3>${esc(r.state)}</h3><div class="candidate">${esc(r.dem)} (${r.party}) <span style="color:var(--subtle)">vs</span> ${esc(r.rep)} (R)${r.special?' · Special election':''}</div></div><span class="grade ${v.grade}" title="Historical evidence grade">${v.grade}</span></div><div class="lead ${gradient(v.adjusted)==='close'?(v.adjusted>=0?'dem':'rep'):gradient(v.adjusted)}">${esc(judge(v.adjusted,r))}</div><div class="micro" style="margin-top:4px">${esc(v.support)} · ${Math.abs(v.adjusted)>5?'Magnitude suppressed by ±5 rule':'Numerical margin prediction'}</div><div class="mini-grid"><div class="mini"><small>Polling input</small><strong>${esc(fmt(p.value,r,1))}</strong></div><div class="mini"><small>${errMode?'Historical shift (not applied)':'Applied R shift'}</small><strong>${errMode?'0.00':v.correction.toFixed(2)} pts</strong></div><div class="mini"><small>Historical MAE</small><strong>${v.h.mae.toFixed(1)} pts</strong></div></div>${displayRange(v)}<div class="detail-note"><div class="grade-row"><span>Published source / proxy</span><strong>${esc(p.origin)}</strong></div><div class="grade-row"><span>Source date</span><strong>${esc(p.date)}${/\b20\d{2}\b/.test(String(p.date))?'':' 2026'}</strong></div><div class="grade-row"><span>RCP benchmark</span><strong>${esc(fmt(baseline.value,r,1))}${baseline.proxy?' · proxy':''}</strong></div><div class="grade-row"><span>Input difference vs. benchmark</span><strong>${difference>=0?'+':''}${difference.toFixed(2)} pts</strong></div><div class="grade-row"><span>Historical polling comparisons</span><strong>${v.h.n} · ${esc(v.grade)} grade</strong></div>${errMode?`<p class="micro" style="color:var(--accent)">Independent matchup: historic D–R shift of ${r.correction.toFixed(2)} points is <b>not transferred</b> to this race.</p>`:''}${p.proxy?`<p class="micro" style="color:var(--accent)">Fallback detail: ${esc(p.note)}</p>`:''}${r.notes?`<p class="micro">${esc(r.notes)}</p>`:''}</div><div class="detail-refs"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">↗ Polling source</a><a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener noreferrer">↗ Source table</a><button class="button ghost" type="button" id="historyJump">Audit historical years ↓</button></div>`;
  $('historyJump').onclick=()=>{$('historyHeading').scrollIntoView({behavior:'smooth',block:'center'})};
  $('historyHeading').textContent=`${r.state} · historical polling errors`;
  $('histBars').innerHTML=r.historical.map(h=>{const ht=Math.min(92,Math.max(8,Math.abs(h.err)*6));return `<div class="hist-column"><b style="color:var(--text)">${h.err>=0?'R':'D'} +${Math.abs(h.err).toFixed(1)}</b><div class="vbar ${h.err<0?'neg':''}" style="height:${ht}px"></div><a href="${esc(h.url)}" target="_blank" rel="noopener noreferrer">${h.year} ${h.office==='President'?'PRES':h.office==='House'?'HOUSE':'SEN'} ↗</a></div>`}).join('');
- $('historyExplanation').innerHTML=`Historical calibration shift <b>${r.correction>=0?'R':'D'} +${Math.abs(r.correction).toFixed(2)}</b> from ${r.historical.length} election comparison${r.historical.length===1?'':'s'}. ${r.history_mode==='candidate_repeat'?'The applied adjustment uses only comparable races involving this candidate; unrelated historical entries remain audit context.':''} Otherwise Senate events receive full weight; presidential events get 65% office weight; 2024 receives more weight than 2022, 2020, and 2018. MAE ${v.h.mae.toFixed(2)} pts; estimated historical dispersion ${Math.max(4.7,v.h.sd).toFixed(1)} pts (4.7-pt floor). ${errMode?'Not applied to this different-party matchup.':''} Each linked election shows the input source; Senate and presidential observations from the same year are correlated, not independent.`;
+ $('historyExplanation').innerHTML=`Original Ervin's archived shift is <b>${r.correction>=0?'R':'D'} +${Math.abs(r.correction).toFixed(2)}</b> from ${r.historical.length} older comparison${r.historical.length===1?'':'s'}. Current mode: <b>${esc(state.biasMode==='weighted'?'Ervin + pooled adjustment':state.biasMode==='shrink'?'Shrink small samples':'Original Ervin')}</b>, applied R-oriented correction <b>${v.correction.toFixed(2)}</b> points. Ervin + also uses the separate 88-record 2016–2024 dataset and shrinks thin state histories toward common regional/national evidence. Legacy audit MAE ${v.h.mae.toFixed(2)} pts; legacy dispersion ${Math.max(4.7,v.h.sd).toFixed(1)} pts. ${errMode?'D–R shift is not transferred to this independent matchup.':''} Election-year observations are correlated, not fully independent.`;
 }
 function renderBars(){let items=states.map(evaluate).sort((a,b)=>a.adjusted-b.adjusted);$('bars').innerHTML=items.map(v=>{const value=v.adjusted,width=Math.min(Math.abs(value),25)/25*50,begin=value>=0?50:50-width;
  return `<div class="barrow ${state.selected===v.r.code?'active':''}" role="button" tabindex="0" data-code="${v.r.code}" aria-label="${esc(v.r.state)} ${esc(judge(value,v.r))}"><span class="barname">${esc(v.r.state)}</span><div class="bartrack"><div class="barfill ${value<0?'r':'d'}" style="left:${begin}%;width:${Math.max(.5,width)}%"></div></div><b style="text-align:right;color:var(--${value<0?'red':'blue'})">${esc(fmt(value,v.r,1))}</b></div>`}).join('');$('bars').querySelectorAll('.barrow').forEach(b=>{b.onclick=()=>focusRace(b.dataset.code);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();focusRace(b.dataset.code)}}});}
 function rowsFiltered(){const q=state.search.trim().toLowerCase();let r=states.map(evaluate).filter(v=>!q||[v.r.state,v.r.code,v.r.dem,v.r.rep].join(' ').toLowerCase().includes(q));switch(state.filter){case 'close':r=r.filter(v=>Math.abs(v.adjusted)<=5);break;case 'cross':r=r.filter(v=>v.crosses);break;case 'proxy':r=r.filter(v=>v.poll.proxy);break;case 'independent':r=r.filter(v=>v.r.party==='I');break;}
- switch(state.sort){case 'name':r.sort((a,b)=>a.r.state.localeCompare(b.r.state));break;case 'margin':r.sort((a,b)=>b.adjusted-a.adjusted);break;case 'error':r.sort((a,b)=>Math.abs(b.r.correction)-Math.abs(a.r.correction));break;case 'grade':r.sort((a,b)=>'ABCDF'.indexOf(a.grade)-'ABCDF'.indexOf(b.grade)||a.h.mae-b.h.mae);break;default:r.sort((a,b)=>Math.abs(a.adjusted)-Math.abs(b.adjusted));}return r;}
+ switch(state.sort){case 'name':r.sort((a,b)=>a.r.state.localeCompare(b.r.state));break;case 'margin':r.sort((a,b)=>b.adjusted-a.adjusted);break;case 'error':r.sort((a,b)=>Math.abs(b.correction)-Math.abs(a.correction));break;case 'grade':r.sort((a,b)=>'ABCDF'.indexOf(a.grade)-'ABCDF'.indexOf(b.grade)||a.h.mae-b.h.mae);break;default:r.sort((a,b)=>Math.abs(a.adjusted)-Math.abs(b.adjusted));}return r;}
 function renderTable(){const rows=rowsFiltered();$('rows').innerHTML=rows.map(v=>{const r=v.r,p=v.poll,base=r.sources.rcp.value,diff=p.value-base;return `<tr data-id="${r.code}" class="${state.selected===r.code?'active':''}"><td class="statecell"><strong>${esc(r.state)}${r.special?' *':''}</strong><small>${esc(r.dem.split(' ').slice(-1).join(' '))} / ${esc(r.rep.split(' ').slice(-1).join(' '))} ${r.party==='I'?'· IND':''}</small></td><td>${esc(fmt(p.value,r))}</td><td>${r.history_mode==='not_comparable'?'<span class="fine" title="Historical D-R shift not transferable">not applied</span>':(v.correction>=0?'R +':'D +')+Math.abs(v.correction).toFixed(2)}</td><td style="color:var(--${v.adjusted<0?'red':'blue'})"><b>${esc(fmt(v.adjusted,r))}</b></td><td><span class="call-pill ${v.adjusted<0?'rep':'dem'}">${esc(judge(v.adjusted,r))}</span></td><td><span style="font-size:11px">${v.crosses?'Crosses tie':'One side of tie'}</span><div class="micro">±${v.half.toFixed(1)} pts</div></td><td><span class="grade ${v.grade}">${v.grade}</span> <span class="micro">${v.h.n} yr / ${v.h.mae.toFixed(1)} MAE</span></td><td>${diff>=0?'+':''}${diff.toFixed(2)}${r.sources.rcp.proxy?'*':''}</td><td><span class="status ${p.proxy?'proxy':''}" title="${esc(p.note||p.origin)}">${p.proxy?'Reference proxy':'Publisher'}</span></td></tr>`}).join('')||'<tr><td colspan="9" style="padding:24px;color:var(--muted)">No races match these filters. Reset the search or filter.</td></tr>';
  $('rows').querySelectorAll('tr[data-id]').forEach(tr=>tr.onclick=()=>{focusRace(tr.dataset.id);$('detail').scrollIntoView({behavior:'smooth',block:'nearest'})});}
-function focusRace(code){state.selected=code;renderMap();detail();renderBars();renderTable();renderInsights();}
+function focusRace(code){
+ if(!states.some(r=>r.code===code)||state.selected===code)return;
+ state.selected=code;
+ // Update selection styling without replacing 50 map buttons, all bars or
+ // the searchable table. This keeps keyboard focus, scroll and animations stable.
+ $('map').querySelectorAll('.tile.tracked').forEach(el=>el.classList.toggle('active',el.dataset.code===code));
+ $('bars').querySelectorAll('.barrow').forEach(el=>el.classList.toggle('active',el.dataset.code===code));
+ $('rows').querySelectorAll('tr[data-id]').forEach(el=>el.classList.toggle('active',el.dataset.id===code));
+ detail();renderInsights();
+}
 function renderInsights(){
  const sel=$('insightRace');if(!sel)return;
- if(!sel.options.length){sel.innerHTML=states.map(r=>`<option value="${esc(r.code)}">${esc(r.state)}</option>`).join('');sel.onchange=()=>{state.selected=sel.value;renderMap();detail();renderBars();renderTable();renderInsights();};$('shareForecast').onclick=()=>{const url=new URL(location.href);url.hash='researchLab';url.searchParams.set('race',state.selected);if(navigator.clipboard?.writeText){navigator.clipboard.writeText(url.href).then(()=>snack('Race research link copied'),()=>snack('Copy unavailable'));}else snack('Copy unavailable')};}
+ if(!sel.options.length){sel.innerHTML=states.map(r=>`<option value="${esc(r.code)}">${esc(r.state)}</option>`).join('');sel.onchange=()=>focusRace(sel.value);$('shareForecast').onclick=()=>{const url=new URL(location.href);url.hash='researchLab';url.searchParams.set('race',state.selected);if(navigator.clipboard?.writeText){navigator.clipboard.writeText(url.href).then(()=>snack('Race research link copied'),()=>snack('Copy unavailable'));}else snack('Copy unavailable')};}
  sel.value=state.selected;
  const r=selected(),v=evaluate(r),s=Object.entries(r.sources).filter(([k,p])=>!p.proxy),vals=s.map(([k,p])=>p.value),spread=vals.length>=2?Math.max(...vals)-Math.min(...vals):null;
  const candidateSpecific=r.history_mode==='candidate_repeat',shrink=candidateSpecific?(r.code==='AK'?.4:.25):v.h.n/(v.h.n+3);
  const display=(x)=>esc(fmt(x,r,2));
  const rating=r.externalRatings?.cook;const calibration=weightedCalibration(r);
- $('insightStats').innerHTML=`<div class="insight-stat"><small>Publisher-average spread</small><strong>${spread===null?'—':spread.toFixed(2)+' pts'}</strong><small>${s.length} non-proxy source inputs · not independent surveys</small></div><div class="insight-stat"><small>Full historical correction</small><strong>${r.history_mode==='not_comparable'?'Not used':display(v.correction)}</strong><small>${v.h.n} historical entries; election types labeled in audit</small></div><div class="insight-stat"><small>Cook Political Report</small><strong style="font-size:23px">${rating?esc(rating.rating):'—'}</strong><small>As of ${rating?esc(rating.date):'unknown'} · external qualitative rating</small></div>`;
- $('insightSourceRows').innerHTML=CONFIG.sourceList.map(src=>{const p=getPoll(r,src.key),raw=p.value,full=r.history_mode==='not_comparable'?0:r.correction,shrunk=full*shrink;return `<tr><td><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(src.title)} ↗</a></td><td>${display(raw)}</td><td>${display(raw-full)}</td><td>${display(raw-shrunk)}</td><td>${display(raw-weightedCorrection(r))}</td><td><span class="tagline">${p.proxy?'Reference proxy':'Publisher'}</span></td></tr>`}).join('');
+ $('insightStats').innerHTML=`<div class="insight-stat"><small>Publisher-average spread</small><strong>${spread===null?'—':spread.toFixed(2)+' pts'}</strong><small>${s.length} non-proxy source inputs · not independent surveys</small></div><div class="insight-stat"><small>Original historical correction</small><strong>${r.history_mode==='not_comparable'?'Not used':display(r.correction)}</strong><small>${v.h.n} historical entries; election types labeled in audit</small></div><div class="insight-stat"><small>Cook Political Report</small><strong style="font-size:23px">${rating?esc(rating.rating):'—'}</strong><small>As of ${rating?esc(rating.date):'unknown'} · external qualitative rating</small></div>`;
+ $('insightSourceRows').innerHTML=CONFIG.sourceList.map(src=>{const p=getPoll(r,src.key),raw=p.value,full=r.history_mode==='not_comparable'?0:r.correction,shrunk=full*shrink;return `<tr><td><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(src.title)} ↗</a></td><td>${display(raw)}</td><td>${display(raw-full)}</td><td>${display(raw-shrunk)}</td><td>${display(raw-calibration.correction)}</td><td><span class="tagline">${p.proxy?'Reference proxy':'Publisher'}</span></td></tr>`}).join('');
  $('calibrationDetail').textContent=`Ervin + for ${r.state}: ${calibration.cycles} historical state election cycles · pooled baseline ${Number(calibration.pooled||0).toFixed(2)} points R-oriented error · final guarded correction ${Number(calibration.correction).toFixed(2)} points. ${calibration.method||''} Positive corrections are subtracted from the non-Republican polling lead.`;
  $('insightContext').textContent=`Historical error is subtracted from the raw non-Republican margin. ${candidateSpecific?'Candidate-specific comparison; the full shift is based on prior contests involving the same candidate. ':''}The shrinkage option retains ${Math.round(shrink*100)}% of the correction. Ervin + now uses a 2016–2024 Senate/presidential archive and partially pools state-year polling errors toward regional and national patterns; repeat-candidate scenarios remain separate. The Cook rating is a separate published assessment, not a numerical probability or an additional poll.`;
 }
@@ -3028,6 +3075,7 @@ function setFreshness(){
  }
 }
 const requested=new URLSearchParams(location.search).get('race');if(requested&&states.some(r=>r.code===requested.toUpperCase()))state.selected=requested.toUpperCase();
+$('biasMode').value=state.biasMode;$('confidenceLevel').value=String(state.level);
 setFreshness();
 render();
 })();
