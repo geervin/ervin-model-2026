@@ -62,6 +62,10 @@
   const search=el('search');search.value='Michigan';dispatch(search,'input');
   check(el('rows').querySelectorAll('tr[data-id]').length===1,'Race search filters without errors');
   search.value='';dispatch(search,'input');
+  const row=doc.querySelector('#rows tr[data-id="TX"]');
+  check(!!row&&row.tabIndex===0,'Race rows support keyboard focus');
+  row.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+  check(doc.querySelector('#map .tile.active')?.dataset.code==='TX','Keyboard Enter selects a race');
   el('themeToggle').click();
   check(doc.documentElement.classList.contains('light'),'Light theme toggle works');
   let start=performance.now();
@@ -70,6 +74,10 @@
   }
   const duration=Math.round(performance.now()-start);
   check(duration<4000,'Ten race selections stay responsive in browser');
+  iframe.style.width='390px';
+  await new Promise(resolve=>win.requestAnimationFrame(resolve));
+  check(win.innerWidth<=400,'Dashboard responds to compact mobile viewport');
+  check(doc.documentElement.scrollWidth<=doc.documentElement.clientWidth+4,'No page-wide horizontal overflow at phone width');
   check(errors.length===0,'No browser script errors');
   report.dataset.status='PASS';
   report.textContent='PASS '+checks.length+' checks; ten selections '+duration+'ms.\n'+checks.map(x=>'✓ '+x).join('\n');
