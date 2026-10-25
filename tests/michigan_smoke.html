@@ -22,7 +22,16 @@
   const initial=$('stateMargin').textContent;
   event('source','ddhq');check($('source').value==='ddhq','DDHQ switch works');
   event('mode','original');check($('stateMargin').textContent!==initial,'Historical mode switch updates forecast');
-  event('turnout','115','input');check($('turnoutRead').textContent==='115%','Turnout slider updates');
+  // Rapid slider interaction should collapse repeated redraws, while preserving
+  // the last requested turnout and complete county/state vote consistency.
+  for(const v of ['95','100','108','115'])event('turnout',v,'input');
+  await new Promise(resolve=>w.requestAnimationFrame(()=>w.requestAnimationFrame(resolve)));
+  check($('turnoutRead').textContent==='115%','Rapid turnout slider updates to final selected value');
+  const afterVotes=numeric($('stateVotes').textContent),afterD=numeric($('stateDem').textContent),afterR=numeric($('stateRep').textContent);
+  check(afterVotes>0&&afterD+afterR<=afterVotes,'Turnout redraw conserves votes after rapid inputs');
+  const countyD=[...d.querySelectorAll('#countyRows tr[data-county]')].reduce((n,row)=>n+numeric(row.children[4].textContent),0);
+  check(Math.abs(countyD-afterD)<=1,'Rendered 83-county vote totals match statewide Democratic tally');
+
   const wayne=d.querySelector('#map path[data-county="Wayne"]');wayne.dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
   check($('countyName').textContent.includes('Wayne'),'Map county selection synchronizes detail');
   event('countyPicker','Oakland');check($('countyName').textContent.includes('Oakland'),'County lookup changes selection');
