@@ -1,0 +1,28 @@
+name: Build Michigan county history
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_michigan.py'
+      - '.github/workflows/build-michigan.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install county-data dependencies
+        run: python3 -m pip install --break-system-packages requests beautifulsoup4 shapely
+      - name: Fetch, validate and simplify 83-county historical data
+        run: python3 scripts/build_michigan.py
+      - name: Commit checked data and county geometry
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add michigan/county_history.json michigan/counties.geojson
+          if ! git diff --cached --quiet; then
+            git commit -m "Update verified Michigan election county baseline data"
+            git push
+          fi
