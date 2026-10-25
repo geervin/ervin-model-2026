@@ -84,7 +84,7 @@ function updatePrediction(){
  $('stateDem').textContent=fmt(prediction.D);
  $('stateRep').textContent=fmt(prediction.R);
  $('turnoutRead').textContent=Math.round(ui.turnout*100)+'%';
- paintMap();paintCounty();paintTable();paintStrongholds();
+ paintMap();paintCounty();paintTable();paintStrongholds();paintRegions();
 }
 function countyByName(name){return prediction?.counties.find(c=>c.name.toLowerCase()===String(name).toLowerCase());}
 function setCounty(name){
@@ -179,6 +179,29 @@ function paintTable(){
   const H=c.history;
   return '<tr data-county="'+esc(c.name)+'" class="'+(c.name===ui.county?'selected':'')+'"><td><strong>'+esc(c.name)+'</strong></td><td>'+cellMargin(100*meanMargin(H.senate2024))+'</td><td>'+cellMargin(100*meanMargin(H.president2024))+'</td><td>'+cellMargin(100*meanMargin(H.governor2022))+'</td><td>'+fmt(c.d)+'</td><td>'+fmt(c.r)+'</td><td>'+fmt(c.other)+'</td><td>'+cellMargin(c.margin)+'</td><td class="'+(c.net>=0?'blue':'red')+'">'+(c.net>0?'+':'')+fmt(c.net)+'</td><td>'+fmt(c.total)+'</td></tr>';
  }).join('');
+}
+const upperPeninsula=new Set(['Alger','Baraga','Chippewa','Delta','Dickinson','Gogebic','Houghton','Iron','Keweenaw','Luce','Mackinac','Marquette','Menominee','Ontonagon','Schoolcraft']);
+function countyBloc(name){
+ if(['Wayne','Oakland','Macomb'].includes(name))return 'Detroit three-county core';
+ if(['Kent','Ottawa'].includes(name))return 'Kent + Ottawa';
+ if(['Washtenaw','Ingham'].includes(name))return 'University-county pair';
+ if(upperPeninsula.has(name))return 'Upper Peninsula';
+ return 'All other Michigan counties';
+}
+function paintRegions(){
+ const labels=['Detroit three-county core','Kent + Ottawa','University-county pair','Upper Peninsula','All other Michigan counties'];
+ const total=prediction.ballots;
+ const rows=labels.map(label=>{
+  const cs=prediction.counties.filter(c=>countyBloc(c.name)===label);
+  const project={d:0,r:0,total:0};
+  const past={senate2024:{d:0,r:0,total:0},president2024:{d:0,r:0,total:0},governor2022:{d:0,r:0,total:0}};
+  for(const c of cs){
+   project.d+=c.d;project.r+=c.r;project.total+=c.total;
+   for(const key of Object.keys(past))for(const k of ['d','r','total'])past[key][k]+=c.history[key][k];
+  }
+  return '<tr><td><strong>'+esc(label)+'</strong></td><td>'+cs.length+'</td><td>'+cellMargin(100*meanMargin(past.senate2024))+'</td><td>'+cellMargin(100*meanMargin(past.president2024))+'</td><td>'+cellMargin(100*meanMargin(past.governor2022))+'</td><td>'+fmt(project.d)+'</td><td>'+fmt(project.r)+'</td><td class="'+(project.d>=project.r?'blue':'red')+'">'+(project.d-project.r>0?'+':'')+fmt(project.d-project.r)+'</td><td>'+(100*project.total/total).toFixed(1)+'%</td></tr>';
+ });
+ $('regionalRows').innerHTML=rows.join('');
 }
 function paintStrongholds(){
  let d=[...prediction.counties].sort((a,b)=>b.net-a.net).slice(0,6),r=[...prediction.counties].sort((a,b)=>a.net-b.net).slice(0,6);
