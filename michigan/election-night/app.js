@@ -7,7 +7,7 @@ const dateString=s=>{if(!s)return "Unknown";const d=new Date(s);return Number.is
 const liveStart=new Date("2026-11-03T20:00:00-05:00").getTime();
 const demo=new URLSearchParams(location.search).get("demo")==="1";
 const eDate="2026-11-03";
-let lastFeed=null,counties=[],stateRow=null,lastStateAttempt=0,lastPrecinctAttempt=0,busy=false,checkDeadline=Date.now()+30000,search="",precinctSearch="";
+let lastFeed=null,counties=[],stateRow=null,lastStateAttempt=0,lastPrecinctAttempt=0,busy=false,stateBusy=false,checkDeadline=Date.now()+30000,search="",precinctSearch="",lastPreElectionMinute=-1;
 const countyLookup=new Map(),countyCounted=new Map();
 const officialCounty="https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county";
 function banner(mode,title,detail){const el=$("statusBanner");el.dataset.mode=mode;$("statusHeading").textContent=title;$("statusDetail").textContent=detail}
@@ -74,33 +74,64 @@ async function readPrecinct(){
  finally{busy=false}
 }
 async function readState(){
- if(!demo&&Date.now()<liveStart)return;
+ if(demo||Date.now()<liveStart||stateBusy)return;
  if(Date.now()-lastStateAttempt<60000)return;
- lastStateAttempt=Date.now();
+ stateBusy=true;lastStateAttempt=Date.now();
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);
  try{
   const url="https://openamerica.io/elections/results.json?year=2026&office=Senate";
-  const res=await fetch(url,{mode:"cors",cache:"no-store",credentials:"omit"});
-  if(!res.ok)throw Error("HTTP "+res.status);
-  const data=await res.json(),race=data?.races?.MI;
-  if(data.year!==2026||String(data.office).toLowerCase()!=="senate"||!race||!Array.isArray(race.cands)||!race.total){$("externalStatus").textContent="No MI count supplied";$("externalVotes").textContent="The independent feed has not published Michigan Senate totals yet.";return}
-  const ds=race.cands.find(c=>c.p==="D"),rs=race.cands.find(c=>c.p==="R"),other=race.cands.filter(c=>!["D","R"].includes(c.p)).reduce((n,c)=>n+c.v,0);
-  if(!ds||!rs||!numeric(ds.v)||!numeric(rs.v))throw Error("No valid D/R candidate tallies");
-  if(data.as_of&&new Date(data.as_of).getTime()<liveStart)throw Error("2026 result appears earlier than polls closing");
-  stateRow={d:ds.v,r:rs.v,other,sourceTime:data.as_of,pct:race.pct_in,updatedAt:Date.now(),names:[ds.n,rs.n]};
-  $("externalVotes").innerHTML="<strong>"+esc(ds.n)+": "+fmt(ds.v)+" · "+esc(rs.n)+": "+fmt(rs.v)+"</strong> · other: "+fmt(other);
-  $("externalAsOf").textContent="Provider source time: "+dateString(data.as_of)+" · precinct share "+(race.pct_in==null?"not provided":Number(race.pct_in).toFixed(1)+"%")+" · may not match partial local precinct rows.";
+  const res=await fetch(url,{mode:"cors",cache:"no-cache",credentials:"omit",signal:controller.signal});
+  if(!res.ok)throw Error("Provider HTTP "+res.status);
+  const data=await res.json();
+  if(data?.api!==1||data.year!==2026||String(data.office).toLowerCase()!=="senate")
+   throw Error("Provider sent a different election, office or API version");
+  const race=data?.races?.MI;
+  if(!race||!Array.isArray(race.cands)||!numeric(race.total)||race.total===0){
+   $("externalStatus").textContent="Awaiting statewide results";
+   $("externalVotes").textContent="No attributed 2026 Michigan Senate vote counts have been published by this feed.";
+   $("externalAsOf").textContent="Michigan has not supplied results to this provider yet. Check county clerks for more recent local reports.";
+   $("externalProgress").replaceChildren();
+   return;
+  }
+  const ds=race.cands.find(c=>c.p==="D"),rs=race.cands.find(c=>c.p==="R");
+  if(!ds||!rs||!numeric(ds.v)||!numeric(rs.v))throw Error("Missing or malformed D/R candidate tallies");
+  const otherCands=race.cands.filter(c=>!["D","R"].includes(c.p));
+  if(!otherCands.every(c=>numeric(c.v)))throw Error("Invalid other-candidate tally");
+  const other=otherCands.reduce((n,c)=>n+c.v,0);
   const total=ds.v+rs.v+other;
+  if(!numeric(total)||!total||Math.abs(total-race.total)>2)
+   throw Error("State totals do not reconcile with candidate totals");
+  const issued=Date.parse(data.as_of||"");
+  if(!Number.isFinite(issued)||issued<liveStart||issued>Date.now()+300000)
+   throw Error("Missing or out-of-window state result timestamp");
+  const percent=race.pct_in==null?null:Number(race.pct_in);
+  if(percent!==null&&(!Number.isFinite(percent)||percent<0||percent>100))
+   throw Error("Invalid precinct reporting percentage");
+  stateRow={d:ds.v,r:rs.v,other,sourceTime:data.as_of,pct:percent,updatedAt:Date.now(),names:[ds.n,rs.n]};
+  $("externalVotes").innerHTML="<strong>"+esc(ds.n)+": "+fmt(ds.v)+" · "+esc(rs.n)+": "+fmt(rs.v)+"</strong> · other: "+fmt(other);
+  $("externalAsOf").textContent="Provider's latest update across its states: "+dateString(data.as_of)+" · Michigan precinct share "+(percent===null?"not reported":percent.toFixed(1)+"%")+" · independent of partial local reports.";
   $("externalProgress").innerHTML='<div class="d" style="width:'+(ds.v/total*100)+'%"></div><div class="r" style="width:'+(rs.v/total*100)+'%"></div><div class="o" style="width:'+(other/total*100)+'%"></div>';
-  $("externalStatus").textContent=data.stale?"Feed possibly stale":"Unofficial state tally";
- }catch(e){$("externalStatus").textContent="Statewide feed unavailable";$("externalAsOf").textContent="The independent external feed could not be checked: "+e.message+". County reports remain the authoritative election-night reference.";if(!stateRow)$("externalVotes").textContent="No independently retrieved statewide tally available."}
+  $("externalStatus").textContent=data.stale?"Source marked stale":data.live?"Unofficial feed · live":data.final?"Precinct reports complete":"Unofficial state tally";
+ }catch(e){
+  $("externalStatus").textContent=stateRow?"Statewide feed interrupted":"Statewide feed unavailable";
+  $("externalAsOf").textContent="Unable to verify a fresh statewide response: "+(e.name==="AbortError"?"request timed out":e.message)+". Check the official county links below.";
+  if(!stateRow)$("externalVotes").textContent="No independently retrieved statewide tally available.";
+ }finally{clearTimeout(timeout);stateBusy=false}
 }
 function tick(){
  const now=Date.now(),active=demo||now>=liveStart;
- if(!active){const wait=Math.ceil((liveStart-now)/86400000);banner("waiting","PRE-ELECTION · NO VOTES YET","Michigan precinct counting begins after polls close November 3, generally at 8 p.m. local time (some western U.P. counties are Central Time). The board does not publish candidate returns before polls close.");$("refreshCountdown").textContent="Starts election night";return;}
+ if(!active){
+  const minute=Math.floor(now/60000);
+  if(minute!==lastPreElectionMinute){
+   lastPreElectionMinute=minute;
+   $("refreshCountdown").textContent="Starts election night";
+  }
+  return;
+ }
  const seconds=Math.max(0,Math.ceil((checkDeadline-now)/1000));
  $("refreshCountdown").textContent=seconds+" seconds";
  if(now>=checkDeadline){checkDeadline=now+30000;readPrecinct();}
- if(!document.hidden&&now-lastStateAttempt>=60000)readState();
+ if(!document.hidden&&!demo&&now-lastStateAttempt>=60000)readState();
 }
 async function initialize(){
  try{
@@ -112,12 +143,19 @@ async function initialize(){
   for(const county of counties)countyLookup.set(county.name.toLowerCase(),county.name);
   const marker="window.ERVIN_DATA = ",start=html.indexOf(marker)+marker.length,end=html.indexOf(";\n\n</script><script>",start);
   if(start>=marker.length&&end>start){const model=JSON.parse(html.slice(start,end));const mi=model.states.find(r=>r.code==="MI");if(mi){$("demName").textContent=mi.dem;$("repName").textContent=mi.rep}}
+  $("refreshNow").addEventListener("click",()=>{
+    if(!demo&&Date.now()<liveStart)return;
+    if(Date.now()-lastPrecinctAttempt>=5000)readPrecinct();
+    if(!demo)readState();
+    checkDeadline=Date.now()+30000;
+  });
+  if(!demo&&Date.now()<liveStart)$("refreshNow").disabled=true;
   $("countySearch").addEventListener("input",e=>{search=e.target.value;updateUI()});
   $("precinctSearch").addEventListener("input",e=>{precinctSearch=e.target.value;updateUI()});
   updateUI();
   if(demo){$("externalStatus").textContent="Disabled for demo";$("externalVotes").textContent="Synthetic fixture mode: no live statewide source is polled.";await readPrecinct();}
   else if(Date.now()>=liveStart)await Promise.all([readPrecinct(),readState()]);
-  else banner("waiting","PRE-ELECTION · AWAITING NOVEMBER 3","The board is ready. No 2026 Senate votes are available before polling closes.");
+  else banner("waiting","PRE-ELECTION · AWAITING NOVEMBER 3","No actual 2026 Michigan Senate results exist yet. County clerk links below lead directly to the official reporting sources.");
   setInterval(tick,1000);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden&&(demo||Date.now()>=liveStart)){checkDeadline=Date.now()+30000;readPrecinct();if(!demo)readState()}});
  }catch(e){banner("waiting","DASHBOARD LOAD ERROR",e.message);console.error(e);}
