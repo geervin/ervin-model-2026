@@ -15,6 +15,27 @@ small code{color:var(--gold)}.source-shortcuts{display:flex;gap:8px;flex-wrap:wr
 .refresh-now{background:#203d56;border:1px solid #42627b;border-radius:7px;padding:7px 12px;color:var(--text);font-weight:700;font-size:12px}.refresh-now:hover{background:#2b526e}footer{border-top:1px solid var(--edge);margin-top:26px;color:var(--muted);font-size:11px;padding:18px 0}
 @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}header a{margin-left:8px}}
 @media(max-width:430px){.stat,.panel{padding:13px}.grid{gap:8px}.stat strong{font-size:22px}header{position:static}}
+
+/* 2026 geographic maps: neutral until a verified counting unit is joined. */
+.geography-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:18px}
+.geography-grid .panel{margin:0}
+.geo-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.geo-head h2{margin:0}.geo-viewport{background:#0d1c2b;border:1px solid var(--edge);border-radius:10px;overflow:hidden;position:relative;margin:13px 0 11px;min-height:160px}
+.geo-viewport svg,.geo-viewport canvas{display:block;width:100%;aspect-ratio:880/595;height:auto}
+.county-shape{fill:#1b3346;stroke:#728ba2;stroke-width:1.1;cursor:pointer;vector-effect:non-scaling-stroke;transition:fill .1s ease}
+.county-shape:hover,.county-shape:focus{fill:#335879;stroke:#e1c68c;stroke-width:2;outline:none}
+.county-shape.selected{fill:#385874;stroke:var(--gold);stroke-width:2.8}
+.county-shape.reported-d{fill:#275d9b}.county-shape.reported-r{fill:#993e50}.county-shape.reported-tie{fill:#66596b}
+.county-shape.selected.reported-d{fill:#275d9b}.county-shape.selected.reported-r{fill:#993e50}
+.geo-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.geo-status{font-size:11px;color:var(--muted);min-height:34px;margin-top:6px}
+.geo-key{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;font-size:11px;color:var(--muted)}
+.geo-key b{display:inline-block;width:10px;height:10px;border-radius:3px;background:#1b3346;border:1px solid #8095a7;margin-right:5px}
+.geo-key .dem{background:#275d9b}.geo-key .rep{background:#993e50}
+.map-inline{background:#203d56;color:var(--text);border:1px solid var(--edge);padding:7px 10px;border-radius:7px;font-size:12px}
+.map-inline:disabled{opacity:.45;cursor:default}
+@media(max-width:1000px){.geography-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.county-shape{transition:none}}
 </style></head><body>
 <header><strong>ERVIN <span style="color:var(--gold)">MODEL</span> / MICHIGAN</strong><nav><a href="../../">National forecast</a><a href="../">County projections</a><a href="." aria-current="page" style="color:var(--gold)">Election Night</a></nav></header>
 <main><div class="hero"><div class="eyebrow">Tuesday, November 3, 2026 · Michigan U.S. Senate</div><h1>Michigan Election Night</h1><p>Unofficial returns by county and precinct, with timestamps and direct source citations. <strong>Vote totals are never inferred from the polling model.</strong> County projections remain on the separate <a href="../">forecast dashboard</a>.</p></div>
@@ -36,6 +57,18 @@ small code{color:var(--gold)}.source-shortcuts{display:flex;gap:8px;flex-wrap:wr
  <p class="tiny">Checks <b>every 30 seconds</b> after polls close (statewide provider: at most once a minute). A refresh is not a guarantee that a clerk or this site's repository has published new returns.</p><button type="button" class="refresh-now" id="refreshNow">Check for updates</button>
  </section>
 </div>
+<section class="geography-grid" id="electionGeography" aria-label="Michigan county and precinct geography before and during returns">
+ <div class="panel"><div class="geo-head"><div><div class="eyebrow">2026 Michigan geography</div><h2>County map · all 83</h2></div><button class="map-inline" type="button" id="countyAll" disabled>Show all counties</button></div>
+ <div class="geo-viewport"><svg id="countyBoundaryMap" role="img" aria-label="Interactive map of all 83 Michigan counties, neutral until results are reported" viewBox="0 0 880 595"></svg></div>
+ <p class="geo-status" id="countyMapStatus">Loading the 83 county boundaries…</p>
+ <div class="geo-key"><span><b></b>No reported returns</span><span><b class="dem"></b>Partial D lead</span><span><b class="rep"></b>Partial R lead</span></div>
+ <p class="tiny">Select a county to inspect its precinct boundaries at a closer scale. Colors, if displayed after November 3, reflect <em>only reported returns</em>, never forecast votes.</p></div>
+ <div class="panel"><div class="geo-head"><div><div class="eyebrow">2026 Bureau of Elections boundaries</div><h2>Precinct map · <span id="mapCountySelection">Statewide</span></h2></div><button class="map-inline" type="button" id="reloadPrecinctMap">Reload geography</button></div>
+ <div class="geo-viewport"><canvas id="precinctBoundaryMap" role="img" aria-label="Blank 2026 Michigan precinct polygon map. Grey precincts have no reported election result" width="880" height="595"></canvas></div>
+ <p class="geo-status" id="precinctMapStatus">Preparing neutral precinct map…</p>
+ <div class="geo-key"><span><b></b>Precinct not matched to reported results</span><span><b class="dem"></b>Verified D lead</span><span><b class="rep"></b>Verified R lead</span></div>
+ <p class="tiny"><span id="precinctGeometryCount">2026 official precinct geography · loading</span>. Boundaries from the <a id="precinctGISLink" target="_blank" rel="noopener noreferrer" href="https://www.arcgis.com/home/item.html?id=c349bc2bb6c2468594d341a09f520ea8">Michigan Bureau of Elections 2026 precinct layer</a>; not the obsolete 2024 map. Boundaries do not imply a reported vote or a known precinct turnout denominator.</p></div>
+</section>
 <section class="panel"><div class="split"><h2>County reporting board · 83 counties</h2><input class="filter" id="countySearch" aria-label="Search counties" placeholder="Search counties"></div>
 <p class="tiny">Projected votes are intentionally not mixed into this table. A dash means no precinct-level report ingested—not zero votes cast. The 2024 column is historical context only.</p>
 <div class="scroll"><table id="countyTable"><thead><tr><th>County</th><th>Reported D</th><th>Reported R</th><th>Precinct rows</th><th>2024 Senate margin</th></tr></thead><tbody id="countyRows"></tbody></table></div></section>
@@ -60,4 +93,4 @@ small code{color:var(--gold)}.source-shortcuts{display:flex;gap:8px;flex-wrap:wr
  </div></details>
 </section>
 <footer>Ervin Model · Michigan Election Night · <a href="../">County projections</a> · <a href="../../">17-state forecast</a> · This site does not make election calls.</footer>
-</main><script defer src="./app.js"></script></body></html>
+</main><script defer src="./maps.js"></script><script defer src="./app.js"></script></body></html>
