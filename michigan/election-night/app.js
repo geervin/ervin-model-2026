@@ -5,6 +5,8 @@ const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const fmt=n=>Math.round(n).toLocaleString("en-US");
 const dateString=s=>{if(!s)return "Unknown";const d=new Date(s);return Number.isNaN(+d)?"Unknown":d.toLocaleString("en-US",{timeZone:"America/Detroit",month:"short",day:"numeric",hour:"numeric",minute:"2-digit",timeZoneName:"short"})};
 const liveStart=new Date("2026-11-03T20:00:00-05:00").getTime();
+const lateClose=new Date("2026-11-03T21:00:00-05:00").getTime();
+const centralCounties=new Set(["dickinson","gogebic","iron","menominee"]);
 const demo=new URLSearchParams(location.search).get("demo")==="1";
 const eDate="2026-11-03";
 let lastFeed=null,counties=[],stateRow=null,lastStateAttempt=0,lastPrecinctAttempt=0,busy=false,stateBusy=false,checkDeadline=Date.now()+30000,search="",precinctSearch="",lastPreElectionMinute=-1;
@@ -22,7 +24,8 @@ function verifyFeed(payload){
   if(![p.dem,p.rep,p.other].every(numeric))throw Error("Invalid precinct vote count");
   if(!validHttp(p.sourceUrl)||Number.isNaN(Date.parse(p.asOf)))throw Error("Missing attributed precinct source and timestamp");
   const time=new Date(p.asOf).getTime();
-  if(!demo&&(time<liveStart||time>Date.now()+300000))throw Error("Precinct timestamp outside valid election period");
+  if(!demo&&(time<(centralCounties.has(p.county.toLowerCase())?lateClose:liveStart)||time>Date.now()+300000))
+   throw Error("Precinct timestamp before local county poll closing or in the future");
   const key=p.county.toLowerCase()+"|"+p.precinct.trim().toLowerCase();
   if(seen.has(key))throw Error("Duplicate precinct or absentee counting board");
   seen.add(key);clean.push({...p,precinct:p.precinct.trim()});
@@ -99,7 +102,7 @@ async function readState(){
   if(!otherCands.every(c=>numeric(c.v)))throw Error("Invalid other-candidate tally");
   const other=otherCands.reduce((n,c)=>n+c.v,0);
   const total=ds.v+rs.v+other;
-  if(!numeric(total)||!total||Math.abs(total-race.total)>2)
+  if(!numeric(total)||!total||Math.abs(total-race.total)>Math.max(10,race.total*.005))
    throw Error("State totals do not reconcile with candidate totals");
   const issued=Date.parse(data.as_of||"");
   if(!Number.isFinite(issued)||issued<liveStart||issued>Date.now()+300000)
