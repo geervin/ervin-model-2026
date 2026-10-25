@@ -15,6 +15,16 @@
   const first=await load("../michigan/election-night/?demo=1"),d=first.doc;
   const el=x=>d.getElementById(x);
   check(d.querySelectorAll("#countyRows tr").length===83,"All 83 counties displayed");
+  for(let i=0;i<100&&d.querySelectorAll("#countyBoundaryMap path").length!==83;i++)await new Promise(r=>setTimeout(r,85));
+  check(d.querySelectorAll("#countyBoundaryMap path").length===83,"Blank county map renders all 83 Michigan county polygons");
+  check(!!el("precinctBoundaryMap")&&!!el("precinctBoundaryMap").getContext("2d"),"2026 precinct boundary map canvas is initialized");
+  check(d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length>0,"Demo fixture shades only counties with fixture returns");
+  check(d.querySelector("#precinctGISLink").href.includes("c349bc2bb6c2468594d341a09f520ea8"),"Precinct map links to official 2026 geometry source");
+  const oakland=d.querySelector('#countyBoundaryMap [data-county="Oakland"]');
+  oakland.click();
+  check(el("mapCountySelection").textContent==="Oakland","County click zooms precinct geography to selected county");
+  el("countyAll").click();
+  check(el("mapCountySelection").textContent==="Statewide","Statewide county map reset works");
   check(d.querySelectorAll("#officialSources .source-shortcuts a").length>=6,"Direct official Michigan results sources available");
   check(d.querySelector("#officialSources details.compact-details")!==null,"Detailed provenance is collapsed by default");
   check(d.getElementById("refreshNow")!==null,"Manual refresh control is present");
@@ -30,6 +40,10 @@
   el("precinctSearch").value="Wayne";el("precinctSearch").dispatchEvent(new first.frame.contentWindow.Event("input",{bubbles:true}));
   check(d.querySelectorAll("#precinctRows tr").length===1,"Precinct filter works");
   const second=await load("../michigan/election-night/"),real=second.doc;
+  for(let i=0;i<100&&real.querySelectorAll("#countyBoundaryMap path").length!==83;i++)await new Promise(r=>setTimeout(r,85));
+  check(real.querySelectorAll("#countyBoundaryMap path").length===83,"Real pre-election page also renders 83 county map outlines");
+  check(real.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length===0,"Real pre-election county map stays neutral with no reported votes");
+
   if(Date.now()<new Date("2026-11-03T20:00:00-05:00").getTime()){
    check(real.getElementById("statusHeading").textContent.includes("PRE-ELECTION"),"No live results presented before poll closing");
    check(real.getElementById("precinctCount").textContent==="—","No fabricated pre-election precinct counts");
