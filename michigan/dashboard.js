@@ -10,9 +10,12 @@ const ui={source:'take',mode:'weighted',turnout:1,mapMode:'projection',county:'W
 let prediction=null;
 let mapCreated=false, extent=null;
 const sources={rcp:.40,ddhq:.29,win270:.21,silver:.10};
+const sourceCache=new Map(),correctionCache=new Map();
+let turnoutFrame=0;
 
 function inputSource(r,key) {
- if(key!=='take') return r.sources[key];
+ if(key!=='take')return r.sources[key];
+ if(sourceCache.has(r.code))return sourceCache.get(r.code);
  const found=[],seen=new Set();
  for(const [s,w] of Object.entries(sources)) {
   const o=r.sources[s];
@@ -26,16 +29,24 @@ function inputSource(r,key) {
   found.push({id:s,v:Number(o.value),weight});
  }
  const sum=found.reduce((x,y)=>x+y.weight,0);
- if(!sum)return {...(r.sources.rcp||r.sources.average),proxy:true,nInputs:0,origin:'Proxy fallback'};
- return {value:Math.round(found.reduce((x,y)=>x+y.v*y.weight,0)/sum*100)/100,
+ if(!sum){
+  const fallback={...(r.sources.rcp||r.sources.average),proxy:true,nInputs:0,origin:'Proxy fallback'};
+  sourceCache.set(r.code,fallback);return fallback;
+ }
+ const result={value:Math.round(found.reduce((x,y)=>x+y.v*y.weight,0)/sum*100)/100,
          nInputs:found.length,origin:'Ervin’s Take ('+found.map(x=>x.id).join(', ')+')',
          proxy:found.length<2,date:'current model inputs'};
+ sourceCache.set(r.code,result);return result;
 }
-const correction=(mode)=> {
+const correction=mode=>{
  if(mode==='raw')return 0;
- if(mode==='original')return Number(mi.correction)||0;
- if(mode==='shrink')return (Number(mi.correction)||0)*mi.historical.length/(mi.historical.length+3);
- return window.ERVIN_ENGINE.forecast(config.calibrationEvents||[],mi,2026).correction;
+ if(correctionCache.has(mode))return correctionCache.get(mode);
+ let value=0;
+ if(mode==='original')value=Number(mi.correction)||0;
+ else if(mode==='shrink')value=(Number(mi.correction)||0)*mi.historical.length/(mi.historical.length+3);
+ else value=window.ERVIN_ENGINE.forecast(config.calibrationEvents||[],mi,2026).correction;
+ correctionCache.set(mode,value);
+ return value;
 };
 function statewide(source,mode) {
  const p=inputSource(mi,source),offset=correction(mode);
@@ -76,6 +87,7 @@ function simulate(source,mode,turnout){
  return {counties,ballots,D,R,O,actualMargin:100*(D-R)/ballots,target:statewideInput.margin,source,mode,swing:swing*100,details:statewideInput};
 }
 function updatePrediction(){
+ if(turnoutFrame){cancelAnimationFrame(turnoutFrame);turnoutFrame=0;}
  prediction=simulate(ui.source,ui.mode,ui.turnout);
  $('stateMargin').textContent=marginLabel(prediction.actualMargin,2);
  $('stateMargin').className=prediction.actualMargin>=0?'blue':'red';
@@ -226,13 +238,21 @@ function download(){
 function bind(){
  $('source').addEventListener('change',e=>{ui.source=e.target.value;updatePrediction();paintScenario()});
  $('mode').addEventListener('change',e=>{ui.mode=e.target.value;updatePrediction()});
- $('turnout').addEventListener('input',e=>{ui.turnout=Number(e.target.value)/100;updatePrediction()});
+ $('turnout').addEventListener('input',e=>{
+  const t=Number(e.target.value)/100;
+  if(!Number.isFinite(t)||t<=0)return;
+  ui.turnout=t;
+  $('turnoutRead').textContent=Math.round(t*100)+'%';
+  if(!turnoutFrame)turnoutFrame=requestAnimationFrame(()=>{
+   turnoutFrame=0;updatePrediction();
+  });
+ });
  $('mapMode').addEventListener('change',e=>{ui.mapMode=e.target.value;paintMap()});
  $('countyPicker').addEventListener('change',e=>{const c=countyData.find(c=>c.name.toLowerCase()===e.target.value.replace(/ county$/i,'').toLowerCase());if(c)setCounty(c.name)});
  $('countyFilter').addEventListener('input',e=>{ui.filter=e.target.value;paintTable()});
  $('countySort').addEventListener('change',e=>{ui.sort=e.target.value;paintTable()});
  $('countyRows').addEventListener('click',e=>{const row=e.target.closest('tr[data-county]');if(row){setCounty(row.dataset.county);$('countyDetail').scrollIntoView({behavior:'smooth',block:'nearest'})}});
- $('scenarioRows').addEventListener('click',e=>{const row=e.target.closest('tr[data-source]');if(row){ui.source=row.dataset.source;$('source').value=ui.source;updatePrediction()}});
+ $('scenarioRows').addEventListener('click',e=>{const row=e.target.closest('tr[data-source]');if(row){ui.source=row.dataset.source;$('source').value=ui.source;updatePrediction();paintScenario()}});
  $('download').addEventListener('click',download);
  $('themeToggle').addEventListener('click',()=>document.body.classList.toggle('light'));
 }
