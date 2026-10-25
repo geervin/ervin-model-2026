@@ -1,0 +1,45 @@
+name: Publish Michigan election-night precinct reports
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'michigan/election-night/imports/*.csv'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  publish-precincts:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Validate and ingest attributed precinct reports
+        run: |
+          python3 scripts/ingest_michigan_election_night.py
+          python3 -m json.tool michigan/election-night/results.json >/dev/null
+          node --check michigan/election-night/app.js
+      - name: Commit updated precinct snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add michigan/election-night/results.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update source-attributed Michigan election-night precinct returns"
+            git pull --rebase origin main
+            git push
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
