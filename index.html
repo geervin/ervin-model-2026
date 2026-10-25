@@ -23,7 +23,7 @@
 @media(max-width:670px){.topbar{backdrop-filter:none}.tile.tracked:hover{transform:none}.shell{contain:layout style}}@media(prefers-reduced-motion:reduce){.tile{transition:none!important}.topbar{backdrop-filter:none}} 
 </style></head>
 <body>
-<header class="topbar"><div class="shell navinner"><div class="logo"><div class="logo-symbol" aria-hidden="true">E</div><span>ERVIN <b>MODEL</b></span></div><nav class="navend" aria-label="Page sections"><a href="#map-area">THE MAP</a><a href="#races">17 RACES</a><a href="#methodology">METHODOLOGY</a><span class="badge"><span class="dot-live"></span><span id="freshnessLabel">OCT 23 RESEARCH SNAPSHOT</span></span><button class="button ghost" id="themeToggle" aria-label="Toggle light or dark appearance">☀ / ☾</button></nav></div></header>
+<header class="topbar"><div class="shell navinner"><div class="logo"><div class="logo-symbol" aria-hidden="true">E</div><span>ERVIN <b>MODEL</b></span></div><nav class="navend" aria-label="Page sections"><a href="#map-area">THE MAP</a><a href="#races">17 RACES</a><a href="michigan/" title="Michigan county-by-county Senate projection">MICHIGAN · 83 COUNTIES</a><a href="#methodology">METHODOLOGY</a><span class="badge"><span class="dot-live"></span><span id="freshnessLabel">OCT 23 RESEARCH SNAPSHOT</span></span><button class="button ghost" id="themeToggle" aria-label="Toggle light or dark appearance">☀ / ☾</button></nav></div></header>
 <main class="shell">
 <section class="hero"><div><div class="kicker">2026 U.S. Senate • Election intelligence dashboard</div><h1>Past polling errors.<br><em>Present predictions.</em></h1><p class="lede">The Ervin Model adjusts today's Senate poll averages by each state's historical polling error. Compare five source views, examine the evidence behind each correction, and explore uncertainty rather than guess at certainty.</p></div><div class="hero-right"><div class="eyebrow">Countdown to Election Day</div><strong id="countdown">11 days</strong><small id="countdownFoot">Tuesday, November 3, 2026 · Archived research snapshot</small><button class="button primary" id="exportCSV">↓ Export current calculations</button></div></section>
 <div class="refresh-strip" role="status" aria-live="polite"><span class="refresh-symbol" aria-hidden="true">↻</span><span id="refreshDetails">This downloaded edition is a dated polling snapshot. An authorized GitHub Pages deployment enables scheduled checks every six hours.</span><a href="refresh_log.json" id="refreshAuditLink" hidden target="_blank" rel="noopener noreferrer">Refresh audit ↗</a></div><div class="divider"></div>
@@ -2983,7 +2983,7 @@ function selected(){return states.find(s=>s.code===state.selected)||states[0]}
 function renderTabs(){
  const tabs=$('tabs');
  if(!tabs.children.length){
-  tabs.innerHTML=CONFIG.sourceList.map(s=>`<button type="button" class="tab" role="tab" aria-selected="false" data-source="${esc(s.key)}">${esc(s.title)}</button>`).join('');
+  tabs.innerHTML=CONFIG.sourceList.map(s=>`<button type="button" class="tab" role="tab" aria-selected="false" data-source="${esc(s.key)}">${esc(s.title)}</button>`).join('')+`<a class="tab" role="link" href="michigan/" title="Michigan county-level forecast and map">Michigan · 83 counties ↗</a>`;
   tabs.addEventListener('click',event=>{
    const button=event.target.closest('button[data-source]');
    if(!button||state.source===button.dataset.source)return;
