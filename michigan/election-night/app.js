@@ -73,6 +73,8 @@ async function readPrecinct(){
   else if(!rows.length)banner("waiting","AWAITING PRECINCT RETURNS","No verified 2026 precinct-level results have reached this website. Official county clerks may already have newer information.");
   else banner("live","UNOFFICIAL PRECINCT RETURNS","Displaying "+rows.length+" directly sourced reporting units from "+new Set(rows.map(p=>p.county)).size+" counties, as last published by their source clerks.");
   updateUI();
+  // Geography never counts projected votes. Publish only validated source rows.
+  window.dispatchEvent(new CustomEvent("ervin:results",{detail:{precincts:rows}}));
  }catch(e){banner("waiting", "PRECINCT FEED UNAVAILABLE", "Latest precinct feed could not be verified: "+e.message+". Previous available data is retained and must be treated as potentially stale.");}
  finally{busy=false}
 }
