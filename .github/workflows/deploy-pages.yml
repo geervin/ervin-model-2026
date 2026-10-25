@@ -37,6 +37,7 @@ jobs:
           node --check michigan/dashboard.js
           node --check michigan/election-night/app.js
           python3 -m json.tool michigan/election-night/results.json >/dev/null
+          python3 -m unittest discover -s tests -p test_michigan_ingest.py -v
           python3 -c 'import json,pathlib; a=json.loads(pathlib.Path("michigan/county_history.json").read_text()); b=json.loads(pathlib.Path("michigan/counties.geojson").read_text()); c=a["counties"]; assert len(c)==len(b["features"])==83; assert sum(x["senate2024"]["d"] for x in c)==2712686; assert sum(x["senate2024"]["r"] for x in c)==2693680; assert sum(x["president2024"]["d"] for x in c)==2736533; assert sum(x["president2024"]["r"] for x in c)==2816636; assert len(set(x["name"] for x in c))==83; print("PASS: 83 complete counties, 2024 statewide returns and geometry")'
       - name: Browser smoke test (Chromium)
         run: |
