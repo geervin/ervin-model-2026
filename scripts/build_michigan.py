@@ -26,10 +26,10 @@ URLS = {
 }
 
 def clean(s):
- return re.sub(r"\\[[^]]+\\]","",s.replace("\u00a0"," ").replace("−","-")).strip()
+ return re.sub(r"\[[^]]+\]","",s.replace("\u00a0"," ").replace("−","-")).strip()
 def number(s):
  s=clean(s).replace(",","").replace("%","").replace("−","-")
- match=re.search(r"-?\\d+(?:\\.\\d+)?",s)
+ match=re.search(r"-?\d+(?:\.\d+)?",s)
  return float(match.group(0)) if match else None
 
 def get_rows(label,url):
@@ -107,7 +107,7 @@ features=[]
 for f in geo["features"]:
  name=f["properties"].get("NAME") or f["properties"].get("Name")
  if not name:continue
- name=re.sub(r"\\s+County$","",name,flags=re.I).strip()
+ name=re.sub(r"\s+County$","",name,flags=re.I).strip()
  if name not in COUNTIES: continue
  geom=shape(f["geometry"]).simplify(.012,preserve_topology=True)
  features.append({"type":"Feature","properties":{"name":name},"geometry":mapping(geom)})
