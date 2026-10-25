@@ -51,6 +51,8 @@ jobs:
           python3 -c 'from pathlib import Path; import re,sys; html=Path("/tmp/ervin-smoke.html").read_text(); m=re.search(r"<pre[^>]*data-status=\"(PASS|FAIL)\"[^>]*>(.*?)</pre>",html,re.S); print((re.sub(r"<[^>]+>","",m.group(2)) if m else "Missing browser result")[:4000]); sys.exit(0 if m and m.group(1)=="PASS" else 1)'
           timeout 55s "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --disable-background-networking --no-first-run --virtual-time-budget=11000 --dump-dom http://127.0.0.1:8765/tests/michigan_smoke.html > /tmp/michigan-smoke.html 2>/tmp/michigan-chrome.err
           python3 -c 'from pathlib import Path; import re,sys; html=Path("/tmp/michigan-smoke.html").read_text(); m=re.search(r"<pre[^>]*data-status=\"(PASS|FAIL)\"[^>]*>(.*?)</pre>",html,re.S); print((re.sub(r"<[^>]+>","",m.group(2)) if m else "Missing Michigan browser result")[:4000]); sys.exit(0 if m and m.group(1)=="PASS" else 1)'
+          timeout 55s "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --disable-background-networking --no-first-run --virtual-time-budget=11000 --dump-dom http://127.0.0.1:8765/tests/michigan_election_night_smoke.html > /tmp/mi-night-smoke.html 2>/tmp/mi-night-chrome.err
+          python3 -c 'from pathlib import Path; import re,sys; html=Path("/tmp/mi-night-smoke.html").read_text(); m=re.search(r"<pre[^>]*data-status=\"(PASS|FAIL)\"[^>]*>(.*?)</pre>",html,re.S); print((re.sub(r"<[^>]+>","",m.group(2)) if m else "Missing Michigan election-night result")[:4000]); sys.exit(0 if m and m.group(1)=="PASS" else 1)'
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
