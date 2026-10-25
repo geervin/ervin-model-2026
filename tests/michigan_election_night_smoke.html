@@ -50,8 +50,16 @@
    check(real.getElementById("precinctCount").textContent==="—","No fabricated pre-election precinct counts");
    check(real.getElementById("refreshNow").disabled,"Pre-election refresh button correctly disabled");
   }
+  let gisMessage="2026 precinct GIS: not tested";
+  try{
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),7000);
+   const url="https://services3.arcgis.com/dxRQUfTDNtfqZ301/arcgis/rest/services/2026_Voting_Precincts/FeatureServer/0/query?"+new URLSearchParams({where:"1=1",outFields:"*",returnGeometry:"false",resultRecordCount:"1",f:"geojson"});
+   const res=await fetch(url,{mode:"cors",signal:controller.signal});clearTimeout(timer);
+   const data=await res.json();
+   gisMessage="2026 precinct GIS probe: HTTP "+res.status+"; feature count "+(data.features?.length??"unknown")+"; error "+(data.error?.message||"none");
+  }catch(err){gisMessage="2026 precinct GIS probe unavailable from CI browser: "+err.message;}
   out.dataset.status="PASS";
-  out.textContent="PASS "+checks.length+" election-night browser checks\n"+checks.map(x=>"✓ "+x).join("\n");
+  out.textContent="PASS "+checks.length+" election-night browser checks\n"+checks.map(x=>"✓ "+x).join("\n")+"\n"+gisMessage;
  }catch(e){out.dataset.status="FAIL";out.textContent="FAIL "+e.stack}
 })();
 </script></body></html>
