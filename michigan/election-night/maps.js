@@ -7,7 +7,7 @@
 const $=id=>document.getElementById(id);
 const GIS="https://services3.arcgis.com/dxRQUfTDNtfqZ301/arcgis/rest/services/2026_Voting_Precincts/FeatureServer/0";
 const SOURCE="https://www.arcgis.com/home/item.html?id=c349bc2bb6c2468594d341a09f520ea8";
-const W=880,H=595,BOUNDS=[-90.85,41.4,-81.8,48.75];
+const W=880,H=680,BOUNDS=[-90.85,41.4,-81.8,48.75];
 let counties=[],features=[],selected="",results=[],loaded=false,loading=false,lastRender=0;
 const normalize=x=>String(x||"").trim().toLowerCase().replace(/\b(precinct|pct|ward|city|township|town|charter)\b/g,"").replace(/[^a-z0-9]/g,"");
 const byCounty=new Map(),byFips=new Map();
