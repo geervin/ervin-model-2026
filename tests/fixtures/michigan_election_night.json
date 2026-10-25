@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "election": "2026-11-03",
+  "office": "US Senate",
+  "status": "demonstration_only",
+  "updatedAt": "2026-11-03T21:17:00-05:00",
+  "precincts": [
+    {
+      "county": "Wayne",
+      "precinct": "DEMO - Detroit Pct 1",
+      "dem": 1234,
+      "rep": 532,
+      "other": 18,
+      "asOf": "2026-11-03T20:22:00-05:00",
+      "sourceUrl": "https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county"
+    },
+    {
+      "county": "Oakland",
+      "precinct": "DEMO - Troy Pct 2",
+      "dem": 802,
+      "rep": 917,
+      "other": 13,
+      "asOf": "2026-11-03T20:32:00-05:00",
+      "sourceUrl": "https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county"
+    },
+    {
+      "county": "Kent",
+      "precinct": "DEMO - Grand Rapids Pct 3",
+      "dem": 710,
+      "rep": 540,
+      "other": 12,
+      "asOf": "2026-11-03T20:42:00-05:00",
+      "sourceUrl": "https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county"
+    }
+  ]
+}
