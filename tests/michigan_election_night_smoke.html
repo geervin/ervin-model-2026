@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Michigan election-night regression</title></head><body>
+<pre id="report" data-status="RUNNING">Checking the election-night board…</pre><script>
+(async()=>{
+ const out=document.getElementById('report'),checks=[];
+ const check=(ok,name)=>{if(!ok)throw Error(name);checks.push(name)};
+ async function load(path){
+  const frame=document.createElement('iframe');frame.style.cssText='width:1200px;height:950px';
+  const onload=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(Error("iframe failed"))});
+  frame.src=path;document.body.append(frame);await onload;
+  const doc=frame.contentDocument,ready=()=>doc.getElementById("countyRows")?.querySelectorAll("tr").length===83;
+  for(let i=0;i<150&&!ready();i++)await new Promise(r=>setTimeout(r,90));
+  return {frame,doc};
+ }
+ try{
+  const first=await load("../michigan/election-night/?demo=1"),d=first.doc;
+  const el=x=>d.getElementById(x);
+  check(d.querySelectorAll("#countyRows tr").length===83,"All 83 counties displayed");
+  check(el("statusHeading").textContent.includes("DEMONSTRATION"),"Demo results unmistakably identified");
+  check(el("precinctRows").querySelectorAll("tr").length===3,"Three fixture precinct/counting-unit rows loaded");
+  check(el("reportedD").textContent==="2,746","Fixture Democratic votes summed correctly");
+  check(el("reportedR").textContent==="1,989","Fixture Republican votes summed correctly");
+  check(el("reportedMargin").textContent==="757 D","Reported vote margin derives from fixture, not forecast");
+  check(el("externalStatus").textContent.includes("demo"),"Live statewide totals never mixed into test fixture");
+  check(d.querySelectorAll("#precinctRows a[href^='https://']").length===3,"Every reporting unit retains a source link");
+  el("countySearch").value="Oakland";el("countySearch").dispatchEvent(new first.frame.contentWindow.Event("input",{bubbles:true}));
+  check(d.querySelectorAll("#countyRows tr").length===1,"County filter works");
+  el("precinctSearch").value="Wayne";el("precinctSearch").dispatchEvent(new first.frame.contentWindow.Event("input",{bubbles:true}));
+  check(d.querySelectorAll("#precinctRows tr").length===1,"Precinct filter works");
+  const second=await load("../michigan/election-night/"),real=second.doc;
+  if(Date.now()<new Date("2026-11-03T20:00:00-05:00").getTime()){
+   check(real.getElementById("statusHeading").textContent.includes("PRE-ELECTION"),"No live results presented before poll closing");
+   check(real.getElementById("precinctCount").textContent==="—","No fabricated pre-election precinct counts");
+  }
+  out.dataset.status="PASS";
+  out.textContent="PASS "+checks.length+" election-night browser checks\n"+checks.map(x=>"✓ "+x).join("\n");
+ }catch(e){out.dataset.status="FAIL";out.textContent="FAIL "+e.stack}
+})();
+</script></body></html>
