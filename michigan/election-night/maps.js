@@ -88,8 +88,13 @@ function drawPrecincts(){
   tip.textContent=loading?"Loading official 2026 precinct geography…":"2026 precinct boundaries are not loaded. County outlines shown as a neutral fallback.";
   return;
  }
- let drawn=0,reported=0,unmatched=0;
- const countByCounty=resultsByCounty();
+ let drawn=0,reported=0;
+ const matching=new Map();
+ for(const row of results){
+   const key=row.county.toLowerCase()+"|"+normalize(row.precinct);
+   const candidates=matching.get(key)||[];
+   candidates.push(row);matching.set(key,candidates);
+ }
  // Substantial polygon count is painted only on data change/selection,
  // never on the 30-second network timer unless new returns arrive.
  for(const f of features){
@@ -99,10 +104,11 @@ function drawPrecincts(){
   const bbox=extent(f.geometry);
   if(bbox[2]<box[0]||bbox[0]>box[2]||bbox[3]<box[1]||bbox[1]>box[3])continue;
   const shape=new Path2D(path(f.geometry,box));
-  const records=results.filter(x=>x.county.toLowerCase()===countyName.toLowerCase()&&[
-    p.Precinct_Short_Name,p.Precinct_Long_Name,p.PRECINCTID,p.Precinct,p.NAME
-  ].some(v=>v&&normalize(v)===normalize(x.precinct)));
-  const matched=records.length===1?records[0]:null;
+  const keys=[p.Precinct_Short_Name,p.Precinct_Long_Name,p.PRECINCTID,p.Precinct,p.NAME]
+     .filter(Boolean).map(v=>countyName.toLowerCase()+"|"+normalize(v));
+  const matches=keys.flatMap(k=>matching.get(k)||[]);
+  const unique=[...new Set(matches)];
+  const matched=unique.length===1?unique[0]:null;
   ctx.fillStyle=matched?(matched.dem>matched.rep?"#275d9b":matched.rep>matched.dem?"#993e50":"#65596b"):"#1b3346";
   ctx.strokeStyle=selected?"#89a0b1":"#7690a3";
   ctx.lineWidth=selected?.62:.28;
@@ -155,7 +161,15 @@ async function start(){
   if(data.type!=="FeatureCollection"||data.features?.length!==83)throw Error("County file did not contain 83 regions");
   counties=data.features;
   // Michigan county FIPS: 001,003,...165 in alphabetical order.
-  counties.slice().sort((a,b)=>a.properties.name.localeCompare(b.properties.name)).forEach((c,i)=>byFips.set(String(1+2*i).padStart(3,"0"),c.properties.name));
+  const sorted=counties.slice().sort((a,b)=>a.properties.name.localeCompare(b.properties.name));
+  // Michigan's FIPS sequence puts "St." immediately after Saginaw, before
+  // Sanilac (not the position produced by ordinary JavaScript collation).
+  const saint=sorted.filter(c=>c.properties.name.startsWith("St."));
+  const other=sorted.filter(c=>!c.properties.name.startsWith("St."));
+  const insert=other.findIndex(c=>c.properties.name==="Sanilac");
+  if(saint.length!==2||insert<0)throw Error("Unexpected Michigan county order");
+  other.splice(insert,0,...saint);
+  other.forEach((c,i)=>byFips.set(String(1+2*i).padStart(3,"0"),c.properties.name));
   drawCounties();drawPrecincts();
   const idle=window.requestIdleCallback||((fn)=>setTimeout(fn,1200));
   idle(()=>fetchPrecinctGeography(),{timeout:4000});
