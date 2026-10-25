@@ -28,6 +28,7 @@
   check(d.querySelectorAll("#officialSources .source-shortcuts a").length>=6,"Direct official Michigan results sources available");
   check(d.querySelector("#officialSources details.compact-details")!==null,"Detailed provenance is collapsed by default");
   check(d.getElementById("refreshNow")!==null,"Manual refresh control is present");
+  for(let i=0;i<130&&!el("statusHeading").textContent.includes("DEMONSTRATION");i++)await new Promise(r=>setTimeout(r,95));
   check(el("statusHeading").textContent.includes("DEMONSTRATION"),"Demo results unmistakably identified");
   check(el("precinctRows").querySelectorAll("tr").length===3,"Three fixture precinct/counting-unit rows loaded");
   check(el("reportedD").textContent==="2,746","Fixture Democratic votes summed correctly");
