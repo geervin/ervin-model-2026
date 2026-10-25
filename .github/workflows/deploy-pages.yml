@@ -30,6 +30,10 @@ jobs:
           node --check scripts/backtest_calibration.js
           node scripts/validate_calibration.js
           node scripts/backtest_calibration.js
+      - name: Validate Michigan county baselines and frontend script
+        run: |
+          node --check michigan/dashboard.js
+          python3 -c 'import json,pathlib; a=json.loads(pathlib.Path("michigan/county_history.json").read_text()); b=json.loads(pathlib.Path("michigan/counties.geojson").read_text()); c=a["counties"]; assert len(c)==len(b["features"])==83; assert sum(x["senate2024"]["d"] for x in c)==2712686; assert sum(x["senate2024"]["r"] for x in c)==2693680; assert sum(x["president2024"]["d"] for x in c)==2736533; assert sum(x["president2024"]["r"] for x in c)==2816636; assert len(set(x["name"] for x in c))==83; print("PASS: 83 complete counties, 2024 statewide returns and geometry")'
       - name: Browser smoke test (Chromium)
         run: |
           set -euo pipefail
@@ -41,6 +45,8 @@ jobs:
           sleep 1
           timeout 55s "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --disable-background-networking --no-first-run --virtual-time-budget=10000 --dump-dom http://127.0.0.1:8765/tests/browser_smoke.html > /tmp/ervin-smoke.html 2>/tmp/ervin-chrome.err
           python3 -c 'from pathlib import Path; import re,sys; html=Path("/tmp/ervin-smoke.html").read_text(); m=re.search(r"<pre[^>]*data-status=\"(PASS|FAIL)\"[^>]*>(.*?)</pre>",html,re.S); print((re.sub(r"<[^>]+>","",m.group(2)) if m else "Missing browser result")[:4000]); sys.exit(0 if m and m.group(1)=="PASS" else 1)'
+          timeout 55s "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --disable-background-networking --no-first-run --virtual-time-budget=11000 --dump-dom http://127.0.0.1:8765/tests/michigan_smoke.html > /tmp/michigan-smoke.html 2>/tmp/michigan-chrome.err
+          python3 -c 'from pathlib import Path; import re,sys; html=Path("/tmp/michigan-smoke.html").read_text(); m=re.search(r"<pre[^>]*data-status=\\"(PASS|FAIL)\\"[^>]*>(.*?)</pre>",html,re.S); print((re.sub(r"<[^>]+>","",m.group(2)) if m else "Missing Michigan browser result")[:4000]); sys.exit(0 if m and m.group(1)=="PASS" else 1)'
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
