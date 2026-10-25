@@ -109,6 +109,7 @@ for f in geo["features"]:
  name=f["properties"].get("NAME") or f["properties"].get("Name")
  if not name:continue
  name=re.sub(r"\s+County$","",name,flags=re.I).strip()
+ name=re.sub(r"^(?:Saint|St)\\.?\\s+", "St. ", name, flags=re.I)
  if name not in COUNTIES: continue
  by_county.setdefault(name,[]).append(shape(f["geometry"]))
 features=[]
