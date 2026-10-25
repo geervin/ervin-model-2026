@@ -21,7 +21,7 @@
   check(d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length>0,"Demo fixture shades only counties with fixture returns");
   check(d.querySelector("#precinctGISLink").href.includes("c349bc2bb6c2468594d341a09f520ea8"),"Precinct map links to official 2026 geometry source");
   const oakland=d.querySelector('#countyBoundaryMap [data-county="Oakland"]');
-  oakland.click();
+  oakland.dispatchEvent(new first.frame.contentWindow.MouseEvent("click",{bubbles:true}));
   check(el("mapCountySelection").textContent==="Oakland","County click zooms precinct geography to selected county");
   el("countyAll").click();
   check(el("mapCountySelection").textContent==="Statewide","Statewide county map reset works");
