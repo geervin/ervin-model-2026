@@ -1,9 +1,16 @@
 {
-  "checkedAt": "2026-10-24T20:46:21.371628+00:00",
+  "checkedAt": "2026-10-25T04:37:57.453749+00:00",
   "pagesParsed": 15,
-  "changes": 0,
+  "changes": 1,
   "observationsFound": 55,
   "errors": [],
-  "updated": [],
+  "updated": [
+    {
+      "state": "NC",
+      "source": "rcp",
+      "margin": 10.6,
+      "published": "Oct 22"
+    }
+  ],
   "sources": "Wikipedia 2026 general-election aggregate tables; matching candidate pair required"
 }
