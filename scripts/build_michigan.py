@@ -73,8 +73,8 @@ def parse_contest(label,items):
    d,r,total=n[idx],n[idx+2],n[-1]
   elif label=="president2020":
    idx=0 if n[0]>100 else 1
-   # Trump then Biden in typical table, but print and verify against statewide sums
-   d,r,total=n[idx+2],n[idx],n[-1]
+   # This historical source prints Biden (D) before Trump (R).
+   d,r,total=n[idx],n[idx+2],n[-1]
   else:raise ValueError(label)
   if not all(v is not None and v>=0 for v in [d,r,total]) or d+r>total*1.005:raise ValueError(f"Bad {label} {county} {cols}")
   final[county]={"d":round(d),"r":round(r),"total":round(total)}
@@ -103,16 +103,22 @@ geo_url="https://www.mcgi.state.mi.us/maps/rest/services/BaseMap/County_Twp_City
 params={"where":"1=1","outFields":"NAME","returnGeometry":"true","outSR":"4326","f":"geojson"}
 resp=requests.get(geo_url,params=params,headers=UA,timeout=90);resp.raise_for_status()
 geo=resp.json()
-features=[]
+from shapely.ops import unary_union
+by_county={}
 for f in geo["features"]:
  name=f["properties"].get("NAME") or f["properties"].get("Name")
  if not name:continue
  name=re.sub(r"\s+County$","",name,flags=re.I).strip()
  if name not in COUNTIES: continue
- geom=shape(f["geometry"]).simplify(.012,preserve_topology=True)
+ by_county.setdefault(name,[]).append(shape(f["geometry"]))
+features=[]
+for name in COUNTIES:
+ shapes=by_county.get(name,[])
+ if not shapes: continue
+ geom=unary_union(shapes).simplify(.012,preserve_topology=True)
  features.append({"type":"Feature","properties":{"name":name},"geometry":mapping(geom)})
-print("GEO",len(features),flush=True)
-if len(features)!=83:raise ValueError("Missing Michigan county geometries")
+print("GEO",len(features),"source polygons",sum(len(v) for v in by_county.values()),flush=True)
+if len(features)!=83:raise ValueError(f"Missing county boundaries: {set(COUNTIES)-set(by_county)}")
 out={"metadata":{"retrievedAt":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"sources":URLS,"geometrySource":geo_url,"note":"Certified 2024 Michigan statewide totals cross-checked; county tables are secondary transcriptions of official Michigan results. 2026 results are modeled, not actual."},"counties":[{"name":c,**{label:dataset[label].get(c) for label in dataset}} for c in COUNTIES]}
 (OUT/"county_history.json").write_text(json.dumps(out,separators=(",",":"))+"\n")
 (OUT/"counties.geojson").write_text(json.dumps({"type":"FeatureCollection","features":features},separators=(",",":"))+"\n")
