@@ -22,7 +22,7 @@ function verifyFeed(payload){
   if(![p.dem,p.rep,p.other].every(numeric))throw Error("Invalid precinct vote count");
   if(!validHttp(p.sourceUrl)||Number.isNaN(Date.parse(p.asOf)))throw Error("Missing attributed precinct source and timestamp");
   const time=new Date(p.asOf).getTime();
-  if(time<liveStart||time>Date.now()+300000)throw Error("Precinct timestamp outside valid election period");
+  if(!demo&&(time<liveStart||time>Date.now()+300000))throw Error("Precinct timestamp outside valid election period");
   const key=p.county.toLowerCase()+"|"+p.precinct.trim().toLowerCase();
   if(seen.has(key))throw Error("Duplicate precinct or absentee counting board");
   seen.add(key);clean.push({...p,precinct:p.precinct.trim()});
@@ -115,10 +115,11 @@ async function initialize(){
   $("countySearch").addEventListener("input",e=>{search=e.target.value;updateUI()});
   $("precinctSearch").addEventListener("input",e=>{precinctSearch=e.target.value;updateUI()});
   updateUI();
-  if(demo||Date.now()>=liveStart)await Promise.all([readPrecinct(),readState()]);
+  if(demo){$("externalStatus").textContent="Disabled for demo";$("externalVotes").textContent="Synthetic fixture mode: no live statewide source is polled.";await readPrecinct();}
+  else if(Date.now()>=liveStart)await Promise.all([readPrecinct(),readState()]);
   else banner("waiting","PRE-ELECTION · AWAITING NOVEMBER 3","The board is ready. No 2026 Senate votes are available before polling closes.");
   setInterval(tick,1000);
-  document.addEventListener("visibilitychange",()=>{if(!document.hidden&&Date.now()>=liveStart){checkDeadline=Date.now()+30000;readPrecinct();readState()}});
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden&&(demo||Date.now()>=liveStart)){checkDeadline=Date.now()+30000;readPrecinct();if(!demo)readState()}});
  }catch(e){banner("waiting","DASHBOARD LOAD ERROR",e.message);console.error(e);}
 }
 await initialize();
