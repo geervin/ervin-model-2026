@@ -15,6 +15,9 @@
   const first=await load("../michigan/election-night/?demo=1"),d=first.doc;
   const el=x=>d.getElementById(x);
   check(d.querySelectorAll("#countyRows tr").length===83,"All 83 counties displayed");
+  check(d.querySelectorAll("#officialSources .source-shortcuts a").length>=6,"Direct official Michigan results sources available");
+  check(d.querySelector("#officialSources details.compact-details")!==null,"Detailed provenance is collapsed by default");
+  check(d.getElementById("refreshNow")!==null,"Manual refresh control is present");
   check(el("statusHeading").textContent.includes("DEMONSTRATION"),"Demo results unmistakably identified");
   check(el("precinctRows").querySelectorAll("tr").length===3,"Three fixture precinct/counting-unit rows loaded");
   check(el("reportedD").textContent==="2,746","Fixture Democratic votes summed correctly");
@@ -30,6 +33,7 @@
   if(Date.now()<new Date("2026-11-03T20:00:00-05:00").getTime()){
    check(real.getElementById("statusHeading").textContent.includes("PRE-ELECTION"),"No live results presented before poll closing");
    check(real.getElementById("precinctCount").textContent==="—","No fabricated pre-election precinct counts");
+   check(real.getElementById("refreshNow").disabled,"Pre-election refresh button correctly disabled");
   }
   out.dataset.status="PASS";
   out.textContent="PASS "+checks.length+" election-night browser checks\n"+checks.map(x=>"✓ "+x).join("\n");
