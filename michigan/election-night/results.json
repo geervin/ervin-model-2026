@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "election": "2026-11-03",
+  "office": "US Senate",
+  "status": "awaiting_verified_precinct_results",
+  "updatedAt": null,
+  "precincts": [],
+  "sourcePolicy": "Only manually reviewed attributed 2026 county clerk precinct results; no simulated returns in this feed."
+}
