@@ -19,6 +19,8 @@ CSV_DIR = NIGHT / "imports"
 OUTPUT = NIGHT / "results.json"
 ELECTION_DAY = "2026-11-03"
 CUTOFF = datetime(2026, 11, 3, 20, 0, tzinfo=ZoneInfo("America/Detroit")).astimezone(timezone.utc)
+CENTRAL_COUNTIES = frozenset({"Dickinson", "Gogebic", "Iron", "Menominee"})
+CENTRAL_CUTOFF = datetime(2026, 11, 3, 20, 0, tzinfo=ZoneInfo("America/Chicago")).astimezone(timezone.utc)
 REQUIRED = {"county", "precinct", "dem", "rep", "other", "as_of", "source_url"}
 COUNTIES = {
     c["name"].casefold(): c["name"]
@@ -34,7 +36,7 @@ def value(v, field, file, line):
         raise ValueError(f"{file}:{line}: absurdly large vote count")
     return n
 
-def parse_time(v, file, line):
+def parse_time(v, file, line, county=None):
     try:
         t = datetime.fromisoformat(str(v).replace("Z", "+00:00"))
     except ValueError:
@@ -42,8 +44,9 @@ def parse_time(v, file, line):
     if t.tzinfo is None:
         raise ValueError(f"{file}:{line}: as_of must include timezone")
     utc = t.astimezone(timezone.utc)
-    if utc < CUTOFF:
-        raise ValueError(f"{file}:{line}: vote counts cannot predate 8pm Eastern on November 3")
+    close = CENTRAL_CUTOFF if county in CENTRAL_COUNTIES else CUTOFF
+    if utc < close:
+        raise ValueError(f"{file}:{line}: vote counts for {county or 'Michigan'} cannot predate the county's 8pm local poll closing")
     if utc > datetime.now(timezone.utc):
         raise ValueError(f"{file}:{line}: timestamp is in the future")
     return utc.isoformat().replace("+00:00", "Z")
@@ -74,7 +77,7 @@ def build():
                 dem, rep, other = (value(row[x], x, file, line) for x in ("dem","rep","other"))
                 if dem + rep + other == 0:
                     raise ValueError(f"{file}:{line}: zero-vote rows are unreported, not returns")
-                as_of = parse_time(row["as_of"], file, line)
+                as_of = parse_time(row["as_of"], file, line, county)
                 sources.add(url)
                 entries.append({"county": county, "precinct": precinct, "dem": dem, "rep": rep,
                                 "other": other, "asOf": as_of, "sourceUrl": url})
