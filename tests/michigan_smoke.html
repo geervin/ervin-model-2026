@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Michigan browser smoke</title></head><body><pre id="report" data-status="RUNNING">Michigan dashboard browser tests in progress…</pre>
+<script>
+(async()=>{
+ const output=document.getElementById('report'),checks=[];
+ const check=(condition,message)=>{if(!condition)throw Error(message);checks.push(message)};
+ try{
+  const frame=document.createElement('iframe');frame.style.cssText='width:1200px;height:850px';
+  const loaded=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(Error('Dashboard did not load'))});
+  frame.src='../michigan/index.html';document.body.append(frame);await loaded;
+  const d=frame.contentDocument,w=frame.contentWindow;
+  const $=x=>d.getElementById(x),event=(id,value,type='change')=>{$(id).value=value;$(id).dispatchEvent(new w.Event(type,{bubbles:true}))};
+  for(let n=0;n<100;n++){if($('countyRows')?.querySelectorAll('tr[data-county]').length===83)break;await new Promise(res=>setTimeout(res,120))}
+  check($('countyRows').querySelectorAll('tr[data-county]').length===83,'83 county rows loaded');
+  check($('map').querySelectorAll('path[data-county]').length===83,'83 geographic county shapes loaded');
+  check($('source').options.length===6,'All six model sources available');
+  check($('mode').value==='weighted','Pooled Ervin plus default');
+  check($('countyTrend').textContent.includes('2020 Senate')&&$('countyTrend').textContent.includes('2024 Senate'),'Five historical election series present');
+  const numeric=s=>Number(String(s).replace(/[^0-9-]/g,'')),dVotes=numeric($('stateDem').textContent),rVotes=numeric($('stateRep').textContent),ballots=numeric($('stateVotes').textContent);
+  check(dVotes>1000000&&rVotes>1000000&&ballots>4000000,'Reasonable statewide vote scenario generated');
+  check(dVotes+rVotes<=ballots,'State projected votes conserve total ballots');
+  check(Math.abs(100*(dVotes-rVotes)/ballots-Number($('stateMargin').textContent.replace(/[^0-9.]/g,''))*(String($('stateMargin').textContent).startsWith('R')?-1:1))<.06,'County projected totals match stated statewide forecast');
+  const initial=$('stateMargin').textContent;
+  event('source','ddhq');check($('source').value==='ddhq','DDHQ switch works');
+  event('mode','original');check($('stateMargin').textContent!==initial,'Historical mode switch updates forecast');
+  event('turnout','115','input');check($('turnoutRead').textContent==='115%','Turnout slider updates');
+  const wayne=d.querySelector('#map path[data-county="Wayne"]');wayne.dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
+  check($('countyName').textContent.includes('Wayne'),'Map county selection synchronizes detail');
+  event('countyPicker','Oakland');check($('countyName').textContent.includes('Oakland'),'County lookup changes selection');
+  event('mapMode','swing');check($('mapCaption').textContent.includes('more Democratic'),'Map color mode switch works');
+  event('countyFilter','Oakland','input');check($('countyRows').querySelectorAll('tr[data-county]').length===1,'County search works');
+  event('countyFilter','','input');
+  event('countySort','name');check($('countyRows').querySelector('tr[data-county]').dataset.county==='Alcona','Name sorting works');
+  $('themeToggle').click();check(d.body.classList.contains('light'),'Theme toggle works');
+  output.dataset.status='PASS';output.textContent='PASS '+checks.length+' Michigan browser checks\n'+checks.map(c=>'✓ '+c).join('\n');
+ }catch(e){output.dataset.status='FAIL';output.textContent='FAIL: '+e.stack}
+})();
+</script></body></html>
