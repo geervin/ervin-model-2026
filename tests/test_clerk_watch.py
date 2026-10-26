@@ -69,6 +69,12 @@ class ClerkSourceTests(unittest.TestCase):
         result=watch.inspect_county("Oakland",BASE,prior=first,fetch=lambda _: (_ for _ in ()).throw(TimeoutError("no response")))
         self.assertEqual(result["reportLinks"],first["reportLinks"])
         self.assertFalse(result["changed"])
+    def test_access_challenge_not_counted_as_reachable(self):
+        page='<html><head><title>Just a moment...</title></head><body>Checking your browser</body></html>'
+        result=watch.inspect_county("Wayne",BASE,fetch=lambda _:page)
+        self.assertEqual(result["status"],"indeterminate")
+        self.assertIn("challenge",result["note"].lower())
+
     def test_guard_unsafe_urls(self):
         for url in ["file:///etc/passwd","http://localhost/","https://127.0.0.1/","https://valid.example:444/"]:
             with self.subTest(url=url):
