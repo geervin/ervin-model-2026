@@ -30,8 +30,8 @@ COUNTIES = ROOT / "michigan" / "county_history.json"
 UA = "ErvinModelCountyWatcher/1.0 (public election source monitor; github.com/geervin/ervin-model-2026)"
 MAX_BYTES = 600_000
 REPORT_TERMS = re.compile(r"(election results?|unofficial results?|statement of votes cast|precinct results?|results? report|vote totals?|results? portal|election night)", re.I)
-CURRENT_ELECTION = re.compile(r"(2026|nov(?:ember)?[ ./-]*0?3|11[/-]0?3)", re.I)
-EXCLUDE = re.compile(r"(202[0-57-9]|aug(?:ust)?\W*0?4|primary|may \d|candidate list|canvass|logic and accuracy|training|past elections|archive|registration|proposals only|polling places)", re.I)
+CURRENT_ELECTION = re.compile(r"(nov(?:ember)?[\s./_-]*0?3[\s./,_-]*(?:20)?26|(?:20)?26[\s./_-]*11[\s./_-]*0?3|11032026|20261103|nov(?:ember)?[\s./_-]*2026|2026[\s./_-]*(?:nov(?:ember)?|general)|general(?: election)?.{0,18}2026)", re.I)
+EXCLUDE = re.compile(r"(202[0-57-9]|aug(?:ust)?\W*0?4|aug(?:ust)?\W*2026|primary|may\W*\d|20260[58]|05[-_/]26|08[-_/]26|candidate list|canvass|logic and accuracy|training|past elections|archive|registration|proposals only|polling places)", re.I)
 PUBLIC_HOST = re.compile(r"^[a-z0-9.-]+\.[a-z]{2,}$", re.I)
 PORTAL_HOSTS = ("clarityelections.com", "enhancedvoting.com")
 
@@ -99,15 +99,17 @@ def report_links(base_url, text):
             target = canonical(urllib.parse.urljoin(base_url, html.unescape(href)))
         except (ValueError, TypeError):
             continue
-        descriptor = label + " " + urllib.parse.urlparse(target).path + " " + urllib.parse.urlparse(target).query + " " + period
+        path=urllib.parse.urlparse(target).path
+        descriptor=label+" "+path
+        election_context=descriptor+" "+period
         if not REPORT_TERMS.search(descriptor):
             continue
-        if EXCLUDE.search(descriptor):
+        if EXCLUDE.search(election_context):
             continue
         # Require unambiguous year/election context in the URL or link label.
-        if not CURRENT_ELECTION.search(descriptor):
+        if not CURRENT_ELECTION.search(election_context):
             continue
-        results[target] = {"title":label or "2026 results report", "url":target}
+        results[target] = {"title":label or "Potential November 2026 result report", "url":target}
     return sorted(results.values(), key=lambda x:x["url"])[:12], parser
 
 def inspect_county(name, url, prior=None, fetch=None):
