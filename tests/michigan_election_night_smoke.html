@@ -58,6 +58,34 @@
   const oakland=d.querySelector('#countyBoundaryMap [data-county="Oakland"]');
   oakland.dispatchEvent(new first.frame.contentWindow.MouseEvent("click",{bubbles:true}));
   check(el("mapCountySelection").textContent==="Oakland","County click zooms precinct geography to selected county");
+  // When the live 2026 ArcGIS layer responds, exercise the REAL 2026 polygon
+  // picker and canvas click interaction; keep CI resilient to source outages.
+  for(let i=0;i<100&&el("precinctPicker").options.length<4&&!el("precinctGeometryCount").textContent.includes("GIS temporarily unavailable");i++)await new Promise(r=>setTimeout(r,80));
+  if(el("precinctPicker").options.length>4){
+    const picker=el("precinctPicker"),opts=[...picker.options].filter(o=>o.value!=="");
+    const preferred=opts.find(o=>/Addison Township.+Precinct 1/i.test(o.textContent))||opts[0];
+    picker.value=preferred.value;
+    picker.dispatchEvent(new first.frame.contentWindow.Event("change",{bubbles:true}));
+    check(el("precinctInspectTitle").textContent.includes("Oakland")&&el("precinctInspectTitle").textContent!== "Click a precinct to inspect",
+      "Selecting a real 2026 precinct opens its individual history and model inspector");
+    check(el("precinctMatchTier").textContent.includes("MATCH")||el("precinctMatchTier").textContent.includes("COUNTY-ONLY"),
+      "Precinct inspector distinguishes matched historical return from county-only fallback");
+    const beforeClick=el("precinctInspectTitle").textContent;
+    const canvas=el("precinctBoundaryMap"),rect=canvas.getBoundingClientRect();
+    let canvasClicked=false;
+    for(let fy=.24;fy<.82&&!canvasClicked;fy+=.14){
+      for(let fx=.24;fx<.82&&!canvasClicked;fx+=.14){
+        canvas.dispatchEvent(new first.frame.contentWindow.MouseEvent("click",{
+          bubbles:true,clientX:rect.left+rect.width*fx,clientY:rect.top+rect.height*fy
+        }));
+        canvasClicked=el("precinctInspectTitle").textContent!==beforeClick;
+      }
+    }
+    check(canvasClicked,"Clicking an actual 2026 precinct polygon selects its individual detail");
+    const matchedText=el("precinctGeometryCount").textContent.match(/([\d,]+) matched to 2024/);
+    if(matchedText)check(Number(matchedText[1].replace(/,/g,""))>2000,"More than 2000 unique 2024-to-2026 precinct history joins verified");
+  }
+
   check(first.frame.contentWindow.location.search.includes("county=Oakland"),"Selected counties have shareable direct URLs");
   check(!el("copyCountyLink").disabled,"Pinned county enables copy-link action");
   check(el("countyCardOutlook").textContent.includes("MODEL ONLY"),"County vote detail separates modeled outlook from actual votes");
