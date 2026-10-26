@@ -1,6 +1,6 @@
 {
-  "checkedAt": null,
-  "purpose": "Connectivity probes, not automatic results ingestion",
+  "checkedAt": "2026-10-26T01:33:36.361139+00:00",
+  "purpose": "Public connectivity only; no automatic county return ingestion",
   "localCounties": {
     "status": "ready",
     "count": 83
@@ -9,39 +9,45 @@
   "sources": {
     "oakland": {
       "label": "Oakland · 2026 results portal",
-      "status": "not_checked",
-      "note": "Automated connectivity check has not run",
+      "url": "https://results.enr.clarityelections.com/MI/Oakland/127284/",
+      "status": "indeterminate",
+      "note": "HTTP 202",
       "role": "page"
     },
     "kent": {
       "label": "Kent · 2026 results portal",
-      "status": "not_checked",
-      "note": "Automated connectivity check has not run",
+      "url": "https://app.enhancedvoting.com/results/public/kent-county-mi/elections/11032026_20261005115447",
+      "status": "reachable",
+      "note": "Portal responds; precinct feed and actual returns unverified",
       "role": "page"
     },
     "livingston": {
       "label": "Livingston · county results",
-      "status": "not_checked",
-      "note": "Automated connectivity check has not run",
+      "url": "https://milivcounty.gov/elections/election-results/",
+      "status": "indeterminate",
+      "note": "HTTP 202",
       "role": "page"
     },
     "state_directory": {
       "label": "Michigan · official county directory",
-      "status": "not_checked",
-      "note": "Automated connectivity check has not run",
+      "url": "https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county",
+      "status": "indeterminate",
+      "note": "HTTP 403 to automated probe; browser access may still work",
       "role": "page"
     },
     "precinct_geometry": {
       "label": "Michigan BOE · 2026 precinct geography",
-      "status": "not_checked",
-      "note": "Automated connectivity check has not run",
-      "role": "page"
+      "url": "https://services3.arcgis.com/dxRQUfTDNtfqZ301/arcgis/rest/services/2026_Voting_Precincts/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+      "status": "reachable",
+      "note": "3,895 precinct polygons reported; geometry only",
+      "role": "gis"
     },
     "statewide_replay": {
       "label": "Open America · 2024 API replay",
-      "status": "not_checked",
-      "note": "Automated connectivity check has not run",
-      "role": "page"
+      "url": "https://openamerica.io/elections/results.json?year=2024&office=Senate",
+      "status": "reachable",
+      "note": "Historical API contract responds; 2026 Michigan coverage unconfirmed",
+      "role": "replay"
     }
   }
 }
