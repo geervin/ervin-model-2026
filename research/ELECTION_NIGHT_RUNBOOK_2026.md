@@ -2,6 +2,13 @@
 **Election:** November 3, 2026 · Michigan U.S. Senate · unofficial results.
 **Status as of October 25:** reporting UI and source probes exist; fully automatic statewide precinct ingestion DOES NOT.
 
+## County-informed precinct layer (model, not reported precincts)
+The default 2026 precinct boundary map now shows an **Original Ervin modeled county two-party share applied uniformly to all precinct polygons in that county**, not an invented local precinct vote estimate. It reproduces the historical 55% 2024 Senate + 25% 2022 governor + 20% 2024 president county baseline and the statewide modeled polling adjustment used by the Michigan forecast dashboard. During election night, a directly attributed clerk county-wide result can replace the county share for shading **without being split into made-up precinct totals**. The map lets viewers switch to uniquely joined, actually reported precinct vote figures, or to the 2024 historical *county* Senate baseline. Model projections and observed county totals remain visibly separate in the county inspector.
+
+**Limit:** A genuine per-precinct projection needs historical precinct results matched to the Bureau of Elections **2026 precinct boundaries** and a documented treatment of absentee/early vote aggregation and precinct splits. County totals alone cannot empirically predict which 2026 precincts depart from their county's average. The statewide 2024 county senate baseline remains authoritative only at the county level. The site does not pretend otherwise.
+
+The shared square-E navigation now links all three dashboards, includes mobile navigation and a back-to-top utility. Election Night county selections can be shared by query parameter (e.g. `?county=Oakland`).
+
 ## Interactive county reporting center and fast lane
 
 The [Michigan Election Night dashboard](../michigan/election-night/) now has an expandable 83-county map. Hovering shows the two major-party candidate portraits, names, attributed vote counts, and reporting status; clicking pins a detailed source card and zooms precinct geography. Before any verified report arrives, it displays **awaiting results**, never invented zeros.
