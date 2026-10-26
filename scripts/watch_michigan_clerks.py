@@ -40,19 +40,27 @@ class Links(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.links, self.href, self.text, self.visible = [], None, [], []
         self.hidden = 0
+        self.heading_tag, self.heading_text, self.period = None, [], ""
     def handle_starttag(self, tag, attrs):
         if tag in ("script", "style", "svg"):
             self.hidden += 1
+        if tag in ("h1","h2","h3","h4","h5"):
+            self.heading_tag,self.heading_text=tag,[]
         if tag == "a":
             self.href = dict(attrs).get("href")
             self.text = []
     def handle_endtag(self, tag):
         if tag == "a" and self.href is not None:
-            self.links.append((self.href, " ".join(self.text)))
+            self.links.append((self.href, " ".join(self.text), self.period))
             self.href, self.text = None, []
+        if tag == self.heading_tag:
+            header = " ".join(self.heading_text).strip()
+            if re.search(r"202[0-9]", header):self.period=header[:100]
+            self.heading_tag,self.heading_text=None,[]
         if tag in ("script", "style", "svg") and self.hidden:
             self.hidden -= 1
     def handle_data(self, data):
+        if self.heading_tag:self.heading_text.append(data)
         if self.href is not None:
             self.text.append(data)
         if not self.hidden:
@@ -85,13 +93,13 @@ def report_links(base_url, text):
     parser = Links()
     parser.feed(text)
     results = {}
-    for href, label in parser.links:
+    for href, label, period in parser.links:
         label = " ".join(label.split())[:130]
         try:
             target = canonical(urllib.parse.urljoin(base_url, html.unescape(href)))
         except (ValueError, TypeError):
             continue
-        descriptor = label + " " + urllib.parse.urlparse(target).path
+        descriptor = label + " " + urllib.parse.urlparse(target).path + " " + urllib.parse.urlparse(target).query + " " + period
         if not REPORT_TERMS.search(descriptor):
             continue
         if EXCLUDE.search(descriptor):
@@ -111,25 +119,53 @@ def inspect_county(name, url, prior=None, fetch=None):
             "changeKind":"none","lastChanged":old.get("lastChanged"),"note":"Not checked"}
     try:
         origin = canonical(url)
-        if fetch is None:
-            request = urllib.request.Request(origin, headers={"User-Agent":UA,"Accept":"text/html,application/xhtml+xml;q=0.9,*/*;q=0.5"})
-            with OPENER.open(request, timeout=10) as resp:
-                code = resp.status
-                effective = canonical(resp.url)
-                ctype = resp.headers.get("Content-Type","").lower()
-                if code != 200: raise ValueError("HTTP "+str(code))
+        def get_html(target):
+            if fetch is not None:
+                content=fetch(target)
+                if not isinstance(content,str):raise ValueError("Source returned no HTML text")
+                if len(content)>MAX_BYTES:raise ValueError("Website response over size limit")
+                return content,target
+            request=urllib.request.Request(target,headers={"User-Agent":UA,"Accept":"text/html,application/xhtml+xml;q=0.9,*/*;q=0.5"})
+            with OPENER.open(request,timeout=10) as resp:
+                if resp.status!=200:raise ValueError("HTTP "+str(resp.status))
+                effective=canonical(resp.url)
+                ctype=resp.headers.get("Content-Type","").lower()
                 if "text/html" not in ctype and "application/xhtml+xml" not in ctype:
                     raise ValueError("Not an HTML page")
-                payload = resp.read(MAX_BYTES+1)
-            if len(payload) > MAX_BYTES: raise ValueError("Website response over size limit")
-            data = payload.decode("utf-8","replace")
-        else:
-            data = fetch(origin)
-            effective = origin
-            if not isinstance(data,str):raise ValueError("Source returned no HTML text")
-        if len(data)>MAX_BYTES:raise ValueError("Website response over size limit")
-        links, parser = report_links(effective, data)
-        texts = re.sub(r"\s+"," "," ".join(parser.visible))[:30000]
+                payload=resp.read(MAX_BYTES+1)
+            if len(payload)>MAX_BYTES:raise ValueError("Website response over size limit")
+            return payload.decode("utf-8","replace"),effective
+
+        data,effective=get_html(origin)
+        links,parser=report_links(effective,data)
+        inspected=effective
+        # Follow at most one public election-results hub from the county site.
+        # Do not crawl unrelated destinations, and never extract numeric returns.
+        if not links and not any(x in urllib.parse.urlparse(effective).hostname for x in PORTAL_HOSTS):
+            hubs=[]
+            for href,label,_ in parser.links:
+                if not re.search(r"(election results|results &? data|unofficial results|elections?/voting)",label,re.I):
+                    continue
+                if re.search(r"(archive|past|20[012][0-9]|primary)",label+" "+href,re.I):
+                    continue
+                try:dest=canonical(urllib.parse.urljoin(effective,href))
+                except (TypeError,ValueError):continue
+                host=urllib.parse.urlparse(dest).hostname
+                root_host=urllib.parse.urlparse(effective).hostname
+                if host!=root_host and not any(host.endswith("."+x) for x in PORTAL_HOSTS):
+                    continue
+                if dest!=effective:hubs.append((dest,label))
+            hubs.sort(key=lambda x:(0 if "results" in x[1].lower() else 1,len(x[0])))
+            if hubs:
+                try:
+                    data2,effective2=get_html(hubs[0][0])
+                    nextlinks,nextparser=report_links(effective2,data2)
+                    inspected=effective2
+                    if nextlinks:links=nextlinks
+                    data,parser=data2,nextparser
+                except Exception:
+                    pass
+        texts=re.sub(r"\s+"," "," ".join(parser.visible))[:30000]
         # A page hash is a *watch signal*, never evidence that vote totals exist.
         fingerprint = hashlib.sha256(texts.encode("utf-8")).hexdigest()[:20]
         now = item["checkedAt"]
@@ -137,10 +173,10 @@ def inspect_county(name, url, prior=None, fetch=None):
         known = {x["url"] for x in old_links}
         new = [x for x in links if x["url"] not in known]
         direct = any(domain in urllib.parse.urlparse(origin).hostname for domain in PORTAL_HOSTS) or (
-            "results" in urllib.parse.urlparse(origin).path.lower())
+            "results" in urllib.parse.urlparse(inspected).path.lower())
         kind = "new_result_links" if new and prior_fingerprint else (
             "page_modified" if direct and prior_fingerprint and fingerprint != prior_fingerprint else "none")
-        item.update(status="reachable",sourceUrl=effective,reportLinks=links,
+        item.update(status="reachable",sourceUrl=origin,inspectedUrl=inspected,reportLinks=links,
                     newLinks=new if prior_fingerprint else [],fingerprint=fingerprint,
                     changed=kind!="none",changeKind=kind,
                     lastChanged=now if kind!="none" else old.get("lastChanged"),
