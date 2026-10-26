@@ -16,7 +16,7 @@
 <nav class="panelnav" aria-label="Michigan analysis sections"><a href="#countyMap">County map</a><a href="#scenario">Source comparison</a><a href="#regional">Regional blocs</a><a href="#countyTable">All 83 projections</a><a href="#methodology">Model methodology</a></nav>
 <section class="controls" aria-label="Michigan scenario settings">
 <label><span>Polling input</span><select id="source"><option>Loading…</option></select></label>
-<label><span>Historical correction</span><select id="mode"><option value="weighted">Ervin + (pooled)</option><option value="original">Original Ervin</option><option value="shrink">Shrink small samples</option><option value="raw">Unadjusted polling</option></select></label>
+<label><span>Historical correction</span><select id="mode"><option value="original" selected>Original Ervin</option><option value="weighted">Ervin + (pooled)</option><option value="shrink">Shrink small samples</option><option value="raw">Unadjusted polling</option></select></label>
 <label class="mini"><span>2026 turnout assumption · <output id="turnoutRead">100%</output></span><input id="turnout" type="range" min="75" max="125" value="100" step="1"></label>
 <label><span>County map colors</span><select id="mapMode"><option value="projection">2026 county projection</option><option value="swing">Change vs 2024 Senate</option><option value="senate2024">Actual 2024 Senate</option><option value="president2024">Actual 2024 presidential</option><option value="governor2022">Actual 2022 governor</option><option value="turnout">Projected county ballots</option></select></label>
 </section>
