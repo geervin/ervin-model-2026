@@ -8,7 +8,7 @@ const $=id=>document.getElementById(id);
 const GIS="https://services3.arcgis.com/dxRQUfTDNtfqZ301/arcgis/rest/services/2026_Voting_Precincts/FeatureServer/0";
 const SOURCE="https://www.arcgis.com/home/item.html?id=c349bc2bb6c2468594d341a09f520ea8";
 const W=880,H=680,BOUNDS=[-90.85,41.4,-81.8,48.75];
-let counties=[],features=[],selected="",results=[],loaded=false,loading=false,lastRender=0;
+let counties=[],features=[],selected="",results=[],officialCountyResults=[],loaded=false,loading=false,lastRender=0;
 const normalize=x=>String(x||"").trim().toLowerCase().replace(/\b(precinct|pct|ward|city|township|town|charter)\b/g,"").replace(/[^a-z0-9]/g,"");
 const byCounty=new Map(),byFips=new Map();
 const fmt=x=>Number(x||0).toLocaleString("en-US");
@@ -33,6 +33,10 @@ function resultsByCounty(){
   const c=String(row.county||"").toLowerCase(),o=map.get(c)||{d:0,r:0,n:0};
   o.d+=row.dem;o.r+=row.rep;o.n++;map.set(c,o);
  }
+ // Clerk county-wide totals OVERRIDE any precinct subtotal (never add).
+ for(const row of officialCountyResults){
+   map.set(String(row.county||"").toLowerCase(),{d:row.dem,r:row.rep,n:0,countyWide:true});
+ }
  return map;
 }
 function drawCounties(){
@@ -49,7 +53,7 @@ function drawCounties(){
   el.classList.add("county-shape");
   if(reported)el.classList.add(reported.d>reported.r?"reported-d":reported.r>reported.d?"reported-r":"reported-tie");
   if(name===selected)el.classList.add("selected");
-  const title=document.createElementNS(ns,"title");title.textContent=name+(reported?` · ${fmt(reported.n)} reporting units; D ${fmt(reported.d)}, R ${fmt(reported.r)}`:" · not yet reported");
+  const title=document.createElementNS(ns,"title");title.textContent=name+(reported?` · ${reported.countyWide?"County-wide clerk tally":fmt(reported.n)+" precinct units"}; D ${fmt(reported.d)}, R ${fmt(reported.r)}`:" · not yet reported");
   el.append(title);
   const onSelect=()=>chooseCounty(name);
   el.addEventListener("click",onSelect);
@@ -57,13 +61,14 @@ function drawCounties(){
   fragment.append(el);
  }
  svg.append(fragment);
- $("countyMapStatus").textContent=`${counties.length} Michigan counties · ${counted.size} with ingested returns · select a county to inspect its precincts`;
+ $("countyMapStatus").textContent=`${counties.length} Michigan counties · ${counted.size} with verified county or precinct figures · select a county for source and candidates`;
 }
 function chooseCounty(name){
  selected=name;
  $("mapCountySelection").textContent=name||"Statewide";
  $("countyAll").disabled=!name;
  drawCounties();drawPrecincts();
+ window.dispatchEvent(new CustomEvent("ervin:county-select",{detail:{county:name}}));
 }
 function drawPrecincts(){
  const canvas=$("precinctBoundaryMap"),tip=$("precinctMapStatus");if(!canvas||!tip)return;
@@ -182,6 +187,12 @@ window.addEventListener("ervin:results",e=>{
  results=Array.isArray(e.detail?.precincts)?e.detail.precincts:[];
  drawCounties();
  if(loaded)drawPrecincts();
+});
+window.addEventListener("ervin:county-totals",e=>{
+ officialCountyResults=Array.isArray(e.detail?.counties)?e.detail.counties:[];
+ drawCounties();
+ // The precinct map continues to use precinct-joined votes only; county
+ // subtotals are never painted as if they were precinct-level results.
 });
 document.addEventListener("DOMContentLoaded",start,{once:true});
 })();
