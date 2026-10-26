@@ -14,6 +14,8 @@ import datetime as dt
 import json
 import re
 import sys
+import shutil
+import subprocess
 import urllib.request
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -90,7 +92,20 @@ def fetch_html():
     with urllib.request.urlopen(request,timeout=17) as response:
         if response.status!=200:raise ValueError("Kent HTTP "+str(response.status))
         data=response.read(2_500_000)
-    return data.decode("utf-8","replace")
+    html=data.decode("utf-8","replace")
+    # Enhanced Voting is client-rendered. Render only the original official
+    # portal when the initial HTML lacks real contest text.
+    if "United States Senator" in normalize_text(html):
+        return html
+    browser=next((shutil.which(n) for n in ("google-chrome","google-chrome-stable","chromium") if shutil.which(n)),None)
+    if not browser:raise ValueError("Kent results are client-rendered; no browser installed")
+    cmd=[browser,"--headless","--no-sandbox","--disable-gpu","--disable-dev-shm-usage",
+         "--no-first-run","--virtual-time-budget=14000","--dump-dom",URL]
+    run=subprocess.run(cmd,text=True,capture_output=True,timeout=48)
+    rendered=run.stdout
+    if run.returncode!=0 or "United States Senator" not in normalize_text(rendered):
+        raise ValueError("Official Kent Senate results unavailable in rendered browser; no figures published")
+    return rendered
 
 def main():
     previous=json.loads(OUT.read_text()) if OUT.exists() else {}
