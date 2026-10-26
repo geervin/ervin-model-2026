@@ -1,5 +1,10 @@
 name: Audit Michigan election-night source readiness
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/check_michigan_sources.py'
+      - '.github/workflows/michigan-source-audit.yml'
   schedule:
     - cron: '41 1,7,13,19 * * *'
   workflow_dispatch:
