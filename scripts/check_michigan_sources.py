@@ -30,10 +30,11 @@ def inspect(key,entry,opener=urllib.request.urlopen):
     result={"label":entry["label"],"url":entry["url"],"status":"unavailable",
             "note":"Not tested","role":entry["kind"]}
     try:
-        request=urllib.request.Request(entry["url"],headers={"User-Agent":UA,"Accept":"application/json,text/html;q=0.8,*/*;q=0.5"})
+        request=urllib.request.Request(entry["url"],headers={"User-Agent":UA,"Accept":"application/json,text/html;q=0.8,*/*;q=0.5","Origin":"https://geervin.github.io"})
         with opener(request,timeout=12) as response:
             code=getattr(response,"status",200)
             body=response.read(2_000_000)
+            cors=response.headers.get("Access-Control-Allow-Origin", "")
         if code!=200: raise ValueError("HTTP "+str(code))
         if entry["kind"]=="gis":
             data=json.loads(body)
@@ -56,6 +57,11 @@ def inspect(key,entry,opener=urllib.request.urlopen):
             result.update(status="reachable",note="Portal responds; precinct feed and actual returns unverified")
         else:
             result.update(status="indeterminate",note="HTTP 200 but no readable response body")
+        if entry["kind"] in ("gis","replay","current"):
+            if cors not in ("*", "https://geervin.github.io"):
+                result.update(status="indeterminate",note="Server responds, but browser CORS permission was not confirmed")
+            else:
+                result["note"] += " · browser CORS allowed"
     except urllib.error.HTTPError as e:
         if e.code in (401,403,429):
             result.update(status="indeterminate",note=f"HTTP {e.code} to automated probe; browser access may still work")
