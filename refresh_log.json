@@ -1,15 +1,15 @@
 {
-  "checkedAt": "2026-10-26T04:43:17.050738+00:00",
+  "checkedAt": "2026-10-26T12:57:22.362527+00:00",
   "pagesParsed": 15,
   "changes": 1,
   "observationsFound": 55,
   "errors": [],
   "updated": [
     {
-      "state": "NE",
-      "source": "ddhq",
-      "margin": -0.6,
-      "published": "Oct 25"
+      "state": "SD",
+      "source": "silver",
+      "margin": -12.4,
+      "published": "Oct 26"
     }
   ],
   "sources": "Wikipedia 2026 general-election aggregate tables; matching candidate pair required"
