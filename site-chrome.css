@@ -32,3 +32,7 @@ body.light .site-header button,html.light .site-header button{background:#f3f7fa
 }
 @media(max-width:450px){.site-header .site-header-inner{width:calc(100% - 28px)}.site-header .site-brand{font-size:16px;gap:9px}}
 @media(prefers-reduced-motion:reduce){.site-header *{transition:none!important}}
+
+.site-back-top{position:fixed;z-index:95;right:18px;bottom:20px;min-width:59px;padding:10px 13px;border:1px solid #7790a4;border-radius:10px;background:#18364de8;color:#f6f8ff;font:750 12px system-ui;box-shadow:0 8px 26px #0007;cursor:pointer}
+.site-back-top[hidden]{display:none}.site-back-top:hover{background:#335771}
+.site-back-top:focus-visible{outline:3px solid #f1c47a;outline-offset:3px}
