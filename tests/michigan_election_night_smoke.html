@@ -49,6 +49,9 @@
   const oakland=d.querySelector('#countyBoundaryMap [data-county="Oakland"]');
   oakland.dispatchEvent(new first.frame.contentWindow.MouseEvent("click",{bubbles:true}));
   check(el("mapCountySelection").textContent==="Oakland","County click zooms precinct geography to selected county");
+  check(first.frame.contentWindow.location.search.includes("county=Oakland"),"Selected counties have shareable direct URLs");
+  check(!el("copyCountyLink").disabled,"Pinned county enables copy-link action");
+  check(el("countyCardOutlook").textContent.includes("MODEL ONLY"),"County vote detail separates modeled outlook from actual votes");
   for(let i=0;i<60&&el("countyCardDem").textContent==="—";i++)await new Promise(r=>setTimeout(r,80));
   check(el("countyCardTitle").textContent==="Oakland County","Selecting county opens persistent county results card");
   check(el("countyCardDem").textContent==="802"&&el("countyCardRep").textContent==="917",
@@ -79,6 +82,7 @@
     "Reverting synthetic county-wide test source restores precinct fixture totals");
   el("countyAll").click();
   check(el("mapCountySelection").textContent==="Statewide","Statewide county map reset works");
+  check(!first.frame.contentWindow.location.search.includes("county=Oakland"),"Map reset clears linked county parameter");
   check(d.querySelectorAll("#officialSources .source-shortcuts a").length>=6,"Direct official Michigan results sources available");
   check(d.querySelector("#officialSources details.compact-details")!==null,"Detailed provenance is collapsed by default");
   check(d.getElementById("refreshNow")!==null,"Manual refresh control is present");
