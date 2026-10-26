@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-26T01:37:12.906319+00:00",
+  "checkedAt": "2026-10-26T01:42:59.750630+00:00",
   "purpose": "Public connectivity only; no automatic county return ingestion",
   "localCounties": {
     "status": "ready",
@@ -39,21 +39,21 @@
       "label": "Michigan BOE · 2026 precinct geography",
       "url": "https://services3.arcgis.com/dxRQUfTDNtfqZ301/arcgis/rest/services/2026_Voting_Precincts/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
       "status": "reachable",
-      "note": "3,895 precinct polygons reported; geometry only",
+      "note": "3,895 precinct polygons reported; geometry only · browser CORS allowed",
       "role": "gis"
     },
     "statewide_replay": {
       "label": "Open America · 2024 API replay",
       "url": "https://openamerica.io/elections/results.json?year=2024&office=Senate",
       "status": "reachable",
-      "note": "Historical API contract responds; 2026 Michigan coverage unconfirmed",
+      "note": "Historical API contract responds; 2026 Michigan coverage unconfirmed · browser CORS allowed",
       "role": "replay"
     },
     "statewide_current": {
       "label": "Open America · 2026 Senate API contract",
       "url": "https://openamerica.io/elections/results.json?year=2026&office=Senate",
       "status": "reachable",
-      "note": "2026 API contract responds; this is not evidence of Michigan vote reporting",
+      "note": "2026 API contract responds; this is not evidence of Michigan vote reporting · browser CORS allowed",
       "role": "current"
     }
   }
