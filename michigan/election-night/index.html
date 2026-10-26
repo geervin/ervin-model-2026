@@ -149,6 +149,26 @@ body:has(.county-map-panel.is-expanded){overflow:hidden}
 
 .county-card-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.county-card-actions .map-inline{padding:6px 9px}.county-card-actions a{white-space:nowrap}
 .county-model-outlook{margin:11px 0;border:1px dashed #58738a;background:#142e41;padding:9px 11px;border-radius:8px;font-size:11px;color:#eed09c;line-height:1.55}
+
+.precinct-hit-viewport{position:relative;cursor:crosshair}
+#precinctBoundaryMap{cursor:crosshair;touch-action:pan-y}
+.precinct-hover-label{position:absolute;z-index:2;pointer-events:none;max-width:240px;padding:8px 10px;border:1px solid #849bb1;background:#0b2135ed;border-radius:8px;box-shadow:0 6px 19px #0007;color:#e4eff9;font-size:11px;font-weight:700;line-height:1.5}
+.precinct-hover-label[hidden]{display:none}
+.precinct-select-toolbar{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-top:14px}
+.precinct-select-toolbar label{font-size:10px;color:var(--muted);font-weight:780;letter-spacing:.1em}
+.precinct-select-toolbar .filter{flex:1;min-width:215px;max-width:none}
+.precinct-inspector{border:1px solid #446076;border-radius:11px;margin-top:16px;background:linear-gradient(150deg,#122c42,#0e2133);padding:17px}
+.precinct-inspector h3{margin:5px 0 0;font-size:17px;letter-spacing:-.03em}
+.precinct-inspector>.tiny{margin:12px 0}
+.precinct-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:13px 0}
+.precinct-stats>div{border:1px solid #35516a;background:#10273c;border-radius:9px;padding:11px 12px;min-width:0}
+.precinct-stats small{color:#aebfd1;font-size:10px;line-height:1.45;display:block}
+.precinct-stats strong{font-size:22px;line-height:1.4;font-variant-numeric:tabular-nums;letter-spacing:-.025em;display:block;margin-top:5px}
+.precinct-stats>div:nth-child(1) strong{color:#73b2f5}
+.precinct-stats>div:nth-child(2) strong{color:#f88f9d}
+.precinct-inspector .chip{white-space:normal}
+@media(max-width:510px){.precinct-stats strong{font-size:19px}.precinct-inspector{padding:13px}}
+
 .precinct-display-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:15px 0 4px;background:#102638;border:1px solid #39566c;border-radius:10px;padding:10px 12px}
 .precinct-display-controls label{font-size:10px;letter-spacing:.11em;font-weight:850;color:#b5c8d8}
 .precinct-display-controls select{width:auto;flex:1;min-width:190px;max-width:310px}
@@ -198,7 +218,19 @@ body:has(.county-map-panel.is-expanded){overflow:hidden}
  <p class="tiny">Hover for a candidate comparison, click for a persistent county results card, or expand the map. **County-wide clerk results take precedence over partial precinct figures**—they are never added together. Unreported counties stay neutral. Portraits: <a href="https://commons.wikimedia.org/wiki/File:Abdul_El-Sayed.jpg" target="_blank" rel="noopener noreferrer">El-Sayed (K. Zirkel, CC BY-SA 4.0)</a> and <a href="https://commons.wikimedia.org/wiki/File:Mike-Rogers-Head-Shot-2.jpg" target="_blank" rel="noopener noreferrer">Rogers (U.S. Congress, public domain)</a>.</p></div>
  <div class="panel precinct-outlook-panel"><div class="geo-head"><div><div class="eyebrow">2026 bureau of elections boundaries · modeling overlay</div><h2>Precinct geography · <span id="mapCountySelection">Statewide</span></h2></div><button class="map-inline" type="button" id="reloadPrecinctMap">Reload map</button></div>
  <div class="precinct-display-controls"><label for="precinctDisplayMode">MAP LAYER</label><select id="precinctDisplayMode" class="filter" aria-label="Precinct map layer"><option value="outlook" selected>2026 county-informed outlook</option><option value="actual">Verified precinct returns only</option><option value="baseline">2024 county Senate baseline</option></select><span class="chip gold" id="precinctDisplayLabel">MODEL · NOT PRECINCT RETURNS</span></div>
- <div class="geo-viewport"><canvas id="precinctBoundaryMap" role="img" aria-label="2026 Michigan precinct boundaries with switchable county projection overlay or verified precinct returns" width="880" height="680"></canvas></div>
+ <div class="geo-viewport precinct-hit-viewport"><canvas id="precinctBoundaryMap" tabindex="0" role="button" aria-label="Interactive 2026 Michigan precinct map. Click or tap a precinct, or use the precinct selector below, to inspect historical results and modeled voting patterns." width="880" height="680"></canvas><div class="precinct-hover-label" id="precinctHoverLabel" role="status" hidden></div></div>
+ <div class="precinct-select-toolbar"><label for="precinctPicker">INSPECT A PRECINCT</label><select id="precinctPicker" class="filter" aria-label="Select a precinct by name"><option value="">Select a county and precinct, or click the map</option></select></div>
+ <section class="precinct-inspector" id="precinctInspector" aria-live="polite">
+  <div class="split"><div><div class="eyebrow">2026 precinct detail</div><h3 id="precinctInspectTitle">Click a precinct to inspect</h3></div><span class="chip gold" id="precinctMatchTier">2024 HISTORY MATCH PENDING</span></div>
+  <p id="precinctInspectSummary" class="tiny">The map uses the current state precinct boundaries. A unique match to 2024 historical Senate returns supports a precinct-specific outlook; unmatched geography uses a labeled county-only proxy.</p>
+  <div class="precinct-stats">
+   <div><small>2026 model · El-Sayed two-party share</small><strong id="precinctProjectDem">—</strong></div>
+   <div><small>2026 model · Rogers two-party share</small><strong id="precinctProjectRep">—</strong></div>
+   <div><small>2024 precinct · Slotkin votes</small><strong id="precinctHistoryDem">—</strong></div>
+   <div><small>2024 precinct · Rogers votes</small><strong id="precinctHistoryRep">—</strong></div>
+  </div>
+  <div class="split"><span class="tiny" id="precinctDataMethod">Historical precinct matching has not finished.</span><a id="precinctHistorySource" href="https://github.com/openelections/openelections-data-mi/blob/master/2024/20241105__mi__general__precinct.csv" target="_blank" rel="noopener noreferrer">2024 precinct return source ↗</a></div>
+ </section>
  <p class="geo-status" id="precinctMapStatus">Preparing neutral precinct map…</p>
  <div class="geo-key" id="precinctLegend"><span><b></b>County information unavailable</span><span><b class="dem"></b>County-based D outlook</span><span><b class="rep"></b>County-based R outlook</span></div>
  <p class="tiny"><strong id="precinctModelMethod">MODEL PROXY: All precincts inside a county share the same county-level estimate. These are not individualized precinct projections or recorded votes.</strong> <span id="precinctGeometryCount">2026 official precinct geography · loading</span>. Boundaries from the <a id="precinctGISLink" target="_blank" rel="noopener noreferrer" href="https://www.arcgis.com/home/item.html?id=c349bc2bb6c2468594d341a09f520ea8">Michigan Bureau of Elections 2026 precinct layer</a>; not the obsolete 2024 map. Boundaries do not imply a reported vote or a known precinct turnout denominator.</p></div>
@@ -238,4 +270,4 @@ body:has(.county-map-panel.is-expanded){overflow:hidden}
 </section>
 <div id="countyHoverTip" class="county-hover-tip" role="tooltip" hidden><div class="hover-eyebrow">Michigan U.S. Senate · county</div><strong id="hoverCountyName">County</strong><div class="hover-candidates"><div><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Abdul_El-Sayed.jpg?width=120" alt="" width="38" height="44" loading="lazy" onerror="this.style.display='none'"><span>El-Sayed <b id="hoverDem">—</b></span></div><div><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mike-Rogers-Head-Shot-2.jpg?width=120" alt="" width="38" height="44" loading="lazy" onerror="this.style.display='none'"><span>Rogers <b id="hoverRep">—</b></span></div></div><small id="hoverCountyStatus">Awaiting verified returns</small><small>Click to pin and view source details</small></div>
 <footer>Ervin Model · Michigan Election Night · <a href="../">County projections</a> · <a href="../../">17-state forecast</a> · This site does not make election calls.</footer>
-</main><script defer src="./maps.js"></script><script defer src="./precinct_outlook.js"></script><script defer src="./app.js"></script><script defer src="./clerk_watch_ui.js"></script><script defer src="./county_live.js"></script><script defer src="../../site-chrome.js"></script></body></html>
+</main><script defer src="./maps.js"></script><script defer src="./precinct_outlook.js"></script><script defer src="./precinct_model.js"></script><script defer src="./app.js"></script><script defer src="./clerk_watch_ui.js"></script><script defer src="./county_live.js"></script><script defer src="../../site-chrome.js"></script></body></html>
