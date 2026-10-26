@@ -84,6 +84,24 @@ tbody tr:nth-child(even){background:#ffffff04}tbody tr:hover{background:#263f55}
 @media(max-width:430px){main{width:calc(100% - 22px)}.panel{padding:15px}.source-status-item{min-height:0}header nav{gap:3px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
+
+/* Public county-source watch: glanceable outcomes, not declared vote availability */
+.clerk-watch{margin-top:18px}
+.clerk-watch .watch-facts{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}
+.clerk-watch .watch-facts span{display:inline-flex;align-items:center;background:#11283b;border:1px solid #385269;border-radius:8px;padding:7px 11px;font-size:12px;font-variant-numeric:tabular-nums}
+.clerk-watch .watch-facts b{margin-right:6px;color:var(--gold)}
+.clerk-watch .watch-controls{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+.clerk-watch .watch-controls input{width:min(280px,100%)}.clerk-watch .watch-controls select{width:210px}
+.clerk-watch .watch-scroll{max-height:425px;overflow:auto;border:1px solid var(--edge);border-radius:9px}
+.clerk-watch table{white-space:normal;min-width:790px}
+.clerk-watch th,.clerk-watch td{padding:11px 13px;vertical-align:middle}
+.clerk-watch td:first-child{font-weight:750}
+.watch-flag{font-weight:750;font-size:11px}.watch-flag.ok{color:#8bd2b7}.watch-flag.maybe{color:#e1c188}.watch-flag.down{color:#fa9299}
+.clerk-watch td .tiny{line-height:1.45}
+.watch-events{background:#11283b;border:1px solid var(--edge);border-radius:8px;padding:12px;font-size:12px}
+.watch-events a{display:inline-block;margin:4px 9px 4px 0}
+.clerk-watch a{overflow-wrap:anywhere}
+
 </style></head><body>
 <header><strong>ERVIN <span style="color:var(--gold)">MODEL</span> / MICHIGAN</strong><nav><a href="../../">National forecast</a><a href="../">County projections</a><a href="." aria-current="page" style="color:var(--gold)">Election Night</a></nav></header>
 <main><div class="hero"><div class="eyebrow">Tuesday, November 3, 2026 · Michigan U.S. Senate</div><h1>Michigan Election Night</h1><p>Unofficial returns by county and precinct, with timestamps and direct source citations. <strong>Vote totals are never inferred from the polling model.</strong> County projections remain on the separate <a href="../">forecast dashboard</a>.</p></div>
@@ -150,5 +168,15 @@ tbody tr:nth-child(even){background:#ffffff04}tbody tr:hover{background:#263f55}
   <p><a href="../../research/MICHIGAN_2026_ELECTION_NIGHT_SOURCES.md" target="_blank" rel="noopener noreferrer">Full technical source audit ↗</a> · <a href="https://github.com/openelections/openelections-data-mi" target="_blank" rel="noopener noreferrer">Historical precinct data ↗</a>. All current vote totals are unofficial, subject to correction and certification.</p>
  </div></details>
 </section>
+<section class="panel clerk-watch" id="countyWatch" aria-label="Live monitoring of Michigan county election result websites">
+ <div class="split"><div><div class="eyebrow">83-county source monitor</div><h2>County clerk website checks</h2></div><span class="chip blue">Automatically monitored · not vote imports</span></div>
+ <p class="tiny">A scheduled checker visits county election websites, looks for 2026 general-election results reports and detects changed reporting pages. <strong>A successful website check does not imply votes are available.</strong> Not all sites permit automated access; direct clerk links remain available.</p>
+ <div class="watch-facts" role="status" id="clerkWatchFacts"><span>Awaiting first county website audit…</span></div>
+ <p class="tiny" id="clerkWatchTimestamp">Checking scheduled audit publication…</p>
+ <div class="watch-controls"><input class="filter" id="clerkWatchSearch" aria-label="Filter clerk websites by county" placeholder="Find county"><select class="filter" id="clerkWatchFilter" aria-label="Filter clerk website status"><option value="all">All 83 counties</option><option value="changed">New / changed sources</option><option value="reports">2026 report links</option><option value="reachable">Reachable</option><option value="problems">Blocked / unavailable</option></select><button type="button" id="reloadClerkWatch" class="refresh-now">Reload source audit</button></div>
+ <div id="clerkWatchEvents" class="watch-events" aria-live="polite">No recent 2026 source changes confirmed.</div>
+ <div class="watch-scroll"><table><thead><tr><th>County</th><th>Website check</th><th>2026 reports</th><th>Source / latest document</th><th>Details</th></tr></thead><tbody id="clerkWatchRows"><tr><td colspan="5">Waiting for first audit…</td></tr></tbody></table></div>
+ <p class="tiny" style="margin:12px 0 0">The checker runs roughly every six hours normally and every 15 minutes in the configured election-night window. GitHub Actions schedules may run late. The separate precinct vote feed continues to require validated county returns. <a href="./clerk_watch.json" target="_blank" rel="noopener noreferrer">JSON source audit</a> · <a href="./clerk_watch_events.json" target="_blank" rel="noopener noreferrer">Change log</a>.</p>
+</section>
 <footer>Ervin Model · Michigan Election Night · <a href="../">County projections</a> · <a href="../../">17-state forecast</a> · This site does not make election calls.</footer>
-</main><script defer src="./maps.js"></script><script defer src="./app.js"></script></body></html>
+</main><script defer src="./maps.js"></script><script defer src="./app.js"></script><script defer src="./clerk_watch_ui.js"></script></body></html>
