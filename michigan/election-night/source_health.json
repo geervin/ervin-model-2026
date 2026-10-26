@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-26T01:33:36.361139+00:00",
+  "checkedAt": "2026-10-26T01:37:12.906319+00:00",
   "purpose": "Public connectivity only; no automatic county return ingestion",
   "localCounties": {
     "status": "ready",
@@ -24,8 +24,8 @@
     "livingston": {
       "label": "Livingston · county results",
       "url": "https://milivcounty.gov/elections/election-results/",
-      "status": "indeterminate",
-      "note": "HTTP 202",
+      "status": "reachable",
+      "note": "Portal responds; precinct feed and actual returns unverified",
       "role": "page"
     },
     "state_directory": {
@@ -48,6 +48,13 @@
       "status": "reachable",
       "note": "Historical API contract responds; 2026 Michigan coverage unconfirmed",
       "role": "replay"
+    },
+    "statewide_current": {
+      "label": "Open America · 2026 Senate API contract",
+      "url": "https://openamerica.io/elections/results.json?year=2026&office=Senate",
+      "status": "reachable",
+      "note": "2026 API contract responds; this is not evidence of Michigan vote reporting",
+      "role": "current"
     }
   }
 }
