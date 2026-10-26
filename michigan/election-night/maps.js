@@ -108,15 +108,15 @@ function uniqueActualRecord(f){
  }
  return hits.length===1?hits[0]:null;
 }
-function precinctModel(f){
+function precinctModel(f,layer=precinctLayer){
  const countyName=countyOfFeature(f),record=outlooks.get(countyName),history=precinctJoin?.records.get(f)||null,
        source=outlookFor(countyName);
  if(!source)return {share:null,history,source:null,tier:"No validated county outlook"};
  let share=source.share,tier=source.kind;
- if(precinctLayer==="baseline"){
+ if(layer==="baseline"){
   if(history){share=history.historicTwoPartyDem;tier="Matched 2024 precinct history";}
   else{tier="2024 county baseline · unmatched precinct";}
- }else if(precinctLayer==="outlook"){
+ }else if(layer==="outlook"){
   if(history&&record&&window.ERVIN_PRECINCT_HISTORY){
    share=window.ERVIN_PRECINCT_HISTORY.project(history,{...record,demShare:source.share});
    tier=source.kind.includes("clerk")?"2024 precinct pattern + reported county swing":"2024 precinct pattern + 2026 county outlook";
@@ -136,7 +136,7 @@ function showPrecinct(f){
  activePrecinct=f;
  const county=countyOfFeature(f),historic=precinctJoin?.records.get(f)||null;
  const p=f.properties||{},name=displayName(f);
- const record=precinctModel(f),actual=uniqueActualRecord(f);
+ const record=precinctModel(f,"outlook"),actual=uniqueActualRecord(f);
  $("precinctInspectTitle").textContent=(county?county+" · ":"")+name;
  $("precinctMatchTier").textContent=historic?"2024 HISTORY · UNIQUE MATCH":"COUNTY-ONLY MODEL · NO MATCH";
  const share=record.share;
@@ -261,7 +261,8 @@ function drawPrecincts(){
     "Displaying county-level shares while precinct geometry loads. County color is a proxy, not a precinct result.");
   return;
  }
- let drawn=0,reported=0,projected=0;
+ let drawn=0,reported=0,projected=0,historicalMatched=0;
+ hitAreas=[];
  const matching=new Map();
  for(const row of results){
    const key=row.county.toLowerCase()+"|"+normalize(row.precinct);
@@ -282,15 +283,24 @@ function drawPrecincts(){
   const matches=keys.flatMap(k=>matching.get(k)||[]);
   const unique=[...new Set(matches)];
   const matched=unique.length===1?unique[0]:null;
-  const estimate=precinctLayer==="actual"?null:outlookFor(countyName);
+  const model=precinctLayer==="actual"?null:precinctModel(f);
+  const estimate=model?.share==null?null:{share:model.share};
+  if(model?.history)historicalMatched++;
   ctx.fillStyle=precinctLayer==="actual"?
     (matched?(matched.dem>matched.rep?"#275d9b":matched.rep>matched.dem?"#993e50":"#65596b"):"#1b3346"):
     (estimate?shareFill(estimate.share):"#1b3346");
   ctx.strokeStyle=selected?"#89a0b1":"#7690a3";
   ctx.lineWidth=selected?.62:.28;
   ctx.fill(shape);ctx.stroke(shape);drawn++;
+  hitAreas.push({feature:f,path:shape});
   if(matched)reported++;
   if(estimate)projected++;
+ }
+ // Outline the pinned precinct on top of county boundaries.
+ if(activePrecinct&&hitAreas.some(x=>x.feature===activePrecinct)){
+  const poly=hitAreas.find(x=>x.feature===activePrecinct);
+  ctx.strokeStyle="#ffe5a8";ctx.lineWidth=2.25;
+  ctx.stroke(poly.path);
  }
  // Draw selected county outline prominently, or statewide boundaries softly.
  ctx.strokeStyle="#d9bd85";ctx.lineWidth=selected?2:1.1;
@@ -300,7 +310,7 @@ function drawPrecincts(){
  }else{
   const county=selected?outlookFor(selected):null;
   const selectedContext=county?" · "+selected+" county-based Democratic two-party share "+(county.share*100).toFixed(1)+"% ("+county.kind+")":"";
-  tip.textContent=`${fmt(projected)} of ${fmt(drawn)} 2026 precinct boundary polygons display ${precinctLayer==="baseline"?"2024 historical county shares":"county-derived outlook shares"}${selectedContext}. Uniform share across a county; not individual precinct predictions or reported precinct votes.`;
+  tip.textContent=`${fmt(projected)} of ${fmt(drawn)} precinct polygons shaded · ${fmt(historicalMatched)} with uniquely matched 2024 precinct history · ${fmt(projected-historicalMatched)} county-only fallbacks. ${precinctLayer==="baseline"?"2024 observed precinct share where matched":"2026 county-adjusted precinct outlook where matched"}.${selectedContext} Model percentages are not counted ballots.`;
  }
 }
 async function fetchPrecinctGeography(){
@@ -323,7 +333,8 @@ async function fetchPrecinctGeography(){
    }
    if(assembled.length<2500)throw Error("Incomplete statewide 2026 geometry ("+assembled.length+" polygons)");
    features=assembled;loaded=true;
-   $("precinctGeometryCount").textContent=fmt(features.length)+" precinct boundaries · 2026";
+   constructJoin();refreshPrecinctPicker();
+   $("precinctGeometryCount").textContent=fmt(features.length)+" precinct boundaries · 2026"+(precinctJoin?" · "+fmt(precinctJoin.diagnostics.matched)+" matched to 2024":" · loading historical match");
    $("precinctMapStatus").textContent="Rendering official precinct outlines…";
    drawPrecincts();
  }catch(e){
@@ -338,7 +349,24 @@ async function start(){
  $("countyAll").addEventListener("click",()=>chooseCounty(""));
  $("reloadPrecinctMap").addEventListener("click",fetchPrecinctGeography);
  $("precinctDisplayMode").addEventListener("change",e=>{
-  precinctLayer=e.target.value;layerCaption();drawPrecincts();
+  precinctLayer=e.target.value;layerCaption();drawPrecincts();if(activePrecinct)showPrecinct(activePrecinct);
+ });
+ const canvas=$("precinctBoundaryMap");
+ canvas.addEventListener("click",canvasClick);
+ canvas.addEventListener("pointermove",e=>{
+  if(hoverFrame)cancelAnimationFrame(hoverFrame);
+  hoverFrame=requestAnimationFrame(()=>canvasHover(e));
+ });
+ canvas.addEventListener("pointerleave",()=>{$("precinctHoverLabel").hidden=true});
+ $("precinctPicker").addEventListener("change",e=>{
+  const i=Number(e.target.value);
+  if(e.target.value!==""&&features[i])showPrecinct(features[i]);
+ });
+ canvas.addEventListener("keydown",e=>{
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  e.preventDefault();
+  if(activePrecinct)showPrecinct(activePrecinct);
+  else $("precinctPicker").focus();
  });
  layerCaption();
  try{
@@ -384,6 +412,13 @@ window.addEventListener("ervin:county-outlook",e=>{
  outlooks=new Map((e.detail?.counties||[]).map(c=>[c.county,c]));
  outlookAt=e.detail?.asOf||"";
  if(precinctLayer!=="actual")drawPrecincts();
+});
+window.addEventListener("ervin:precinct-history-ready",()=>{
+ constructJoin();refreshPrecinctPicker();
+});
+window.addEventListener("ervin:precinct-history-error",e=>{
+ $("precinctMatchTier").textContent="NO PRECINCT HISTORY AVAILABLE";
+ $("precinctInspectSummary").textContent="Historical precinct source unavailable: "+e.detail?.reason+". County proxy remains available.";
 });
 window.addEventListener("ervin:county-outlook-error",e=>{
  if(precinctLayer!=="actual")$("precinctMapStatus").textContent="County forecast currently unavailable · switch to verified precinct results or retry. "+e.detail?.reason;
