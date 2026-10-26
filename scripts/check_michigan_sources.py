@@ -22,7 +22,8 @@ URLS={
  "livingston":{"label":"Livingston · county results","url":"https://milivcounty.gov/elections/election-results/","kind":"page"},
  "state_directory":{"label":"Michigan · official county directory","url":"https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county","kind":"page"},
  "precinct_geometry":{"label":"Michigan BOE · 2026 precinct geography","url":"https://services3.arcgis.com/dxRQUfTDNtfqZ301/arcgis/rest/services/2026_Voting_Precincts/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json","kind":"gis"},
- "statewide_replay":{"label":"Open America · 2024 API replay","url":"https://openamerica.io/elections/results.json?year=2024&office=Senate","kind":"replay"}
+ "statewide_replay":{"label":"Open America · 2024 API replay","url":"https://openamerica.io/elections/results.json?year=2024&office=Senate","kind":"replay"},
+ "statewide_current":{"label":"Open America · 2026 Senate API contract","url":"https://openamerica.io/elections/results.json?year=2026&office=Senate","kind":"current"}
 }
 
 def inspect(key,entry,opener=urllib.request.urlopen):
@@ -39,6 +40,12 @@ def inspect(key,entry,opener=urllib.request.urlopen):
             count=data.get("count")
             if not isinstance(count,int) or count<2500:raise ValueError("GIS feature count not established")
             result.update(status="reachable",note=f"{count:,} precinct polygons reported; geometry only")
+        elif entry["kind"]=="current":
+            data=json.loads(body)
+            races=data.get("races")
+            if data.get("api")!=1 or data.get("year")!=2026 or str(data.get("office","")).lower()!="senate" or not isinstance(races,dict):
+                raise ValueError("2026 Senate API does not match expected contract")
+            result.update(status="reachable",note="2026 API contract responds; this is not evidence of Michigan vote reporting")
         elif entry["kind"]=="replay":
             data=json.loads(body)
             races=data.get("races") or {}
