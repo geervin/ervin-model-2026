@@ -351,7 +351,6 @@ async function start(){
  $("precinctDisplayMode").addEventListener("change",e=>{
   precinctLayer=e.target.value;layerCaption();drawPrecincts();if(activePrecinct)showPrecinct(activePrecinct);
  });
- const canvas=$("precinctBoundaryMap");
  canvas.addEventListener("click",canvasClick);
  canvas.addEventListener("pointermove",e=>{
   if(hoverFrame)cancelAnimationFrame(hoverFrame);
