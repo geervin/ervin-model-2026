@@ -22,6 +22,29 @@
 .mode-explainer{border:1px solid var(--edge);background:var(--surface);border-radius:14px;padding:19px 22px;margin:14px 0 20px;box-shadow:0 12px 27px #00000012}.mode-explainer-heading{display:flex;align-items:center;gap:12px;margin-bottom:14px}.mode-explainer-heading strong{font:700 17px 'Space Grotesk',sans-serif;display:block}.mode-explainer-heading span:not(.mode-explainer-mark){display:block;font-size:12px;color:var(--muted)}.mode-explainer-mark{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1px solid var(--accent);color:var(--accent);font-weight:800;font-size:17px}.mode-explainer-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.mode-explainer-grid>div{border-left:2px solid var(--edge);padding-left:13px}.mode-explainer-grid b{font-size:12px;color:var(--text)}.mode-explainer-grid p{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.6}.mode-explainer-foot{border-top:1px solid var(--edge);margin:16px 0 0;padding-top:10px;color:var(--subtle);font-size:11px}@media(max-width:1000px){.mode-explainer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:550px){.mode-explainer-grid{grid-template-columns:1fr}.mode-explainer{padding:16px}}
 @media(max-width:670px){.topbar{backdrop-filter:none}.tile.tracked:hover{transform:none}.shell{contain:layout style}}@media(prefers-reduced-motion:reduce){.tile{transition:none!important}.topbar{backdrop-filter:none}} 
 .methodology-compact{padding:18px 21px;margin-top:20px}.method-top{display:flex;align-items:center;justify-content:space-between;gap:16px}.method-top h2{font-size:17px}.method-top p{margin:5px 0 0;max-width:870px}.method-link{font-size:12px;white-space:nowrap}.model-details{border-top:1px solid var(--edge);margin-top:14px;padding-top:11px}.model-details summary{cursor:pointer;color:var(--muted);font-size:12px;font-weight:700}.model-details .method-grid{margin-top:15px}.model-details .source-links{margin:10px 0 0}.model-details:focus-within summary{color:var(--text)}@media(max-width:700px){.method-top{flex-wrap:wrap}.methodology-compact{padding:15px}} 
+
+/* 2026 editorial UI refinement: consistent surface rhythm and legible controls. */
+.topbar{box-shadow:0 8px 28px #02091225}
+.navend a{padding:8px 10px;border-radius:7px;transition:background .16s,color .16s}
+.navend a:hover{background:var(--surface2)}
+.hero{padding-top:52px;padding-bottom:35px}
+.hero h1{font-weight:700}
+.panel{background:linear-gradient(165deg,var(--surface),var(--bg2));border-color:var(--edge);box-shadow:0 10px 28px #0309122b}
+.light .panel{background:linear-gradient(165deg,#fff,var(--surface2))}
+.stat{box-shadow:0 9px 28px #040b1624;border-color:var(--edge)}
+.stat:after{content:"";position:absolute;left:0;top:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);opacity:.37}
+.panel h2,.panel h3{letter-spacing:-.025em}
+.tab,.select,.search,.button{min-height:40px}
+.tab:hover,.button:hover{transform:translateY(-1px)}
+.tab[aria-selected=true]{box-shadow:0 4px 15px #080d1c35}
+.table-scroll{border:1px solid var(--edge);border-radius:11px;overflow:auto}
+.table-scroll th{position:sticky;top:0;background:var(--surface2);z-index:1}
+.table-scroll tr:nth-child(even){background:#ffffff04}
+.light .table-scroll tr:nth-child(even){background:#111f3006}
+.detail-refs a:hover{background:var(--surface2)}
+@media(max-width:680px){.hero{padding-top:30px}.panel{box-shadow:none}.navend{gap:5px}.navend a{padding:6px}}
+@media(prefers-reduced-motion:reduce){.tab,.button,.navend a{transition:none!important}}
+
 </style></head>
 <body>
 <header class="topbar"><div class="shell navinner"><div class="logo"><div class="logo-symbol" aria-hidden="true">E</div><span>ERVIN <b>MODEL</b></span></div><nav class="navend" aria-label="Page sections"><a href="#map-area">THE MAP</a><a href="#races">17 RACES</a><a href="michigan/" title="Michigan county-by-county Senate projection">MICHIGAN · 83 COUNTIES</a><a href="michigan/election-night/" title="Michigan 2026 precinct election-night reporting">MI ELECTION NIGHT</a><a href="#methodology">METHODOLOGY</a><span class="badge"><span class="dot-live"></span><span id="freshnessLabel">OCT 23 RESEARCH SNAPSHOT</span></span><button class="button ghost" id="themeToggle" aria-label="Toggle light or dark appearance">☀ / ☾</button></nav></div></header>
