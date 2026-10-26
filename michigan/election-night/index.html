@@ -85,6 +85,7 @@ tbody tr:nth-child(even){background:#ffffff04}tbody tr:hover{background:#263f55}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
 
+#countyWatch,#electionGeography,#officialSources{scroll-margin-top:94px}
 /* Public county-source watch: glanceable outcomes, not declared vote availability */
 .clerk-watch{margin-top:18px}
 .clerk-watch .watch-facts{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}
@@ -130,7 +131,7 @@ tbody tr:nth-child(even){background:#ffffff04}tbody tr:hover{background:#263f55}
   <div class="source-status-item warn"><span class="tiny"><span class="status-dot"></span>PRECINCT INGESTION</span><strong id="sourceIngestionStatus">Verified county upload required</strong><p id="sourceIngestionNote">The 30-second refresh reads published returns; it does not automatically retrieve every clerk's report.</p></div>
   <div class="source-status-item" id="sourceMonitorCard"><span class="tiny"><span class="status-dot"></span>EXTERNAL CONNECTIVITY</span><strong id="sourceHealthStatus">Checking audit report…</strong><p id="sourceHealthDetail">Independent checks of the 2026 official portals, geographic service and statewide API.</p></div>
  </div>
- <div class="quick-sources"><a href="https://results.enr.clarityelections.com/MI/Oakland/127284/" target="_blank" rel="noopener noreferrer">Oakland · 2026 official portal ↗</a><a href="https://app.enhancedvoting.com/results/public/kent-county-mi/elections/11032026_20261005115447" target="_blank" rel="noopener noreferrer">Kent · 2026 official portal ↗</a><a href="https://milivcounty.gov/elections/election-results/" target="_blank" rel="noopener noreferrer">Livingston · official results ↗</a><a href="https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county" target="_blank" rel="noopener noreferrer">All 83 county clerks ↗</a></div>
+ <div class="quick-sources"><a href="#countyWatch">Browse all 83 clerk checks ↓</a><a href="https://results.enr.clarityelections.com/MI/Oakland/127284/" target="_blank" rel="noopener noreferrer">Oakland · 2026 official portal ↗</a><a href="https://app.enhancedvoting.com/results/public/kent-county-mi/elections/11032026_20261005115447" target="_blank" rel="noopener noreferrer">Kent · 2026 official portal ↗</a><a href="https://milivcounty.gov/elections/election-results/" target="_blank" rel="noopener noreferrer">Livingston · official results ↗</a><a href="https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county" target="_blank" rel="noopener noreferrer">All 83 county clerks ↗</a></div>
  <p class="tiny" style="margin:13px 0 0">Health probes check whether public endpoints respond—not whether a county has started reporting, whether precinct-level downloads exist, or whether a machine-readable feed can be automatically imported. <a href="./source_health.json" target="_blank" rel="noopener noreferrer">View dated connectivity audit ↗</a></p>
 </section>
 <section class="geography-grid" id="electionGeography" aria-label="Michigan county and precinct geography before and during returns">
