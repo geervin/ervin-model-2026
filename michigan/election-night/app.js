@@ -9,7 +9,7 @@ const lateClose=new Date("2026-11-03T21:00:00-05:00").getTime();
 const centralCounties=new Set(["dickinson","gogebic","iron","menominee"]);
 const demo=new URLSearchParams(location.search).get("demo")==="1";
 const eDate="2026-11-03";
-let lastFeed=null,counties=[],stateRow=null,lastStateAttempt=0,lastPrecinctAttempt=0,busy=false,stateBusy=false,checkDeadline=Date.now()+30000,search="",precinctSearch="",lastPreElectionMinute=-1;
+let lastFeed=null,lastFeedSignature="",counties=[],stateRow=null,lastStateAttempt=0,lastPrecinctAttempt=0,busy=false,stateBusy=false,checkDeadline=Date.now()+30000,search="",precinctSearch="",lastPreElectionMinute=-1,lastHealthAttempt=0,lastFreshnessMinute=-1;
 const countyLookup=new Map(),countyCounted=new Map();
 const officialCounty="https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county";
 function banner(mode,title,detail){const el=$("statusBanner");el.dataset.mode=mode;$("statusHeading").textContent=title;$("statusDetail").textContent=detail}
@@ -51,13 +51,57 @@ function updateUI(){
  const term=search.toLowerCase(),parts=[...byCounty].filter(([name])=>name.toLowerCase().includes(term)).sort((a,b)=>b[1].units-a[1].units||a[0].localeCompare(b[0]));
  $("countyRows").innerHTML=parts.map(([name,p])=>{
   const prev=p.history.senate2024,margin=(prev.d-prev.r)*100/prev.total;
-  return "<tr><td>"+esc(name)+"</td><td>"+(p.units?fmt(p.dem):"—")+"</td><td>"+(p.units?fmt(p.rep):"—")+"</td><td>"+(p.units?fmt(p.units):"—")+"</td><td>"+(margin>=0?"D+":"R+")+Math.abs(margin).toFixed(1)+"</td></tr>";
+  return "<tr><td><button type=\"button\" class=\"county-jump\" data-county=\""+esc(name)+"\">"+esc(name)+"</button></td><td>"+(p.units?fmt(p.dem):"—")+"</td><td>"+(p.units?fmt(p.rep):"—")+"</td><td>"+(p.units?fmt(p.units):"—")+"</td><td>"+(margin>=0?"D+":"R+")+Math.abs(margin).toFixed(1)+"</td></tr>";
  }).join("")||'<tr><td colspan="5">No matching counties</td></tr>';
  const pterm=precinctSearch.toLowerCase(),filtered=rows.filter(x=>[x.county,x.precinct].some(t=>t.toLowerCase().includes(pterm))).sort((a,b)=>a.county.localeCompare(b.county)||a.precinct.localeCompare(b.precinct));
  $("precinctRows").innerHTML=filtered.map(p=>"<tr><td>"+esc(p.county)+"</td><td>"+esc(p.precinct)+"</td><td>"+fmt(p.dem)+"</td><td>"+fmt(p.rep)+"</td><td>"+fmt(p.other)+"</td><td>"+esc(dateString(p.asOf))+"</td><td><a target='_blank' rel='noopener noreferrer' href='"+esc(p.sourceUrl)+"'>County report</a></td></tr>").join("")||'<tr><td colspan="7">'+(any?"No matching precincts":"No verified precinct rows published to this site yet.")+"</td></tr>";
- if(lastFeed?.updatedAt)$("lastSource").textContent="Newest precinct-feed publication: "+dateString(lastFeed.updatedAt)+(rows.length?" (report times vary by precinct)":" (no votes reported)");
- else $("lastSource").textContent="Precinct feed contains no reported source timestamp.";
+ if(lastFeed?.updatedAt)$("lastSource").textContent="Website feed published: "+dateString(lastFeed.updatedAt)+(rows.length?" · each row has its own clerk timestamp":" · no votes reported");
+ else $("lastSource").textContent="No published precinct-feed timestamp yet.";
+ $("exportReturns").disabled=!rows.length;
+ $("sourceIngestionStatus").textContent=rows.length?fmt(rows.length)+" verified reporting units":"Verified county upload required";
+ $("sourceIngestionNote").textContent=rows.length?"Most recent reviewed precinct snapshot is published; new county reports still require ingestion.":"The 30-second refresh checks this website\u0027s feed, but county clerk data must first be verified and uploaded.";
+ updateFeedAge();
  $("precinctDescription").textContent=rows.length?"Reported precincts / absentee counting units only. Unreported precincts are not treated as zero-vote units.":"Only source-attributed precinct or absentee-counting-board returns are displayed. No results have been ingested yet.";
+}
+function updateFeedAge(){
+ const el=$("feedFreshness");if(!el)return;
+ if(!lastFeed?.updatedAt){el.textContent="No verified precinct feed has been published yet.";return;}
+ const age=Math.round((Date.now()-Date.parse(lastFeed.updatedAt))/60000);
+ if(!Number.isFinite(age)){el.textContent="Feed publication age unavailable.";return;}
+ el.textContent="Website publication age: "+(age<1?"under 1 minute":age+" minutes")+(age>10?" · publication may be behind county sources":"")+".";
+}
+async function readHealth(){
+ if(document.hidden||Date.now()-lastHealthAttempt<300000)return;
+ lastHealthAttempt=Date.now();
+ try{
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);
+   let response;
+   try{response=await fetch("./source_health.json?t="+Date.now(),{cache:"no-store",signal:controller.signal});}finally{clearTimeout(timer);}
+   if(!response.ok)throw Error("Health record HTTP "+response.status);
+   const data=await response.json(),sources=Object.values(data.sources||{});
+   if(!data.checkedAt||!sources.length){$("sourceHealthStatus").textContent="First connectivity audit pending";$("sourceHealthDetail").textContent="The scheduled source monitor has not yet published its first report.";return;}
+   const successful=sources.filter(x=>x.status==="reachable").length;
+   const uncertain=sources.filter(x=>x.status==="indeterminate").length;
+   const failures=sources.filter(x=>x.status==="unavailable").length;
+   $("sourceHealthStatus").textContent=successful+" / "+sources.length+" public endpoints reachable";
+   $("sourceHealthDetail").textContent=(failures?failures+" unreachable · ":"")+(uncertain?uncertain+" blocked/uncertain · ":"")+"last probed "+dateString(data.checkedAt)+". Endpoint access is not verified vote delivery.";
+   $("sourceMonitorCard").classList.toggle("good",successful===sources.length);
+   $("sourceMonitorCard").classList.toggle("warn",uncertain>0);
+   $("sourceMonitorCard").classList.toggle("fail",failures>0);
+ }catch(err){
+   $("sourceHealthStatus").textContent="Connectivity report unavailable";
+   $("sourceHealthDetail").textContent="Source links remain available below; a failed monitor does not mean clerk results are zero.";
+   $("sourceMonitorCard").classList.add("warn");
+ }
+}
+function exportVerifiedCSV(){
+ const rows=lastFeed?.precincts||[];if(!rows.length)return;
+ const quote=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+ const cols=["county","precinct","dem","rep","other","asOf","sourceUrl"];
+ const csv=[cols.join(","),...rows.map(row=>cols.map(k=>quote(row[k])).join(","))].join("\r\n")+"\r\n";
+ const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+ const link=document.createElement("a");link.href=url;link.download="michigan-2026-verified-precinct-returns.csv";
+ document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
 }
 async function readPrecinct(){
  if(busy||document.hidden)return;
@@ -68,13 +112,14 @@ async function readPrecinct(){
   const res=await fetch(path+"?t="+Date.now(),{cache:"no-store"});
   if(!res.ok)throw Error("Feed HTTP "+res.status);
   const payload=await res.json(),rows=verifyFeed(payload);
-  lastFeed={...payload,precincts:rows};
+  const signature=JSON.stringify(rows);const changed=signature!==lastFeedSignature;
+  lastFeed={...payload,precincts:rows};lastFeedSignature=signature;
   if(demo)banner("demo","DEMONSTRATION DATA — NOT REAL VOTES","Synthetic test records are shown. No election data is being reported.");
   else if(!rows.length)banner("waiting","AWAITING PRECINCT RETURNS","No verified 2026 precinct-level results have reached this website. Official county clerks may already have newer information.");
   else banner("live","UNOFFICIAL PRECINCT RETURNS","Displaying "+rows.length+" directly sourced reporting units from "+new Set(rows.map(p=>p.county)).size+" counties, as last published by their source clerks.");
-  updateUI();
-  // Geography never counts projected votes. Publish only validated source rows.
-  window.dispatchEvent(new CustomEvent("ervin:results",{detail:{precincts:rows}}));
+  if(changed)updateUI();else updateFeedAge();
+  // Do not redraw thousands of map polygons when the published votes are unchanged.
+  if(changed)window.dispatchEvent(new CustomEvent("ervin:results",{detail:{precincts:rows}}));
  }catch(e){banner("waiting", "PRECINCT FEED UNAVAILABLE", "Latest precinct feed could not be verified: "+e.message+". Previous available data is retained and must be treated as potentially stale.");}
  finally{busy=false}
 }
@@ -125,6 +170,7 @@ async function readState(){
 }
 function tick(){
  const now=Date.now(),active=demo||now>=liveStart;
+ if(Math.floor(now/60000)!==lastFreshnessMinute){lastFreshnessMinute=Math.floor(now/60000);updateFeedAge();readHealth();}
  if(!active){
   const minute=Math.floor(now/60000);
   if(minute!==lastPreElectionMinute){
@@ -157,6 +203,9 @@ async function initialize(){
   if(!demo&&Date.now()<liveStart)$("refreshNow").disabled=true;
   $("countySearch").addEventListener("input",e=>{search=e.target.value;updateUI()});
   $("precinctSearch").addEventListener("input",e=>{precinctSearch=e.target.value;updateUI()});
+  $("countyRows").addEventListener("click",e=>{const button=e.target.closest("button[data-county]");if(!button)return;const shape=[...document.querySelectorAll("#countyBoundaryMap [data-county]")].find(p=>p.dataset.county===button.dataset.county);if(shape){shape.dispatchEvent(new MouseEvent("click",{bubbles:true}));document.getElementById("electionGeography").scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}});
+  $("exportReturns").addEventListener("click",exportVerifiedCSV);
+  readHealth();
   updateUI();
   if(demo){$("externalStatus").textContent="Disabled for demo";$("externalVotes").textContent="Synthetic fixture mode: no live statewide source is polled.";await readPrecinct();}
   else if(Date.now()>=liveStart)await Promise.all([readPrecinct(),readState()]);
