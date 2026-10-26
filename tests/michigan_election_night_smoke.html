@@ -47,6 +47,14 @@
   check(d.querySelectorAll("#countyRows tr").length===1,"County filter works");
   el("precinctSearch").value="Wayne";el("precinctSearch").dispatchEvent(new first.frame.contentWindow.Event("input",{bubbles:true}));
   check(d.querySelectorAll("#precinctRows tr").length===1,"Precinct filter works");
+  check(!!el("clerkWatchRows")&&!!el("clerkWatchFilter"),"83-county source monitor section and filtering controls present");
+  for(let i=0;i<100&&el("clerkWatchRows").querySelectorAll("tr").length!==83;i++)await new Promise(r=>setTimeout(r,80));
+  check(el("clerkWatchRows").querySelectorAll("tr").length===83,"83 official county website checks appear in source monitor");
+  el("clerkWatchSearch").value="Oakland";
+  el("clerkWatchSearch").dispatchEvent(new first.frame.contentWindow.Event("input",{bubbles:true}));
+  check(el("clerkWatchRows").querySelectorAll("tr").length===1,"County source monitor search filters to Oakland");
+  el("clerkWatchSearch").value="";
+  el("clerkWatchSearch").dispatchEvent(new first.frame.contentWindow.Event("input",{bubbles:true}));
   const second=await load("../michigan/election-night/"),real=second.doc;
   for(let i=0;i<100&&real.querySelectorAll("#countyBoundaryMap path").length!==83;i++)await new Promise(r=>setTimeout(r,85));
   check(real.querySelectorAll("#countyBoundaryMap path").length===83,"Real pre-election page also renders 83 county map outlines");
