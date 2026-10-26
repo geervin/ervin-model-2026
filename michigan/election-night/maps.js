@@ -110,7 +110,7 @@ function uniqueActualRecord(f){
 }
 function precinctModel(f,layer=precinctLayer){
  const countyName=countyOfFeature(f),record=outlooks.get(countyName),history=precinctJoin?.records.get(f)||null,
-       source=outlookFor(countyName);
+       source=outlookFor(countyName,layer);
  if(!source)return {share:null,history,source:null,tier:"No validated county outlook"};
  let share=source.share,tier=source.kind;
  if(layer==="baseline"){
@@ -207,10 +207,10 @@ function canvasHover(e){
  hover.style.top=Math.min(parent.height-42,Math.max(7,e.clientY-parent.top+12))+"px";
 }
 
-function outlookFor(name){
+function outlookFor(name,layer=precinctLayer){
  const record=outlooks.get(name);
  const official=officialCountyResults.find(x=>x.county===name);
- if(precinctLayer==="baseline")return record?{share:record.baselineDemShare,kind:"2024 historic county baseline"}:null;
+ if(layer==="baseline")return record?{share:record.baselineDemShare,kind:"2024 historic county baseline"}:null;
  if(official&&official.dem+official.rep>0)return{share:official.dem/(official.dem+official.rep),kind:"2026 clerk county-wide share proxy"};
  return record?{share:record.demShare,kind:"2026 county forecast proxy"}:null;
 }
