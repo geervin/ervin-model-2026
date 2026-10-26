@@ -8,7 +8,7 @@ const $=id=>document.getElementById(id);
 const GIS="https://services3.arcgis.com/dxRQUfTDNtfqZ301/arcgis/rest/services/2026_Voting_Precincts/FeatureServer/0";
 const SOURCE="https://www.arcgis.com/home/item.html?id=c349bc2bb6c2468594d341a09f520ea8";
 const W=880,H=680,BOUNDS=[-90.85,41.4,-81.8,48.75];
-let counties=[],features=[],selected="",results=[],officialCountyResults=[],loaded=false,loading=false,lastRender=0;
+let counties=[],features=[],selected="",results=[],officialCountyResults=[],outlooks=new Map(),outlookAt="",precinctLayer="outlook",loaded=false,loading=false,lastRender=0;
 const normalize=x=>String(x||"").trim().toLowerCase().replace(/\b(precinct|pct|ward|city|township|town|charter)\b/g,"").replace(/[^a-z0-9]/g,"");
 const byCounty=new Map(),byFips=new Map();
 const fmt=x=>Number(x||0).toLocaleString("en-US");
@@ -70,6 +70,33 @@ function chooseCounty(name){
  drawCounties();drawPrecincts();
  window.dispatchEvent(new CustomEvent("ervin:county-select",{detail:{county:name}}));
 }
+function outlookFor(name){
+ const record=outlooks.get(name);
+ const official=officialCountyResults.find(x=>x.county===name);
+ if(precinctLayer==="baseline")return record?{share:record.baselineDemShare,kind:"2024 historic county baseline"}:null;
+ if(official&&official.dem+official.rep>0)return{share:official.dem/(official.dem+official.rep),kind:"2026 clerk county-wide share proxy"};
+ return record?{share:record.demShare,kind:"2026 county forecast proxy"}:null;
+}
+function shareFill(share){
+ const strength=Math.min(1,Math.abs(share-.5)/.34),light=48-19*strength;
+ return share>=.5?`hsl(211 60% ${light}%)`:`hsl(351 56% ${light}%)`;
+}
+function layerCaption(){
+ const label=$("precinctDisplayLabel"),legend=$("precinctLegend"),method=$("precinctModelMethod");
+ if(precinctLayer==="actual"){
+  label.textContent="ACTUAL · VERIFIED PRECINCT UNITS";
+  method.textContent="VERIFIED RETURNS: Grey polygons have no exact unique reporting-unit match. Other polygons show votes actually attributed to that precinct.";
+  legend.innerHTML='<span><b></b>No matched result</span><span><b class="dem"></b>Verified D lead</span><span><b class="rep"></b>Verified R lead</span>';
+ }else if(precinctLayer==="baseline"){
+  label.textContent="HISTORY · 2024 COUNTY SENATE";
+  method.textContent="HISTORICAL COUNTY PROXY: All precinct polygons within a county receive its 2024 county Senate two-party share. These are NOT the actual results of each precinct.";
+  legend.innerHTML='<span><b></b>County data unavailable</span><span><b class="dem"></b>2024 county D share</span><span><b class="rep"></b>2024 county R share</span>';
+ }else{
+  label.textContent="MODEL · NOT PRECINCT RETURNS";
+  method.textContent="COUNTY PROXY: Each precinct polygon inherits the county-level 2026 Ervin outlook (or its newer verified county-wide share). No individualized precinct totals or winner predictions are made.";
+  legend.innerHTML='<span><b></b>County information unavailable</span><span><b class="dem"></b>County-based D outlook</span><span><b class="rep"></b>County-based R outlook</span>';
+ }
+}
 function drawPrecincts(){
  const canvas=$("precinctBoundaryMap"),tip=$("precinctMapStatus");if(!canvas||!tip)return;
  const dpr=Math.min(2,window.devicePixelRatio||1);
@@ -86,14 +113,18 @@ function drawPrecincts(){
  // A neutral county outline is immediately available even without ArcGIS.
  const visibleCounties=county?[county]:counties;
  if(!loaded){
-  ctx.lineWidth=.9;ctx.strokeStyle="#5c7185";ctx.fillStyle="#172c3e";
+  ctx.lineWidth=.9;ctx.strokeStyle="#5c7185";
   for(const c of visibleCounties){
+    const estimate=precinctLayer!=="actual"?outlookFor(c.properties.name):null;
+    ctx.fillStyle=estimate?shareFill(estimate.share):"#172c3e";
     const shape=new Path2D(path(c.geometry,box));ctx.fill(shape);ctx.stroke(shape);
   }
-  tip.textContent=loading?"Loading official 2026 precinct geography…":"2026 precinct boundaries are not loaded. County outlines shown as a neutral fallback.";
+  tip.textContent=loading?"Loading official 2026 precinct geometry…":(precinctLayer==="actual"?
+    "Exact reporting-unit polygons unavailable; neutral county boundaries are shown.":
+    "Displaying county-level shares while precinct geometry loads. County color is a proxy, not a precinct result.");
   return;
  }
- let drawn=0,reported=0;
+ let drawn=0,reported=0,projected=0;
  const matching=new Map();
  for(const row of results){
    const key=row.county.toLowerCase()+"|"+normalize(row.precinct);
@@ -114,16 +145,26 @@ function drawPrecincts(){
   const matches=keys.flatMap(k=>matching.get(k)||[]);
   const unique=[...new Set(matches)];
   const matched=unique.length===1?unique[0]:null;
-  ctx.fillStyle=matched?(matched.dem>matched.rep?"#275d9b":matched.rep>matched.dem?"#993e50":"#65596b"):"#1b3346";
+  const estimate=precinctLayer==="actual"?null:outlookFor(countyName);
+  ctx.fillStyle=precinctLayer==="actual"?
+    (matched?(matched.dem>matched.rep?"#275d9b":matched.rep>matched.dem?"#993e50":"#65596b"):"#1b3346"):
+    (estimate?shareFill(estimate.share):"#1b3346");
   ctx.strokeStyle=selected?"#89a0b1":"#7690a3";
   ctx.lineWidth=selected?.62:.28;
   ctx.fill(shape);ctx.stroke(shape);drawn++;
   if(matched)reported++;
+  if(estimate)projected++;
  }
  // Draw selected county outline prominently, or statewide boundaries softly.
  ctx.strokeStyle="#d9bd85";ctx.lineWidth=selected?2:1.1;
  for(const c of visibleCounties)ctx.stroke(new Path2D(path(c.geometry,box)));
- tip.textContent=`${fmt(drawn)} precinct polygons displayed${selected?" in "+selected:" statewide"} · ${reported} exactly matched to ingested return IDs · ${results.length-reported} return rows not uniquely mapped. Grey = no verified match; no zeros implied.`;
+ if(precinctLayer==="actual"){
+  tip.textContent=`${fmt(drawn)} precinct polygons displayed${selected?" in "+selected:" statewide"} · ${reported} exact reporting-unit matches · ${results.length-reported} return rows not uniquely mapped. Grey does not mean zero votes.`;
+ }else{
+  const county=selected?outlookFor(selected):null;
+  const selectedContext=county?" · "+selected+" county-based Democratic two-party share "+(county.share*100).toFixed(1)+"% ("+county.kind+")":"";
+  tip.textContent=`${fmt(projected)} of ${fmt(drawn)} 2026 precinct boundary polygons display ${precinctLayer==="baseline"?"2024 historical county shares":"county-derived outlook shares"}${selectedContext}. Uniform share across a county; not individual precinct predictions or reported precinct votes.`;
+ }
 }
 async function fetchPrecinctGeography(){
  if(loading||loaded)return;
@@ -159,6 +200,10 @@ async function start(){
  $("precinctGISLink").href=SOURCE;
  $("countyAll").addEventListener("click",()=>chooseCounty(""));
  $("reloadPrecinctMap").addEventListener("click",fetchPrecinctGeography);
+ $("precinctDisplayMode").addEventListener("change",e=>{
+  precinctLayer=e.target.value;layerCaption();drawPrecincts();
+ });
+ layerCaption();
  try{
   const r=await fetch("../counties.geojson",{cache:"force-cache"});
   if(!r.ok)throw Error("County GeoJSON "+r.status);
@@ -191,8 +236,18 @@ window.addEventListener("ervin:results",e=>{
 window.addEventListener("ervin:county-totals",e=>{
  officialCountyResults=Array.isArray(e.detail?.counties)?e.detail.counties:[];
  drawCounties();
- // The precinct map continues to use precinct-joined votes only; county
- // subtotals are never painted as if they were precinct-level results.
+ if(precinctLayer==="outlook")drawPrecincts();
+ // In the MODEL layer a reported county updates the displayed *county share*
+ // for every polygon in that county. This does not create precinct votes.
+ // The ACTUAL layer never paints county-wide votes as precinct results.
+});
+window.addEventListener("ervin:county-outlook",e=>{
+ outlooks=new Map((e.detail?.counties||[]).map(c=>[c.county,c]));
+ outlookAt=e.detail?.asOf||"";
+ if(precinctLayer!=="actual")drawPrecincts();
+});
+window.addEventListener("ervin:county-outlook-error",e=>{
+ if(precinctLayer!=="actual")$("precinctMapStatus").textContent="County forecast currently unavailable · switch to verified precinct results or retry. "+e.detail?.reason;
 });
 document.addEventListener("DOMContentLoaded",start,{once:true});
 })();
