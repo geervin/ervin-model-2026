@@ -1,0 +1,46 @@
+name: Check Kent official Senate results (election-night fast lane)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/poll_kent_senate.py'
+      - 'tests/test_kent_senate_adapter.py'
+      - '.github/workflows/kent-senate-fast-lane.yml'
+  schedule:
+    # Nov 3 8pm ET to Nov 4 4am ET; five-minute best-effort GitHub schedule.
+    - cron: '*/5 1-9 4 11 *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kent-2026-election-night
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install strict HTML parser
+        run: python3 -m pip install beautifulsoup4
+      - name: Test exact Kent general-election contract
+        run: python3 -m unittest discover -s tests -p test_kent_senate_adapter.py -v
+      - name: Read original November 2026 Kent election result page
+        run: python3 scripts/poll_kent_senate.py
+      - name: Commit only newly verified Kent county returns
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add michigan/election-night/county_auto.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update directly verified Kent County Senate results"
+            git pull --rebase origin main
+            git push
+          else
+            echo 'No new verified county vote totals; nothing to publish.'
+          fi
