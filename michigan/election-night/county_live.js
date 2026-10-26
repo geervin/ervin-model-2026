@@ -96,6 +96,7 @@ function render(){
    "Officially attributed county-wide clerk subtotal. Not added to any precinct figures. 'Complete' means the county source designated its report complete.":
    format(rec.units)+" verified precinct/counting-board rows only. This is not a complete county result unless all local units are reported; do not infer reporting percentage.";
  $("countyCardTimestamp").textContent=rec?"Clerk report: "+pretty(rec.asOf):"No valid county return timestamp";
+ $("copyCountyLink").disabled=!names.has(label);
  $("countyCardSource").href=rec?.sourceUrl||countySources.get(label)||DIRECTORY;
  $("countyCardSource").textContent=rec?"Open original result ↗":"County election website ↗";
 }
@@ -212,6 +213,17 @@ function init(){
   render();
  });
  $("refreshCountyTotals").addEventListener("click",()=>readCounty(true));
+ $("copyCountyLink").addEventListener("click",async()=>{
+  const button=$("copyCountyLink");if(!names.has(selected))return;
+  const url=new URL(location.href);url.searchParams.set("county",selected);
+  try{
+   await navigator.clipboard.writeText(url.toString());
+   button.textContent="✓ Link copied";
+  }catch{
+   button.textContent="Copy unavailable";
+  }
+  button.setAttribute("title","Copy "+selected+" County link");
+ });
  indexCounties().then(()=>{loadClerkLinks();render();if(Date.now()>=CLOSE_E||demo)readCounty(true)});
  const next=()=>{if(Date.now()>=CLOSE_E)readCounty()};
  clock=setInterval(next,30000);
