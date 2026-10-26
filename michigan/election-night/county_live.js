@@ -96,7 +96,7 @@ function render(){
    "Officially attributed county-wide clerk subtotal. Not added to any precinct figures. 'Complete' means the county source designated its report complete.":
    format(rec.units)+" verified precinct/counting-board rows only. This is not a complete county result unless all local units are reported; do not infer reporting percentage.";
  $("countyCardTimestamp").textContent=rec?"Clerk report: "+pretty(rec.asOf):"No valid county return timestamp";
- $("copyCountyLink").disabled=!names.has(label);
+ $("copyCountyLink").disabled=!names.has(selected);
  $("countyCardSource").href=rec?.sourceUrl||countySources.get(label)||DIRECTORY;
  $("countyCardSource").textContent=rec?"Open original result ↗":"County election website ↗";
 }
