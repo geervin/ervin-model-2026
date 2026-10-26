@@ -7,7 +7,7 @@ duplicate, malformed, undated or pre-close precinct votes, and will not invent
 reporting percentages when precinct denominator data is missing.
 """
 from __future__ import annotations
-import csv, json, re, sys
+import csv, json, os, re, sys
 from pathlib import Path
 from datetime import datetime, timezone
 from urllib.parse import urlparse
@@ -36,7 +36,7 @@ def value(v, field, file, line):
         raise ValueError(f"{file}:{line}: absurdly large vote count")
     return n
 
-def parse_time(v, file, line, county=None):
+def parse_time(v, file, line, county=None, now=None):
     try:
         t = datetime.fromisoformat(str(v).replace("Z", "+00:00"))
     except ValueError:
@@ -47,11 +47,11 @@ def parse_time(v, file, line, county=None):
     close = CENTRAL_CUTOFF if county in CENTRAL_COUNTIES else CUTOFF
     if utc < close:
         raise ValueError(f"{file}:{line}: vote counts for {county or 'Michigan'} cannot predate the county's 8pm local poll closing")
-    if utc > datetime.now(timezone.utc):
+    if utc > (now or datetime.now(timezone.utc)):
         raise ValueError(f"{file}:{line}: timestamp is in the future")
     return utc.isoformat().replace("+00:00", "Z")
 
-def build():
+def build(now=None):
     entries, seen, sources = [], set(), set()
     files = sorted(CSV_DIR.glob("*.csv"))
     for file in files:
@@ -77,13 +77,27 @@ def build():
                 dem, rep, other = (value(row[x], x, file, line) for x in ("dem","rep","other"))
                 if dem + rep + other == 0:
                     raise ValueError(f"{file}:{line}: zero-vote rows are unreported, not returns")
-                as_of = parse_time(row["as_of"], file, line, county)
+                as_of = parse_time(row["as_of"], file, line, county, now)
                 sources.add(url)
                 entries.append({"county": county, "precinct": precinct, "dem": dem, "rep": rep,
                                 "other": other, "asOf": as_of, "sourceUrl": url})
     if not entries:
         print("No reviewed precinct CSV files supplied; preserving existing election-night feed.")
         return 0
+    # Fail closed if a new snapshot silently loses previously published units,
+    # or rolls one unit back to an older county report. A deliberate retraction
+    # requires operator review and an explicit per-run environment override.
+    previous = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
+    before = {(p["county"].casefold(),p["precinct"].casefold()):p for p in previous.get("precincts",[])}
+    current = {(p["county"].casefold(),p["precinct"].casefold()):p for p in entries}
+    missing = set(before)-set(current)
+    stale = [key for key in set(before)&set(current)
+             if current[key]["asOf"] < before[key]["asOf"]]
+    if (missing or stale) and os.environ.get("ERVIN_REVIEWED_RETRACTION")!="YES":
+        raise ValueError(
+            f"Snapshot would remove {len(missing)} published units or rewind {len(stale)} report timestamps. "
+            "Review corrections, preserve prior rows, or explicitly set ERVIN_REVIEWED_RETRACTION=YES for a checked retraction."
+        )
     entries.sort(key=lambda p: (p["county"], p["precinct"]))
     result = {"version":1,"election":ELECTION_DAY,"office":"US Senate",
               "status":"unofficial_partial_precinct_reports",
