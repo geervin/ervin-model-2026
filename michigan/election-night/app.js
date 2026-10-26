@@ -9,9 +9,16 @@ const lateClose=new Date("2026-11-03T21:00:00-05:00").getTime();
 const centralCounties=new Set(["dickinson","gogebic","iron","menominee"]);
 const demo=new URLSearchParams(location.search).get("demo")==="1";
 const eDate="2026-11-03";
-let lastFeed=null,lastFeedSignature="",counties=[],stateRow=null,lastStateAttempt=0,lastPrecinctAttempt=0,busy=false,stateBusy=false,checkDeadline=Date.now()+30000,search="",precinctSearch="",lastPreElectionMinute=-1,lastHealthAttempt=0,lastFreshnessMinute=-1;
+let lastFeed=null,lastFeedSignature="",counties=[],stateRow=null,lastStateAttempt=0,lastPrecinctAttempt=0,busy=false,stateBusy=false,checkDeadline=Date.now()+30000,search="",precinctSearch="",reportFilter="all",lastPreElectionMinute=-1,lastHealthAttempt=0,lastFreshnessMinute=-1;
 const countyLookup=new Map(),countyCounted=new Map();
 const officialCounty="https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county";
+// Direct November 2026 links verified on the respective official county sites.
+// All other counties fall back to the Michigan county-clerk directory.
+const countyResultPages={
+ oakland:"https://results.enr.clarityelections.com/MI/Oakland/127284/",
+ kent:"https://app.enhancedvoting.com/results/public/kent-county-mi/elections/11032026_20261005115447",
+ livingston:"https://milivcounty.gov/elections/election-results/"
+};
 function banner(mode,title,detail){const el=$("statusBanner");el.dataset.mode=mode;$("statusHeading").textContent=title;$("statusDetail").textContent=detail}
 function numeric(n){return Number.isSafeInteger(n)&&n>=0&&n<=12000000}
 function validHttp(url){try{const u=new URL(url);return u.protocol==="https:"||u.protocol==="http:"&&u.hostname==="localhost"}catch{return false}}
@@ -48,11 +55,12 @@ function updateUI(){
  $("precinctCount").textContent=any?fmt(rows.length):"—";
  $("coverage").textContent=any?byCounty.size+" county summaries · denominator not confirmed":"No precinct return is available";
  if(any){const n=[...byCounty.values()].filter(c=>c.units).length;$("coverage").textContent=n+" of 83 counties have precinct rows; not a statewide precinct reporting percentage";}
- const term=search.toLowerCase(),parts=[...byCounty].filter(([name])=>name.toLowerCase().includes(term)).sort((a,b)=>b[1].units-a[1].units||a[0].localeCompare(b[0]));
+ const term=search.toLowerCase(),parts=[...byCounty].filter(([name,p])=>name.toLowerCase().includes(term)&&(reportFilter==="all"||reportFilter==="reported"&&p.units>0||reportFilter==="awaiting"&&p.units===0)).sort((a,b)=>b[1].units-a[1].units||a[0].localeCompare(b[0]));
  $("countyRows").innerHTML=parts.map(([name,p])=>{
   const prev=p.history.senate2024,margin=(prev.d-prev.r)*100/prev.total;
-  return "<tr><td><button type=\"button\" class=\"county-jump\" data-county=\""+esc(name)+"\">"+esc(name)+"</button></td><td>"+(p.units?fmt(p.dem):"—")+"</td><td>"+(p.units?fmt(p.rep):"—")+"</td><td>"+(p.units?fmt(p.units):"—")+"</td><td>"+(margin>=0?"D+":"R+")+Math.abs(margin).toFixed(1)+"</td></tr>";
- }).join("")||'<tr><td colspan="5">No matching counties</td></tr>';
+  const direct=countyResultPages[name.toLowerCase()],url=direct||officialCounty;
+  return "<tr><td><button type=\"button\" class=\"county-jump\" data-county=\""+esc(name)+"\">"+esc(name)+"</button></td><td>"+(p.units?fmt(p.dem):"—")+"</td><td>"+(p.units?fmt(p.rep):"—")+"</td><td>"+(p.units?fmt(p.units):"—")+"</td><td>"+(margin>=0?"D+":"R+")+Math.abs(margin).toFixed(1)+"</td><td><a href=\""+esc(url)+"\" target=\"_blank\" rel=\"noopener noreferrer\">"+(direct?"2026 county portal ↗":"Find clerk ↗")+"</a></td></tr>";
+ }).join("")||'<tr><td colspan="6">No counties match the selected filters</td></tr>';
  const pterm=precinctSearch.toLowerCase(),filtered=rows.filter(x=>[x.county,x.precinct].some(t=>t.toLowerCase().includes(pterm))).sort((a,b)=>a.county.localeCompare(b.county)||a.precinct.localeCompare(b.precinct));
  $("precinctRows").innerHTML=filtered.map(p=>"<tr><td>"+esc(p.county)+"</td><td>"+esc(p.precinct)+"</td><td>"+fmt(p.dem)+"</td><td>"+fmt(p.rep)+"</td><td>"+fmt(p.other)+"</td><td>"+esc(dateString(p.asOf))+"</td><td><a target='_blank' rel='noopener noreferrer' href='"+esc(p.sourceUrl)+"'>County report</a></td></tr>").join("")||'<tr><td colspan="7">'+(any?"No matching precincts":"No verified precinct rows published to this site yet.")+"</td></tr>";
  if(lastFeed?.updatedAt)$("lastSource").textContent="Website feed published: "+dateString(lastFeed.updatedAt)+(rows.length?" · each row has its own clerk timestamp":" · no votes reported");
@@ -202,6 +210,7 @@ async function initialize(){
   });
   if(!demo&&Date.now()<liveStart)$("refreshNow").disabled=true;
   $("countySearch").addEventListener("input",e=>{search=e.target.value;updateUI()});
+  $("countyReportFilter").addEventListener("change",e=>{reportFilter=e.target.value;updateUI()});
   $("precinctSearch").addEventListener("input",e=>{precinctSearch=e.target.value;updateUI()});
   $("countyRows").addEventListener("click",e=>{const button=e.target.closest("button[data-county]");if(!button)return;const shape=[...document.querySelectorAll("#countyBoundaryMap [data-county]")].find(p=>p.dataset.county===button.dataset.county);if(shape){shape.dispatchEvent(new MouseEvent("click",{bubbles:true}));document.getElementById("electionGeography").scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}});
   $("exportReturns").addEventListener("click",exportVerifiedCSV);
