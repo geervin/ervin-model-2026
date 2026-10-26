@@ -29,6 +29,24 @@ class ClerkSourceTests(unittest.TestCase):
         links,_=watch.report_links(BASE,HTML_2026)
         self.assertEqual(len(links),1)
         self.assertTrue(links[0]["url"].endswith("statement-of-votes-cast.pdf"))
+    def test_rejects_primary_results_and_unrelated_2026_links(self):
+        html='''<h2>2026 Elections</h2>
+        <a href="/2026/08/04/results">August 2026 Primary Election Results</a>
+        <a href="/2026/05/05/results">May 2026 Special Election Results</a>
+        <a href="https://www.facebook.com/">Election Results</a>
+        <a href="/2024/11/05/results">November 2024 Results</a>'''
+        links,_=watch.report_links(BASE,html)
+        self.assertEqual(links,[])
+
+    def test_november_heading_provides_attribution(self):
+        html='''<h3>November 3, 2026 - General Election</h3>
+        <a href="/public/statement.pdf">Unofficial Statement of Votes Cast</a>
+        <h3>August 4, 2026 - Primary Election</h3>
+        <a href="/primary/results.pdf">Official Election Results</a>'''
+        links,_=watch.report_links(BASE,html)
+        self.assertEqual(len(links),1)
+        self.assertTrue(links[0]["url"].endswith("statement.pdf"))
+
     def test_first_check_sets_baseline_without_false_change(self):
         got=watch.inspect_county("Oakland",BASE,fetch=lambda _:HTML_2026)
         self.assertEqual(got["status"],"reachable")
@@ -37,7 +55,7 @@ class ClerkSourceTests(unittest.TestCase):
         self.assertEqual(len(got["reportLinks"]),1)
     def test_new_report_link_is_not_a_vote(self):
         first=watch.inspect_county("Oakland",BASE,fetch=lambda _:HTML_2026)
-        second=watch.inspect_county("Oakland",BASE,prior=first,fetch=lambda _:HTML_2026.replace("</main>",'<a href="/2026/results-general-election.csv">2026 Results Report</a></main>'))
+        second=watch.inspect_county("Oakland",BASE,prior=first,fetch=lambda _:HTML_2026.replace("</main>",'<a href="/2026/november/results-general-election.csv">2026 Results Report</a></main>'))
         self.assertEqual(second["changeKind"],"new_result_links")
         self.assertEqual(len(second["newLinks"]),1)
         self.assertNotIn("votes",second)
