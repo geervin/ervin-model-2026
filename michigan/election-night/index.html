@@ -103,10 +103,51 @@ tbody tr:nth-child(even){background:#ffffff04}tbody tr:hover{background:#263f55}
 .watch-events a{display:inline-block;margin:4px 9px 4px 0}
 .clerk-watch a{overflow-wrap:anywhere}
 
+
+/* County vote center - expandable map and accessible hover/selected results */
+.live-data-ribbon{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#10283a;border:1px solid #40617a;border-radius:11px;padding:12px 16px;margin:0 0 16px;font-size:12px}
+.live-data-ribbon #countyLiveFeedStatus{font-weight:740;flex:1;min-width:180px}
+.live-data-ribbon #countyLiveFeedAge{color:var(--muted);font-variant-numeric:tabular-nums}
+.ribbon-mark{display:inline-block;background:#d6ab70;width:8px;height:8px;border-radius:50%;box-shadow:0 0 0 4px #d6ab701c}
+.county-map-panel{position:relative;overflow:visible}
+.county-map-viewport{width:100%;max-width:550px;cursor:crosshair}
+.county-card{border-top:1px solid var(--edge);padding:18px 2px 0;margin-top:15px}
+.county-card-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:15px}
+.county-card h3{font-size:20px;letter-spacing:-.025em;margin:5px 0 0}
+.county-candidates{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.county-candidate{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid #39526a;border-radius:10px;min-width:0;background:#102235}
+.candidate-portrait{flex:0 0 52px;width:52px;height:60px;border-radius:7px;overflow:hidden;position:relative;background:#365371;display:grid;place-items:center;color:#cedbeb;font-size:13px;font-weight:800}
+.candidate-portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;z-index:1}
+.county-candidate-name{font-size:12px;font-weight:720;min-width:0}
+.county-candidate-name small{font-size:10px;display:block;color:var(--muted);font-weight:600}
+.county-candidate-name strong{display:block;font-variant-numeric:tabular-nums;font-size:22px;letter-spacing:-.03em;margin-top:3px}
+.county-vote-bar{display:flex;background:#263748;border-radius:99px;overflow:hidden;height:9px;margin:14px 0 9px}
+.county-vote-bar #countyCardDemBar{background:#347bbb;width:0%;transition:width .2s}
+.county-vote-bar #countyCardRepBar{background:#aa4f62;width:0%;transition:width .2s}
+.county-card .split a{font-size:11px}
+.county-hover-tip{pointer-events:none;position:fixed;z-index:1001;width:270px;padding:13px;background:#101e2ff7;border:1px solid #728ba2;border-radius:11px;box-shadow:0 18px 42px #030b18b0;color:var(--text)}
+.county-hover-tip[hidden]{display:none}
+.county-hover-tip strong{font-size:17px;display:block;letter-spacing:-.03em}
+.hover-eyebrow{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:850}
+.hover-candidates{display:grid;gap:7px;margin-top:10px}
+.hover-candidates>div{display:flex;gap:10px;align-items:center;background:#1a3044;padding:5px 8px;border-radius:7px}
+.hover-candidates img{object-fit:cover;object-position:top;border-radius:5px}
+.hover-candidates span{display:flex;justify-content:space-between;gap:8px;flex:1;font-size:12px;font-weight:700}
+.county-hover-tip small{display:block;font-size:10px;color:var(--muted);margin-top:7px}
+.map-expand{background:#274860;border-color:#58778d}
+.county-map-panel.is-expanded{position:fixed;z-index:1000;inset:18px;overflow:auto;max-width:none;margin:0;box-shadow:0 0 0 110vmax #020911e6,0 30px 100px #000b;padding:24px max(20px,calc((100% - 1250px)/2))}
+.county-map-panel.is-expanded .county-map-viewport{max-width:min(800px,85vw);margin:13px auto 11px}
+.county-map-panel.is-expanded .county-card{max-width:800px;margin:18px auto}
+body:has(.county-map-panel.is-expanded){overflow:hidden}
+.county-map-panel.is-expanded .map-expand{background:var(--gold);border-color:var(--gold);color:#122435}
+@media(max-width:700px){.county-candidates{grid-template-columns:1fr}.county-map-panel.is-expanded{inset:0;padding:14px;z-index:1000}.county-hover-tip{width:220px}.county-card-heading{gap:7px}.county-candidate-name strong{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.county-vote-bar span{transition:none!important}}
+
 </style></head><body>
 <header><strong>ERVIN <span style="color:var(--gold)">MODEL</span> / MICHIGAN</strong><nav><a href="../../">National forecast</a><a href="../">County projections</a><a href="." aria-current="page" style="color:var(--gold)">Election Night</a></nav></header>
 <main><div class="hero"><div class="eyebrow">Tuesday, November 3, 2026 · Michigan U.S. Senate</div><h1>Michigan Election Night</h1><p>Unofficial returns by county and precinct, with timestamps and direct source citations. <strong>Vote totals are never inferred from the polling model.</strong> County projections remain on the separate <a href="../">forecast dashboard</a>.</p></div>
 <div id="statusBanner" class="banner" role="status"><strong id="statusHeading">Preparing reporting board</strong><div class="muted" id="statusDetail">Loading election sources and county index.</div></div>
+<div class="live-data-ribbon" role="status"><span class="ribbon-mark"></span><span id="countyLiveFeedStatus">County-wide reporting feed: no verified November 2026 totals yet.</span><span id="countyLiveFeedAge">Checks every 30 seconds while open after polls close</span><button type="button" id="refreshCountyTotals" class="map-inline">Refresh county feed</button></div>
 <div class="grid">
  <div class="stat"><small>Democratic votes reported</small><strong class="number blue" id="reportedD">—</strong><em id="demName">Democratic candidate</em></div>
  <div class="stat"><small>Republican votes reported</small><strong class="number red" id="reportedR">—</strong><em id="repName">Republican candidate</em></div>
@@ -135,11 +176,12 @@ tbody tr:nth-child(even){background:#ffffff04}tbody tr:hover{background:#263f55}
  <p class="tiny" style="margin:13px 0 0">Health probes check whether public endpoints respond—not whether a county has started reporting, whether precinct-level downloads exist, or whether a machine-readable feed can be automatically imported. <a href="./source_health.json" target="_blank" rel="noopener noreferrer">View dated connectivity audit ↗</a></p>
 </section>
 <section class="geography-grid" id="electionGeography" aria-label="Michigan county and precinct geography before and during returns">
- <div class="panel"><div class="geo-head"><div><div class="eyebrow">2026 Michigan geography</div><h2>County map · all 83</h2></div><button class="map-inline" type="button" id="countyAll" disabled>Show all counties</button></div>
- <div class="geo-viewport"><svg id="countyBoundaryMap" preserveAspectRatio="none" role="img" aria-label="Interactive map of all 83 Michigan counties, neutral until results are reported" viewBox="0 0 880 680"></svg></div>
+ <div class="panel county-map-panel" id="countyMapPanel"><div class="geo-head"><div><div class="eyebrow">Interactive county election results</div><h2>Michigan · all 83 counties</h2></div><div class="geo-toolbar"><button class="map-inline" type="button" id="countyAll" disabled>Show all counties</button><button class="map-inline map-expand" type="button" id="expandCountyMap" aria-expanded="false" aria-controls="countyMapPanel">⛶ Expand map</button></div></div>
+ <div class="geo-viewport county-map-viewport"><svg id="countyBoundaryMap" preserveAspectRatio="none" role="img" aria-label="Interactive map of all 83 Michigan counties, neutral until results are reported" viewBox="0 0 880 680"></svg></div>
+ <div class="county-card" id="countyResultCard" aria-live="polite"><div class="county-card-heading"><div><div class="eyebrow">County results desk</div><h3 id="countyCardTitle">Select a county</h3></div><span class="chip gold" id="countyCardStatus">Awaiting results</span></div><div class="county-candidates"><div class="county-candidate"><div class="candidate-portrait"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Abdul_El-Sayed.jpg?width=120" width="52" height="60" loading="lazy" alt="Portrait of Abdul El-Sayed" onerror="this.style.display='none'"><span>AE</span></div><div class="county-candidate-name">Abdul El-Sayed <small>DEM</small><strong class="blue" id="countyCardDem">—</strong></div></div><div class="county-candidate"><div class="candidate-portrait"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mike-Rogers-Head-Shot-2.jpg?width=120" width="52" height="60" loading="lazy" alt="Portrait of Mike Rogers" onerror="this.style.display='none'"><span>MR</span></div><div class="county-candidate-name">Mike Rogers <small>REP</small><strong class="red" id="countyCardRep">—</strong></div></div></div><div class="county-vote-bar" aria-label="Share of verified votes reported"><span id="countyCardDemBar"></span><span id="countyCardRepBar"></span></div><p id="countyCardContext" class="tiny">Move over or click a county to see the current verified figures, if available.</p><div class="split"><span id="countyCardTimestamp" class="tiny">No published county tally</span><a id="countyCardSource" href="https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county" target="_blank" rel="noopener noreferrer">Official county source ↗</a></div></div>
  <p class="geo-status" id="countyMapStatus">Loading the 83 county boundaries…</p>
  <div class="geo-key"><span><b></b>No reported returns</span><span><b class="dem"></b>Partial D lead</span><span><b class="rep"></b>Partial R lead</span></div>
- <p class="tiny">Select a county to inspect its precinct boundaries at a closer scale. Colors, if displayed after November 3, reflect <em>only reported returns</em>, never forecast votes.</p></div>
+ <p class="tiny">Hover for a candidate comparison, click for a persistent county results card, or expand the map. **County-wide clerk results take precedence over partial precinct figures**—they are never added together. Unreported counties stay neutral. Portraits: <a href="https://commons.wikimedia.org/wiki/File:Abdul_El-Sayed.jpg" target="_blank" rel="noopener noreferrer">El-Sayed (K. Zirkel, CC BY-SA 4.0)</a> and <a href="https://commons.wikimedia.org/wiki/File:Mike-Rogers-Head-Shot-2.jpg" target="_blank" rel="noopener noreferrer">Rogers (U.S. Congress, public domain)</a>.</p></div>
  <div class="panel"><div class="geo-head"><div><div class="eyebrow">2026 Bureau of Elections boundaries</div><h2>Precinct map · <span id="mapCountySelection">Statewide</span></h2></div><button class="map-inline" type="button" id="reloadPrecinctMap">Reload geography</button></div>
  <div class="geo-viewport"><canvas id="precinctBoundaryMap" role="img" aria-label="Blank 2026 Michigan precinct polygon map. Grey precincts have no reported election result" width="880" height="680"></canvas></div>
  <p class="geo-status" id="precinctMapStatus">Preparing neutral precinct map…</p>
@@ -179,5 +221,6 @@ tbody tr:nth-child(even){background:#ffffff04}tbody tr:hover{background:#263f55}
  <div class="watch-scroll"><table><thead><tr><th>County</th><th>Website check</th><th>2026 reports</th><th>Source / latest document</th><th>Details</th></tr></thead><tbody id="clerkWatchRows"><tr><td colspan="5">Waiting for first audit…</td></tr></tbody></table></div>
  <p class="tiny" style="margin:12px 0 0">The checker runs roughly every six hours normally and every 15 minutes in the configured election-night window. GitHub Actions schedules may run late. The separate precinct vote feed continues to require validated county returns. <a href="./clerk_watch.json" target="_blank" rel="noopener noreferrer">JSON source audit</a> · <a href="./clerk_watch_events.json" target="_blank" rel="noopener noreferrer">Change log</a>.</p>
 </section>
+<div id="countyHoverTip" class="county-hover-tip" role="tooltip" hidden><div class="hover-eyebrow">Michigan U.S. Senate · county</div><strong id="hoverCountyName">County</strong><div class="hover-candidates"><div><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Abdul_El-Sayed.jpg?width=120" alt="" width="38" height="44" loading="lazy" onerror="this.style.display='none'"><span>El-Sayed <b id="hoverDem">—</b></span></div><div><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mike-Rogers-Head-Shot-2.jpg?width=120" alt="" width="38" height="44" loading="lazy" onerror="this.style.display='none'"><span>Rogers <b id="hoverRep">—</b></span></div></div><small id="hoverCountyStatus">Awaiting verified returns</small><small>Click to pin and view source details</small></div>
 <footer>Ervin Model · Michigan Election Night · <a href="../">County projections</a> · <a href="../../">17-state forecast</a> · This site does not make election calls.</footer>
-</main><script defer src="./maps.js"></script><script defer src="./app.js"></script><script defer src="./clerk_watch_ui.js"></script></body></html>
+</main><script defer src="./maps.js"></script><script defer src="./app.js"></script><script defer src="./clerk_watch_ui.js"></script><script defer src="./county_live.js"></script></body></html>
