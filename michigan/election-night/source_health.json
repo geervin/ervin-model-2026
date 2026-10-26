@@ -1,0 +1,47 @@
+{
+  "checkedAt": null,
+  "purpose": "Connectivity probes, not automatic results ingestion",
+  "localCounties": {
+    "status": "ready",
+    "count": 83
+  },
+  "precinctIngestion": "reviewed_county_csv_required",
+  "sources": {
+    "oakland": {
+      "label": "Oakland · 2026 results portal",
+      "status": "not_checked",
+      "note": "Automated connectivity check has not run",
+      "role": "page"
+    },
+    "kent": {
+      "label": "Kent · 2026 results portal",
+      "status": "not_checked",
+      "note": "Automated connectivity check has not run",
+      "role": "page"
+    },
+    "livingston": {
+      "label": "Livingston · county results",
+      "status": "not_checked",
+      "note": "Automated connectivity check has not run",
+      "role": "page"
+    },
+    "state_directory": {
+      "label": "Michigan · official county directory",
+      "status": "not_checked",
+      "note": "Automated connectivity check has not run",
+      "role": "page"
+    },
+    "precinct_geometry": {
+      "label": "Michigan BOE · 2026 precinct geography",
+      "status": "not_checked",
+      "note": "Automated connectivity check has not run",
+      "role": "page"
+    },
+    "statewide_replay": {
+      "label": "Open America · 2024 API replay",
+      "status": "not_checked",
+      "note": "Automated connectivity check has not run",
+      "role": "page"
+    }
+  }
+}
