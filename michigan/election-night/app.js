@@ -120,12 +120,19 @@ async function readPrecinct(){
   const res=await fetch(path+"?t="+Date.now(),{cache:"no-store"});
   if(!res.ok)throw Error("Feed HTTP "+res.status);
   const payload=await res.json(),rows=verifyFeed(payload);
-  const signature=JSON.stringify(rows);const changed=signature!==lastFeedSignature;
+  const published=payload.updatedAt==null?null:Date.parse(payload.updatedAt);
+  if(rows.length&&(!Number.isFinite(published)||published>Date.now()+300000))
+    throw Error("Feed publication timestamp missing or invalid");
+  const priorPublished=lastFeed?.updatedAt?Date.parse(lastFeed.updatedAt):null;
+  if(!demo&&Number.isFinite(priorPublished)&&Number.isFinite(published)&&published<priorPublished)
+    throw Error("An older precinct feed was served; previous verified snapshot retained");
+  const signature=JSON.stringify(rows),changed=signature!==lastFeedSignature;
+  const republished=payload.updatedAt!==lastFeed?.updatedAt;
   lastFeed={...payload,precincts:rows};lastFeedSignature=signature;
   if(demo)banner("demo","DEMONSTRATION DATA — NOT REAL VOTES","Synthetic test records are shown. No election data is being reported.");
   else if(!rows.length)banner("waiting","AWAITING PRECINCT RETURNS","No verified 2026 precinct-level results have reached this website. Official county clerks may already have newer information.");
   else banner("live","UNOFFICIAL PRECINCT RETURNS","Displaying "+rows.length+" directly sourced reporting units from "+new Set(rows.map(p=>p.county)).size+" counties, as last published by their source clerks.");
-  if(changed)updateUI();else updateFeedAge();
+  if(changed||republished)updateUI();else updateFeedAge();
   // Do not redraw thousands of map polygons when the published votes are unchanged.
   if(changed)window.dispatchEvent(new CustomEvent("ervin:results",{detail:{precincts:rows}}));
  }catch(e){banner("waiting", "PRECINCT FEED UNAVAILABLE", "Latest precinct feed could not be verified: "+e.message+". Previous available data is retained and must be treated as potentially stale.");}
