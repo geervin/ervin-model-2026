@@ -2,6 +2,21 @@
 **Election:** November 3, 2026 · Michigan U.S. Senate · unofficial results.
 **Status as of October 25:** reporting UI and source probes exist; fully automatic statewide precinct ingestion DOES NOT.
 
+## Interactive county reporting center and fast lane
+
+The [Michigan Election Night dashboard](../michigan/election-night/) now has an expandable 83-county map. Hovering shows the two major-party candidate portraits, names, attributed vote counts, and reporting status; clicking pins a detailed source card and zooms precinct geography. Before any verified report arrives, it displays **awaiting results**, never invented zeros.
+
+**Source priority (no double counting):**
+1. Most recent validated **whole-county clerk total**, from either the reviewed CSV feed `county_totals.json` or the optional direct Kent adapter `county_auto.json`.
+2. If there is no county-wide result for that county, its individually attributed, potentially partial `results.json` precinct/counting-board subtotal.
+3. Else grey/awaiting. The independent Open America *statewide* cross-check is displayed separately and is never summed with either.
+
+**Kent experimental automatic fast lane:** [Kent County November 2026 official election portal](https://app.enhancedvoting.com/results/public/kent-county-mi/elections/11032026_20261005115447). The [scheduled Kent job](https://github.com/geervin/ervin-model-2026/actions/workflows/kent-senate-fast-lane.yml) checks on a best-effort five-minute schedule during Nov 3 8 p.m. Eastern through early Nov 4. The parser requires a browser-rendered official page, the exact November 3 general-election heading and U.S. Senate candidate set, a post-8 p.m. local source update timestamp, a nonzero reporting fraction, and plausible positive votes. It writes no data if any check fails. Its first real source test reached the page and **correctly rejected October pre-election test figures**; it is *not yet proof that post-election values will be machine-readable*.
+
+**Reviewed county-wide fast import:** [`county-imports/`](../michigan/election-night/county-imports/README.md) uses one row per county (`county,dem,rep,other,as_of,source_url,reporting_status`). The [county publishing workflow](https://github.com/geervin/ervin-model-2026/actions/workflows/michigan-county-results.yml) validates each county's local close, original HTTPS report, candidate totals and source timestamp; every upload creates a replacement county record. County-wide results take priority, so operators needn't await precinct spreadsheets. Submitting source reports still requires someone or a verified upstream adapter.
+
+**Freshness:** The browser polls both county feeds every 30 seconds *after polls close*. This is a display refresh interval, **not** a guaranteed source-to-screen latency: county publication, GitHub's schedule and repository/Pages deployment may add minutes. Other county sources still need validated adapters, verified imports, or access to a licensed feed. The 83-county clerk watcher detects changed pages, not their certified vote totals.
+
 ## Source architecture, with accurate expectations
 
 1. **County map:** version-controlled `michigan/counties.geojson`, 83 uniquely named county shapes. Verified locally, does not depend on election-night services.
