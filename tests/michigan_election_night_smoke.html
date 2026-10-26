@@ -14,6 +14,12 @@
  try{
   const first=await load("../michigan/election-night/?demo=1"),d=first.doc;
   const el=x=>d.getElementById(x);
+  check(d.querySelector(".site-header .site-emblem")?.textContent==="E","Shared square-E site brand displays on election-night page");
+  check(d.querySelectorAll(".site-header .site-nav a").length>=4,"Standard forecast, Michigan and election-night navigation links present");
+  check(!!d.querySelector(".site-mobile-toggle"),"Accessible mobile site menu available");
+  check(!!d.querySelector(".site-back-top"),"Shared back-to-top control initialized");
+  check(el("precinctDisplayMode").value==="outlook","County-informed precinct projection selected by default");
+  check(el("precinctDisplayLabel").textContent.includes("MODEL"),"Default precinct outlook clearly labeled as model, not votes");
   check(d.querySelectorAll("#countyRows tr").length===83,"All 83 counties displayed");
   for(let i=0;i<100&&d.querySelectorAll("#countyBoundaryMap path").length!==83;i++)await new Promise(r=>setTimeout(r,85));
   check(d.querySelectorAll("#countyBoundaryMap path").length===83,"Blank county map renders all 83 Michigan county polygons");
@@ -27,6 +33,19 @@
   for(let i=0;i<110&&d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length===0;i++)await new Promise(r=>setTimeout(r,90));
   check(d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length>0,"Demo fixture shades only counties with fixture returns");
   check(d.querySelector("#precinctGISLink").href.includes("c349bc2bb6c2468594d341a09f520ea8"),"Precinct map links to official 2026 geometry source");
+  for(let i=0;i<130&&!el("precinctMapStatus").textContent.includes("county-derived")&&!el("precinctMapStatus").textContent.includes("county-level")&&!el("precinctMapStatus").textContent.includes("County color");i++)await new Promise(r=>setTimeout(r,75));
+  check(el("precinctModelMethod").textContent.includes("COUNTY PROXY"),"Precinct model method explains uniform county share");
+  check(el("precinctMapStatus").textContent.includes("county-derived")||el("precinctMapStatus").textContent.includes("county-level")||el("precinctMapStatus").textContent.includes("County color"),
+    "County-based precinct outlook and baseline data load");
+  el("precinctDisplayMode").value="actual";
+  el("precinctDisplayMode").dispatchEvent(new first.frame.contentWindow.Event("change",{bubbles:true}));
+  check(el("precinctDisplayLabel").textContent.includes("ACTUAL"),"Verified precinct results layer selectable separately");
+  el("precinctDisplayMode").value="baseline";
+  el("precinctDisplayMode").dispatchEvent(new first.frame.contentWindow.Event("change",{bubbles:true}));
+  check(el("precinctDisplayLabel").textContent.includes("HISTORY"),"2024 county Senate historical baseline selectable");
+  el("precinctDisplayMode").value="outlook";
+  el("precinctDisplayMode").dispatchEvent(new first.frame.contentWindow.Event("change",{bubbles:true}));
+  check(el("precinctDisplayLabel").textContent.includes("MODEL"),"Returning to county-informed outlook works");
   const oakland=d.querySelector('#countyBoundaryMap [data-county="Oakland"]');
   oakland.dispatchEvent(new first.frame.contentWindow.MouseEvent("click",{bubbles:true}));
   check(el("mapCountySelection").textContent==="Oakland","County click zooms precinct geography to selected county");
