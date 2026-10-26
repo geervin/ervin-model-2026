@@ -1,0 +1,34 @@
+
+/* Single Ervin Model navigation identity; used by every Michigan dashboard. */
+.site-header{position:sticky;inset:0 0 auto;z-index:500;height:auto;min-height:72px;width:100%;padding:0;background:#08121cee;border-bottom:1px solid #31475a;backdrop-filter:blur(17px);box-shadow:0 8px 28px #020a152e}
+.site-header .site-header-inner{width:min(1480px,calc(100% - 44px));margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:17px;min-height:72px}
+.site-header .site-brand{flex-shrink:0;display:flex;align-items:center;gap:12px;text-decoration:none!important;color:#f1f4f7!important;font:700 18px/1.1 'Space Grotesk','DM Sans',system-ui,sans-serif;letter-spacing:.12em;white-space:nowrap}
+.site-header .site-brand .site-emblem{display:grid;place-items:center;width:35px;height:35px;border-radius:9px;border:1px solid #b58c50;color:#f0c67d;font:700 23px/1 'Space Grotesk',system-ui,sans-serif}
+.site-header .site-brand b{color:#f0c67d;font-weight:800}
+.site-header .site-nav{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.site-header .site-nav a{margin:0!important;padding:10px 11px;border-radius:8px;color:#b9c7d5!important;letter-spacing:.01em;text-decoration:none;font-size:11px;font-weight:740;transition:background .15s,color .15s}
+.site-header .site-nav a:hover,.site-header .site-nav a[aria-current="page"]{background:#294258;color:#fff!important}
+.site-header .site-nav .site-status{padding:7px 11px;border-radius:99px;border:1px solid #37516b;color:#f1c47a;font-size:10px;font-weight:700;letter-spacing:.035em;white-space:nowrap}
+.site-header .site-nav button,.site-header .site-mobile-toggle{color:#e8f0f8;background:#182d41;border:1px solid #46617b;border-radius:8px;padding:8px 11px;font-size:12px;min-height:37px}
+.site-header .site-nav button:hover,.site-header .site-mobile-toggle:hover{background:#29475d}
+.site-header .site-mobile-toggle{display:none;margin-left:auto}
+.site-header .site-nav a:focus-visible,.site-header button:focus-visible,.site-brand:focus-visible{outline:3px solid #f1c47a;outline-offset:2px}
+.site-header + main{scroll-margin-top:88px}
+body :is(section[id],div[id="countyMap"],div[id="countyTable"]){scroll-margin-top:95px}
+body.light .site-header,html.light .site-header{background:#fafcfdee;border-color:#cbd8e4;box-shadow:0 8px 28px #1a344019}
+body.light .site-brand,html.light .site-brand{color:#183244!important}
+body.light .site-header .site-nav a,html.light .site-header .site-nav a{color:#365167!important}
+body.light .site-header .site-nav a:hover,body.light .site-header .site-nav a[aria-current="page"],html.light .site-header .site-nav a:hover{background:#e3eaf0;color:#132c40!important}
+body.light .site-header .site-nav .site-status,html.light .site-header .site-nav .site-status{color:#865415}
+body.light .site-header button,html.light .site-header button{background:#f3f7fa;color:#244058;border-color:#cbd9e2}
+@media(max-width:1080px){
+.site-header .site-mobile-toggle{display:block}
+.site-header .site-header-inner{min-height:70px;flex-wrap:wrap;padding:10px 0}
+.site-header .site-nav{display:none;flex:1 0 100%;justify-content:stretch;flex-direction:column;align-items:stretch;padding:7px 0 13px;border-top:1px solid #32465b}
+.site-header .site-nav.is-open{display:flex}
+.site-header .site-nav a{padding:11px 13px}
+.site-header .site-nav .site-status{align-self:flex-start;margin:4px 10px}
+.site-header .site-nav button{align-self:flex-start;margin:5px 10px}
+}
+@media(max-width:450px){.site-header .site-header-inner{width:calc(100% - 28px)}.site-header .site-brand{font-size:16px;gap:9px}}
+@media(prefers-reduced-motion:reduce){.site-header *{transition:none!important}}
