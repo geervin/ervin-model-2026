@@ -121,7 +121,7 @@ async function readPrecinct(){
   if(!res.ok)throw Error("Feed HTTP "+res.status);
   const payload=await res.json(),rows=verifyFeed(payload);
   const published=payload.updatedAt==null?null:Date.parse(payload.updatedAt);
-  if(rows.length&&(!Number.isFinite(published)||published>Date.now()+300000))
+  if(!demo&&rows.length&&(!Number.isFinite(published)||published>Date.now()+300000))
     throw Error("Feed publication timestamp missing or invalid");
   const priorPublished=lastFeed?.updatedAt?Date.parse(lastFeed.updatedAt):null;
   if(!demo&&Number.isFinite(priorPublished)&&Number.isFinite(published)&&published<priorPublished)
