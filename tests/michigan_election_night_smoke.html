@@ -33,10 +33,19 @@
   for(let i=0;i<110&&d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length===0;i++)await new Promise(r=>setTimeout(r,90));
   check(d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length>0,"Demo fixture shades only counties with fixture returns");
   check(d.querySelector("#precinctGISLink").href.includes("c349bc2bb6c2468594d341a09f520ea8"),"Precinct map links to official 2026 geometry source");
-  for(let i=0;i<130&&!el("precinctMapStatus").textContent.includes("county-derived")&&!el("precinctMapStatus").textContent.includes("county-level")&&!el("precinctMapStatus").textContent.includes("County color");i++)await new Promise(r=>setTimeout(r,75));
-  check(el("precinctModelMethod").textContent.includes("COUNTY PROXY"),"Precinct model method explains uniform county share");
-  check(el("precinctMapStatus").textContent.includes("county-derived")||el("precinctMapStatus").textContent.includes("county-level")||el("precinctMapStatus").textContent.includes("County color"),
-    "County-based precinct outlook and baseline data load");
+  for(let i=0;i<100&&!first.frame.contentWindow.ERVIN_PRECINCT_HISTORY;i++)await new Promise(r=>setTimeout(r,75));
+  const history=first.frame.contentWindow.ERVIN_PRECINCT_HISTORY;
+  check(!!history&&history.counties?.Oakland?.length>100,"2024 actual Senate precinct dataset loads and contains Oakland reporting units");
+  const sample={properties:{Precinct_Long_Name:"Addison Township, Precinct 1",Precinct_Short_Name:"Addison Township, Precinct 1"}};
+  const joined=history.build([sample],history.counties,()=> "Oakland");
+  check(joined.diagnostics.matched===1&&joined.records.get(sample)?.historicDem===453,
+    "2024 precinct history matches a unique 2026 name without invented values");
+  const modeled=history.project(joined.records.get(sample),{demShare:.59,baselineDemShare:.55});
+  check(modeled>0&&modeled<1&&Math.abs(modeled-.59)>.01,
+    "County-adjusted matched precinct projection preserves geographic differences");
+  check(el("precinctModelMethod").textContent.includes("COUNTY PROXY")||el("precinctModelMethod").textContent.includes("COUNTY"),
+    "County-specific mode remains accurately disclosed");
+  check(!!el("precinctPicker")&&!!el("precinctInspector"),"Individual precinct picker and inspector exist");
   el("precinctDisplayMode").value="actual";
   el("precinctDisplayMode").dispatchEvent(new first.frame.contentWindow.Event("change",{bubbles:true}));
   check(el("precinctDisplayLabel").textContent.includes("ACTUAL"),"Verified precinct results layer selectable separately");
