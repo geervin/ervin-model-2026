@@ -22,6 +22,9 @@ small code{color:var(--gold)}.source-shortcuts{display:flex;gap:8px;flex-wrap:wr
 .geo-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .geo-head h2{margin:0}.geo-viewport{background:#0d1c2b;border:1px solid var(--edge);border-radius:10px;overflow:hidden;position:relative;margin:13px auto 11px;min-height:160px;width:100%;max-width:500px}
 .geo-viewport svg,.geo-viewport canvas{display:block;width:100%;height:auto;aspect-ratio:3/4}
+/* SVG viewBox intrinsic proportions otherwise override the portrait map sizing. */
+.geo-viewport:has(#countyBoundaryMap){aspect-ratio:3/4}
+#countyBoundaryMap{width:100%;height:100%;aspect-ratio:auto}
 .county-shape{fill:#1b3346;stroke:#728ba2;stroke-width:1.1;cursor:pointer;vector-effect:non-scaling-stroke;transition:fill .1s ease}
 .county-shape:hover,.county-shape:focus{fill:#335879;stroke:#e1c68c;stroke-width:2;outline:none}
 .county-shape.selected{fill:#385874;stroke:var(--gold);stroke-width:2.8}
@@ -59,7 +62,7 @@ small code{color:var(--gold)}.source-shortcuts{display:flex;gap:8px;flex-wrap:wr
 </div>
 <section class="geography-grid" id="electionGeography" aria-label="Michigan county and precinct geography before and during returns">
  <div class="panel"><div class="geo-head"><div><div class="eyebrow">2026 Michigan geography</div><h2>County map · all 83</h2></div><button class="map-inline" type="button" id="countyAll" disabled>Show all counties</button></div>
- <div class="geo-viewport"><svg id="countyBoundaryMap" role="img" aria-label="Interactive map of all 83 Michigan counties, neutral until results are reported" viewBox="0 0 880 680"></svg></div>
+ <div class="geo-viewport"><svg id="countyBoundaryMap" preserveAspectRatio="none" role="img" aria-label="Interactive map of all 83 Michigan counties, neutral until results are reported" viewBox="0 0 880 680"></svg></div>
  <p class="geo-status" id="countyMapStatus">Loading the 83 county boundaries…</p>
  <div class="geo-key"><span><b></b>No reported returns</span><span><b class="dem"></b>Partial D lead</span><span><b class="rep"></b>Partial R lead</span></div>
  <p class="tiny">Select a county to inspect its precinct boundaries at a closer scale. Colors, if displayed after November 3, reflect <em>only reported returns</em>, never forecast votes.</p></div>
