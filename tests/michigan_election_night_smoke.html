@@ -18,7 +18,10 @@
   for(let i=0;i<100&&d.querySelectorAll("#countyBoundaryMap path").length!==83;i++)await new Promise(r=>setTimeout(r,85));
   check(d.querySelectorAll("#countyBoundaryMap path").length===83,"Blank county map renders all 83 Michigan county polygons");
   check(!!el("precinctBoundaryMap")&&!!el("precinctBoundaryMap").getContext("2d"),"2026 precinct boundary map canvas is initialized");
-  check(el("countyBoundaryMap").viewBox.baseVal.height===680&&el("precinctBoundaryMap").height===680,"Both election-night map coordinates use the increased 680px height");
+  check(el("countyBoundaryMap").viewBox.baseVal.height===680&&el("precinctBoundaryMap").height===680,"Both election-night maps use 680px source coordinates");
+  const countyViewport=el("countyBoundaryMap").parentElement,precinctViewport=el("precinctBoundaryMap").parentElement;
+  const verifyPortrait=(v,name)=>{const rect=v.getBoundingClientRect();check(rect.width>510&&rect.width<=551,name+" has widened responsive viewport");check(Math.abs(rect.height/rect.width-4/3)<.05,name+" has portrait 3:4 proportions")};
+  verifyPortrait(countyViewport,"County map");verifyPortrait(precinctViewport,"Precinct map");
   // The neutral boundary SVG can render before the fixture fetch and event
   // dispatch finish; wait for data-driven shading, not merely for 83 paths.
   for(let i=0;i<110&&d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length===0;i++)await new Promise(r=>setTimeout(r,90));
