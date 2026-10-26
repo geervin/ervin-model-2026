@@ -1,0 +1,42 @@
+name: Publish verified Michigan county-wide Senate returns
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'michigan/election-night/county-imports/*.csv'
+      - 'scripts/ingest_michigan_county_totals.py'
+      - '.github/workflows/michigan-county-results.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: michigan-county-returns
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test county-level report validator
+        run: python3 -m unittest discover -s tests -p test_michigan_county_totals.py -v
+      - name: Validate and normalize official county totals
+        run: |
+          python3 scripts/ingest_michigan_county_totals.py
+          python3 -m json.tool michigan/election-night/county_totals.json > /dev/null
+      - name: Commit verified county snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add michigan/election-night/county_totals.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish validated Michigan Senate county-wide returns'
+            git pull --rebase origin main
+            git push
+          fi
