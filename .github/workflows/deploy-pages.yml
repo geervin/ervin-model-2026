@@ -38,6 +38,8 @@ jobs:
           node --check michigan/election-night/app.js
           node --check michigan/election-night/maps.js
           node --check michigan/election-night/clerk_watch_ui.js
+          node --check michigan/election-night/county_live.js
+          python3 -m unittest discover -s tests -p test_michigan_county_totals.py -v
           python3 -m unittest discover -s tests -p test_clerk_watch.py -v
           python3 -m json.tool michigan/election-night/results.json >/dev/null
           python3 -m unittest discover -s tests -p test_michigan_ingest.py -v
