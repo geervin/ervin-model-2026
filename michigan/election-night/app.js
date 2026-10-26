@@ -10,7 +10,7 @@ const centralCounties=new Set(["dickinson","gogebic","iron","menominee"]);
 const demo=new URLSearchParams(location.search).get("demo")==="1";
 const eDate="2026-11-03";
 let lastFeed=null,lastFeedSignature="",counties=[],stateRow=null,lastStateAttempt=0,lastPrecinctAttempt=0,busy=false,stateBusy=false,checkDeadline=Date.now()+30000,search="",precinctSearch="",reportFilter="all",lastPreElectionMinute=-1,lastHealthAttempt=0,lastFreshnessMinute=-1;
-const countyLookup=new Map(),countyCounted=new Map();
+const countyLookup=new Map(),countyCounted=new Map(),officialCountyResults=new Map();
 const officialCounty="https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county";
 // Direct November 2026 links verified on the respective official county sites.
 // All other counties fall back to the Michigan county-clerk directory.
@@ -47,19 +47,25 @@ function countySummary(rows){
 }
 function updateUI(){
  const rows=lastFeed?.precincts||[],byCounty=countySummary(rows);
- const totals=rows.reduce((t,p)=>({dem:t.dem+p.dem,rep:t.rep+p.rep,other:t.other+p.other}),{dem:0,rep:0,other:0});
- const any=rows.length>0;
+ // County-wide clerk tallies replace, NEVER add to, ingested precinct subtotals.
+ for(const [name,p] of byCounty){
+   const clerk=officialCountyResults.get(name);
+   if(clerk){p.dem=clerk.dem;p.rep=clerk.rep;p.other=clerk.other;p.clerk=clerk;}
+ }
+ const totals=[...byCounty.values()].reduce((t,p)=>({dem:t.dem+p.dem,rep:t.rep+p.rep,other:t.other+p.other}),{dem:0,rep:0,other:0});
+ const any=rows.length>0||officialCountyResults.size>0;
  $("reportedD").textContent=any?fmt(totals.dem):"—";
  $("reportedR").textContent=any?fmt(totals.rep):"—";
  $("reportedMargin").textContent=any?fmt(Math.abs(totals.dem-totals.rep))+" "+(totals.dem>=totals.rep?"D":"R"):"—";
  $("precinctCount").textContent=any?fmt(rows.length):"—";
- $("coverage").textContent=any?byCounty.size+" county summaries · denominator not confirmed":"No precinct return is available";
- if(any){const n=[...byCounty.values()].filter(c=>c.units).length;$("coverage").textContent=n+" of 83 counties have precinct rows; not a statewide precinct reporting percentage";}
- const term=search.toLowerCase(),parts=[...byCounty].filter(([name,p])=>name.toLowerCase().includes(term)&&(reportFilter==="all"||reportFilter==="reported"&&p.units>0||reportFilter==="awaiting"&&p.units===0)).sort((a,b)=>b[1].units-a[1].units||a[0].localeCompare(b[0]));
+ const n=[...byCounty.values()].filter(c=>c.units||c.clerk).length;
+ $("coverage").textContent=any?n+" of 83 counties with verified county-wide or partial precinct data · no uniform reporting denominator":"No verified county or precinct returns available";
+ const term=search.toLowerCase(),parts=[...byCounty].filter(([name,p])=>name.toLowerCase().includes(term)&&(reportFilter==="all"||reportFilter==="reported"&&(p.units>0||p.clerk)||reportFilter==="awaiting"&&!p.units&&!p.clerk)).sort((a,b)=>b[1].units-a[1].units||a[0].localeCompare(b[0]));
  $("countyRows").innerHTML=parts.map(([name,p])=>{
   const prev=p.history.senate2024,margin=(prev.d-prev.r)*100/prev.total;
   const direct=countyResultPages[name.toLowerCase()],url=direct||officialCounty;
-  return "<tr><td><button type=\"button\" class=\"county-jump\" data-county=\""+esc(name)+"\">"+esc(name)+"</button></td><td>"+(p.units?fmt(p.dem):"—")+"</td><td>"+(p.units?fmt(p.rep):"—")+"</td><td>"+(p.units?fmt(p.units):"—")+"</td><td>"+(margin>=0?"D+":"R+")+Math.abs(margin).toFixed(1)+"</td><td><a href=\""+esc(url)+"\" target=\"_blank\" rel=\"noopener noreferrer\">"+(direct?"2026 county portal ↗":"Find clerk ↗")+"</a></td></tr>";
+  const reported=Boolean(p.units||p.clerk),link=p.clerk?.sourceUrl||url;
+  return "<tr><td><button type=\"button\" class=\"county-jump\" data-county=\""+esc(name)+"\">"+esc(name)+"</button></td><td>"+(reported?fmt(p.dem):"—")+"</td><td>"+(reported?fmt(p.rep):"—")+"</td><td>"+(p.clerk?(p.clerk.reportingStatus==="complete"?"County clerk · complete":"County clerk · partial"):p.units?fmt(p.units)+" units":"—")+"</td><td>"+(margin>=0?"D+":"R+")+Math.abs(margin).toFixed(1)+"</td><td><a href=\""+esc(link)+"\" target=\"_blank\" rel=\"noopener noreferrer\">"+(p.clerk?"Original county report ↗":direct?"2026 county portal ↗":"Find clerk ↗")+"</a></td></tr>";
  }).join("")||'<tr><td colspan="6">No counties match the selected filters</td></tr>';
  const pterm=precinctSearch.toLowerCase(),filtered=rows.filter(x=>[x.county,x.precinct].some(t=>t.toLowerCase().includes(pterm))).sort((a,b)=>a.county.localeCompare(b.county)||a.precinct.localeCompare(b.precinct));
  $("precinctRows").innerHTML=filtered.map(p=>"<tr><td>"+esc(p.county)+"</td><td>"+esc(p.precinct)+"</td><td>"+fmt(p.dem)+"</td><td>"+fmt(p.rep)+"</td><td>"+fmt(p.other)+"</td><td>"+esc(dateString(p.asOf))+"</td><td><a target='_blank' rel='noopener noreferrer' href='"+esc(p.sourceUrl)+"'>County report</a></td></tr>").join("")||'<tr><td colspan="7">'+(any?"No matching precincts":"No verified precinct rows published to this site yet.")+"</td></tr>";
@@ -111,6 +117,14 @@ function exportVerifiedCSV(){
  const link=document.createElement("a");link.href=url;link.download="michigan-2026-verified-precinct-returns.csv";
  document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
 }
+function applyCountyWideReports(rows){
+ officialCountyResults.clear();
+ for(const row of (rows||[]))officialCountyResults.set(row.county,row);
+ updateUI();
+ if(!demo&&rows.length&&!lastFeed?.precincts?.length)
+   banner("live","UNOFFICIAL COUNTY RETURNS",rows.length+" verified county-wide clerk tallies published; values are not added to precinct totals.");
+}
+window.addEventListener("ervin:county-totals",event=>applyCountyWideReports(event.detail?.counties||[]));
 async function readPrecinct(){
  if(busy||document.hidden)return;
  if(!demo&&Date.now()<liveStart)return;
@@ -130,7 +144,8 @@ async function readPrecinct(){
   const republished=payload.updatedAt!==lastFeed?.updatedAt;
   lastFeed={...payload,precincts:rows};lastFeedSignature=signature;
   if(demo)banner("demo","DEMONSTRATION DATA — NOT REAL VOTES","Synthetic test records are shown. No election data is being reported.");
-  else if(!rows.length)banner("waiting","AWAITING PRECINCT RETURNS","No verified 2026 precinct-level results have reached this website. Official county clerks may already have newer information.");
+  else if(!rows.length&&officialCountyResults.size)banner("live","UNOFFICIAL COUNTY RETURNS",officialCountyResults.size+" county-wide clerk reports published; precinct detail may still be pending.");
+  else if(!rows.length)banner("waiting","AWAITING VERIFIED RETURNS","No verified 2026 precinct or county-wide votes published to the site yet. Official county clerks may have newer information.");
   else banner("live","UNOFFICIAL PRECINCT RETURNS","Displaying "+rows.length+" directly sourced reporting units from "+new Set(rows.map(p=>p.county)).size+" counties, as last published by their source clerks.");
   if(changed||republished)updateUI();else updateFeedAge();
   // Do not redraw thousands of map polygons when the published votes are unchanged.
