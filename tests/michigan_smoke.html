@@ -10,6 +10,9 @@
   const d=frame.contentDocument,w=frame.contentWindow;
   const $=x=>d.getElementById(x),event=(id,value,type='change')=>{$(id).value=value;$(id).dispatchEvent(new w.Event(type,{bubbles:true}))};
   for(let n=0;n<100;n++){if($('countyRows')?.querySelectorAll('tr[data-county]').length===83)break;await new Promise(res=>setTimeout(res,120))}
+  check(d.querySelector(".site-header .site-emblem")?.textContent==="E","Michigan projection page uses consistent boxed E brand");
+  check(d.querySelectorAll(".site-header .site-nav a").length>=4,"Shared site header links national, Michigan and election-night dashboards");
+  check(!!d.querySelector(".site-mobile-toggle"),"Responsive site menu is present on Michigan projection page");
   check($('countyRows').querySelectorAll('tr[data-county]').length===83,'83 county rows loaded');
   check($('map').querySelectorAll('path[data-county]').length===83,'83 geographic county shapes loaded');
   check($('source').options.length===6,'All six model sources available');
