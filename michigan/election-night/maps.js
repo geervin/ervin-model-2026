@@ -226,8 +226,8 @@ function layerCaption(){
   legend.innerHTML='<span><b></b>No matched result</span><span><b class="dem"></b>Verified D lead</span><span><b class="rep"></b>Verified R lead</span>';
  }else if(precinctLayer==="baseline"){
   label.textContent="HISTORY · 2024 COUNTY SENATE";
-  method.textContent="HISTORICAL COUNTY PROXY: All precinct polygons within a county receive its 2024 county Senate two-party share. These are NOT the actual results of each precinct.";
-  legend.innerHTML='<span><b></b>County data unavailable</span><span><b class="dem"></b>2024 county D share</span><span><b class="rep"></b>2024 county R share</span>';
+  method.textContent="2024 HISTORICAL SENATE: Unique 2024-to-2026 name matches display actual 2024 precinct two-party shares; unmatched polygons use a clearly identified 2024 county-level fallback. No 2026 votes are inferred.";
+  legend.innerHTML='<span><b></b>Data unavailable</span><span><b class="dem"></b>2024 historic D share</span><span><b class="rep"></b>2024 historic R share</span>';
  }else{
   label.textContent="MODEL · NOT PRECINCT RETURNS";
   method.textContent="COUNTY PROXY: Each precinct polygon inherits the county-level 2026 Ervin outlook (or its newer verified county-wide share). No individualized precinct totals or winner predictions are made.";
