@@ -79,6 +79,7 @@ function render(){
  const rec=countyRecord(label),d=rec?.dem||0,r=rec?.rep||0;
  $("countyCardDem").textContent=rec?format(d):"—";
  $("countyCardRep").textContent=rec?format(r):"—";
+ $("countyCardOther").textContent=rec?format(rec.other||0):"—";
  const share=d+r?d/(d+r)*100:0;
  $("countyCardDemBar").style.width=rec?share.toFixed(2)+"%":"0%";
  $("countyCardRepBar").style.width=rec?(100-share).toFixed(2)+"%":"0%";
