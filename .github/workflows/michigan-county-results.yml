@@ -5,6 +5,7 @@ on:
     paths:
       - 'michigan/election-night/county-imports/*.csv'
       - 'scripts/ingest_michigan_county_totals.py'
+      - 'tests/test_michigan_county_totals.py'
       - '.github/workflows/michigan-county-results.yml'
   workflow_dispatch:
 permissions:
