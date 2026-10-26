@@ -139,6 +139,8 @@ def inspect_county(name, url, prior=None, fetch=None):
             return payload.decode("utf-8","replace"),effective
 
         data,effective=get_html(origin)
+        if re.search(r"<title[^>]*>\s*(?:just a moment|access denied|attention required|verify you are human|captcha)",data,re.I):
+            raise ValueError("Automated-access challenge page (not election results)")
         links,parser=report_links(effective,data)
         inspected=effective
         # Follow at most one public election-results hub from the county site.
