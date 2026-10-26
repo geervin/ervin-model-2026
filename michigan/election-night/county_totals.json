@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "election": "2026-11-03",
+  "office": "US Senate",
+  "status": "awaiting_verified_county_reports",
+  "updatedAt": null,
+  "counties": [],
+  "sourcePolicy": "Only authenticated 2026 county-wide clerk returns; no pre-election test data, no projections."
+}
