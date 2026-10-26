@@ -37,7 +37,7 @@ function derive(counties,mi){
   const o=clamp(.55*other(sen)+.25*other(gov)+.20*other(pres));
   const turnout=Math.max(1,Math.round(.70*gov.total+.30*sen.total));
   return {county:c.name,total:turnout,base:m,other:o,
-          lastSenateMargin:100*mean(sen)};
+          lastSenateMargin:100*mean(sen),baselineDemShare:sen.d/(sen.d+sen.r)};
  });
  function weighted(offset){
   let net=0,total=0;
@@ -53,7 +53,7 @@ function derive(counties,mi){
   // share visualization, not a prediction of precinct vote counts.
   const share=clamp((1+margin/(1-x.other))/2);
   return {county:x.county,demShare:share,margin:100*margin,
-          twoPartyMargin:100*(2*share-1),lastSenateMargin:x.lastSenateMargin,
+          twoPartyMargin:100*(2*share-1),lastSenateMargin:x.lastSenateMargin,baselineDemShare:x.baselineDemShare,
           method:"original_ervin_county_model",year:2026};
  });
 }
