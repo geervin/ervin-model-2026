@@ -397,12 +397,14 @@ async function start(){
 window.addEventListener("ervin:results",e=>{
  results=Array.isArray(e.detail?.precincts)?e.detail.precincts:[];
  drawCounties();
- if(loaded)drawPrecincts();
+ if(activePrecinct)showPrecinct(activePrecinct);
+ else if(loaded)drawPrecincts();
 });
 window.addEventListener("ervin:county-totals",e=>{
  officialCountyResults=Array.isArray(e.detail?.counties)?e.detail.counties:[];
  drawCounties();
- if(precinctLayer==="outlook")drawPrecincts();
+ if(activePrecinct)showPrecinct(activePrecinct);
+ else if(precinctLayer==="outlook")drawPrecincts();
  // In the MODEL layer a reported county updates the displayed *county share*
  // for every polygon in that county. This does not create precinct votes.
  // The ACTUAL layer never paints county-wide votes as precinct results.
@@ -410,7 +412,8 @@ window.addEventListener("ervin:county-totals",e=>{
 window.addEventListener("ervin:county-outlook",e=>{
  outlooks=new Map((e.detail?.counties||[]).map(c=>[c.county,c]));
  outlookAt=e.detail?.asOf||"";
- if(precinctLayer!=="actual")drawPrecincts();
+ if(activePrecinct)showPrecinct(activePrecinct);
+ else if(precinctLayer!=="actual")drawPrecincts();
 });
 window.addEventListener("ervin:precinct-history-ready",()=>{
  constructJoin();refreshPrecinctPicker();
