@@ -51,6 +51,20 @@ def parse_time(v, file, line, county=None, now=None):
         raise ValueError(f"{file}:{line}: timestamp is in the future")
     return utc.isoformat().replace("+00:00", "Z")
 
+def guard_snapshot(current_rows, prior_rows, allow_retraction=False):
+    """Prevent silently dropping reported units or rewinding their source clocks."""
+    before = {(p["county"].casefold(),p["precinct"].casefold()):p for p in prior_rows}
+    current = {(p["county"].casefold(),p["precinct"].casefold()):p for p in current_rows}
+    missing = set(before)-set(current)
+    stale = [key for key in set(before)&set(current)
+             if current[key]["asOf"] < before[key]["asOf"]]
+    if (missing or stale) and not allow_retraction:
+        raise ValueError(
+            f"Snapshot would remove {len(missing)} published units or rewind {len(stale)} report timestamps. "
+            "Review corrections, preserve prior rows, or explicitly set ERVIN_REVIEWED_RETRACTION=YES for a checked retraction."
+        )
+    return len(missing), len(stale)
+
 def build(now=None):
     entries, seen, sources = [], set(), set()
     files = sorted(CSV_DIR.glob("*.csv"))
@@ -84,20 +98,9 @@ def build(now=None):
     if not entries:
         print("No reviewed precinct CSV files supplied; preserving existing election-night feed.")
         return 0
-    # Fail closed if a new snapshot silently loses previously published units,
-    # or rolls one unit back to an older county report. A deliberate retraction
-    # requires operator review and an explicit per-run environment override.
     previous = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
-    before = {(p["county"].casefold(),p["precinct"].casefold()):p for p in previous.get("precincts",[])}
-    current = {(p["county"].casefold(),p["precinct"].casefold()):p for p in entries}
-    missing = set(before)-set(current)
-    stale = [key for key in set(before)&set(current)
-             if current[key]["asOf"] < before[key]["asOf"]]
-    if (missing or stale) and os.environ.get("ERVIN_REVIEWED_RETRACTION")!="YES":
-        raise ValueError(
-            f"Snapshot would remove {len(missing)} published units or rewind {len(stale)} report timestamps. "
-            "Review corrections, preserve prior rows, or explicitly set ERVIN_REVIEWED_RETRACTION=YES for a checked retraction."
-        )
+    guard_snapshot(entries, previous.get("precincts",[]),
+                   allow_retraction=os.environ.get("ERVIN_REVIEWED_RETRACTION")=="YES")
     entries.sort(key=lambda p: (p["county"], p["precinct"]))
     result = {"version":1,"election":ELECTION_DAY,"office":"US Senate",
               "status":"unofficial_partial_precinct_reports",
