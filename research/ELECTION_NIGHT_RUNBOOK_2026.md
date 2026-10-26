@@ -27,7 +27,7 @@
    `as_of` requires ISO 8601 with offset (e.g. `2026-11-04T01:18:00Z`), NOT the time a volunteer typed the row. Keep stable reporting-unit IDs; replace a county CSV as one coherent snapshot rather than appending duplicates.
 5. **Publish:** commit CSV to `main`, verify [Publish Michigan election-night precinct reports](https://github.com/geervin/ervin-model-2026/actions/workflows/michigan-election-night.yml) succeeds. It runs the guarded importer, writes `results.json`, and deploys to GitHub Pages.
 6. **Verify on the published site:** compare sums from `results.json` against the actual clerk report. Look at both map and table. Freshness timestamp reflects the feed's publishing time; individual row timestamps come from reporting sources. Keep the Open America state tally **separate**.
-7. **On correction:** replace the affected county CSV with a reviewed corrected complete snapshot and repeat the publish/verification. Never add correction votes to an earlier total.
+7. **On correction:** replace the affected county CSV with a reviewed corrected complete snapshot and repeat the publish/verification. Never add correction votes to an earlier total. The importer deliberately rejects silent disappearance of previously published reporting units or older source timestamps. If a **verified correction** really requires deleting a unit or rolling its publication time back, first review the original county document and explicitly use `ERVIN_REVIEWED_RETRACTION=YES` for that one ingestion run; the default GitHub Actions workflow does not enable that override.
 
 ## Failure and recovery matrix
 
