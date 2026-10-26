@@ -6,7 +6,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const marginLabel=(m,digits=1)=>Math.abs(m)<.05?'Even':(m>=0?'D +':'R +')+Math.abs(m).toFixed(digits);
 const PCT=x=>(100*x).toFixed(1)+'%';
 let countyData=[],geo=null,config=null,mi=null;
-const ui={source:'take',mode:'weighted',turnout:1,mapMode:'projection',county:'Wayne',filter:'',sort:'size'};
+const ui={source:'take',mode:'original',turnout:1,mapMode:'projection',county:'Wayne',filter:'',sort:'size'};
 let prediction=null;
 let mapCreated=false, extent=null;
 const sources={rcp:.40,ddhq:.29,win270:.21,silver:.10};
