@@ -39,6 +39,51 @@ small code{color:var(--gold)}.source-shortcuts{display:flex;gap:8px;flex-wrap:wr
 .map-inline:disabled{opacity:.45;cursor:default}
 @media(max-width:1000px){.geography-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.county-shape{transition:none}}
+
+/* Editorial polish: clear reporting hierarchy, accessible focus and restrained depth. */
+body{background:radial-gradient(ellipse 85% 430px at 50% -80px,#183751 0%,transparent 78%),var(--bg);letter-spacing:.002em}
+header{background:#0f1f2deb;backdrop-filter:blur(18px);box-shadow:0 8px 32px #020b1526}
+header nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+header nav a{margin:0;padding:8px 11px;border-radius:7px;transition:background .18s}
+header nav a:hover,header nav a[aria-current]{background:#29415985;text-decoration:none}
+main{max-width:1360px}
+.hero{padding:44px 4px 29px;border-bottom:1px solid #32465b50;margin-bottom:23px}
+.hero h1{font-weight:800;letter-spacing:-.047em;max-width:900px}
+.hero p{color:#c4d3e3;font-size:15px;margin-top:14px}
+.panel,.stat{background:linear-gradient(162deg,#16293b 0%,var(--surface) 76%);box-shadow:0 5px 26px #00000014;border-color:#344d63}
+.panel{padding:23px}.panel h2{font-weight:730;letter-spacing:-.025em}
+.stat{position:relative;overflow:hidden}.stat:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,#d0a65f80,transparent)}
+.stat small{font-weight:650;letter-spacing:.025em;color:#b7c8d8}.stat strong{font-variant-numeric:tabular-nums;letter-spacing:-.035em}
+.banner{background:#162c40;border-radius:11px;padding:18px 21px;box-shadow:inset 3px 0 0 var(--gold)}
+.banner strong{font-size:14px;letter-spacing:.035em}.banner .muted{margin-top:4px}
+a{transition:color .15s}a:hover{color:#e2edff}
+.geo-viewport{background:radial-gradient(ellipse at 50% 37%,#172d40,#081827);box-shadow:inset 0 0 35px #030a1355}
+.geo-head .eyebrow{margin-bottom:5px}.geo-head h2{font-size:21px}
+.source-shortcuts a,.refresh-now,.map-inline{transition:background .18s,transform .18s,border-color .18s}
+.source-shortcuts a:hover,.refresh-now:hover,.map-inline:hover:not(:disabled){transform:translateY(-1px);border-color:#809db5}
+table{font-size:12px}thead th{text-transform:uppercase;letter-spacing:.055em;font-size:10px;position:sticky;top:0;background:#1b2f43;z-index:1}
+tbody tr:nth-child(even){background:#ffffff04}tbody tr:hover{background:#263f55}td{font-variant-numeric:tabular-nums}
+.scroll{border:1px solid var(--edge);border-radius:9px}
+.county-jump{padding:2px 0;color:#b6ddff;text-align:left;border:0;background:none;text-decoration:underline;text-decoration-color:#46617b;text-underline-offset:3px}
+.county-jump:hover{text-decoration-color:#b6ddff}
+.inline-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.eyebrow{font-size:10px}
+.source-readiness{margin-top:17px}.source-status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-top:16px}
+.source-status-item{background:#102438;border:1px solid #385269;padding:14px;border-radius:9px;min-height:106px}
+.source-status-item strong{display:block;font-size:13px;margin:4px 0 8px}
+.source-status-item p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
+.status-dot{width:7px;height:7px;display:inline-block;background:#c9a965;border-radius:50%;margin-right:6px;vertical-align:middle}
+.source-status-item.good .status-dot{background:#71bda3}
+.source-status-item.warn .status-dot{background:#dbb978}
+.source-status-item.fail .status-dot{background:#ed9094}
+.quick-sources{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:13px}
+.quick-sources a{display:inline-block;text-decoration:none;background:#1b3b54;border:1px solid #4a6680;border-radius:8px;padding:9px 12px;font-size:12px}
+.quick-sources a:hover{background:#295470}
+.toolbar-msg{font-size:11px;color:var(--muted)}
+@media(max-width:850px){.source-status-grid{grid-template-columns:1fr}.hero{padding-top:26px}}
+@media(max-width:430px){main{width:calc(100% - 22px)}.panel{padding:15px}.source-status-item{min-height:0}header nav{gap:3px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
 </style></head><body>
 <header><strong>ERVIN <span style="color:var(--gold)">MODEL</span> / MICHIGAN</strong><nav><a href="../../">National forecast</a><a href="../">County projections</a><a href="." aria-current="page" style="color:var(--gold)">Election Night</a></nav></header>
 <main><div class="hero"><div class="eyebrow">Tuesday, November 3, 2026 · Michigan U.S. Senate</div><h1>Michigan Election Night</h1><p>Unofficial returns by county and precinct, with timestamps and direct source citations. <strong>Vote totals are never inferred from the polling model.</strong> County projections remain on the separate <a href="../">forecast dashboard</a>.</p></div>
@@ -56,10 +101,20 @@ small code{color:var(--gold)}.source-shortcuts{display:flex;gap:8px;flex-wrap:wr
  <p class="tiny">State totals via <a href="https://openamerica.io/elections/api/" rel="noopener noreferrer" target="_blank">Open America</a>, which reproduces state-published counts. Updated at the provider's pace; kept <b>separate</b> from local precinct returns.</p>
  </section>
  <section class="panel"><h2>Refresh and source health</h2><p><strong id="refreshCountdown">30 seconds</strong> until the next precinct-feed check while this page is open on election night.</p>
- <p class="tiny" id="lastCheck">No precinct-feed check yet.</p><p class="tiny" id="lastSource">No source timestamp yet.</p>
+ <p class="tiny" id="lastCheck">No precinct-feed check yet.</p><p class="tiny" id="lastSource">No source timestamp yet.</p><p class="tiny" id="feedFreshness">Verified precinct feed not yet published.</p>
  <p class="tiny">Checks <b>every 30 seconds</b> after polls close (statewide provider: at most once a minute). A refresh is not a guarantee that a clerk or this site's repository has published new returns.</p><button type="button" class="refresh-now" id="refreshNow">Check for updates</button>
  </section>
 </div>
+<section class="panel source-readiness" aria-label="Election-night source readiness" id="sourceReadiness">
+ <div class="split"><div><div class="eyebrow">Reporting infrastructure</div><h2>Source readiness &amp; publication status</h2></div><span class="chip gold">Connectivity ≠ live results</span></div>
+ <div class="source-status-grid">
+  <div class="source-status-item good"><span class="tiny"><span class="status-dot"></span>LOCAL GEOGRAPHY</span><strong>83 Michigan county boundaries</strong><p>The on-site county dataset works independently of election-night result providers.</p></div>
+  <div class="source-status-item warn"><span class="tiny"><span class="status-dot"></span>PRECINCT INGESTION</span><strong id="sourceIngestionStatus">Verified county upload required</strong><p id="sourceIngestionNote">The 30-second refresh reads published returns; it does not automatically retrieve every clerk's report.</p></div>
+  <div class="source-status-item" id="sourceMonitorCard"><span class="tiny"><span class="status-dot"></span>EXTERNAL CONNECTIVITY</span><strong id="sourceHealthStatus">Checking audit report…</strong><p id="sourceHealthDetail">Independent checks of the 2026 official portals, geographic service and statewide API.</p></div>
+ </div>
+ <div class="quick-sources"><a href="https://results.enr.clarityelections.com/MI/Oakland/127284/" target="_blank" rel="noopener noreferrer">Oakland · 2026 official portal ↗</a><a href="https://app.enhancedvoting.com/results/public/kent-county-mi/elections/11032026_20261005115447" target="_blank" rel="noopener noreferrer">Kent · 2026 official portal ↗</a><a href="https://milivcounty.gov/elections/election-results/" target="_blank" rel="noopener noreferrer">Livingston · official results ↗</a><a href="https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county" target="_blank" rel="noopener noreferrer">All 83 county clerks ↗</a></div>
+ <p class="tiny" style="margin:13px 0 0">Health probes check whether public endpoints respond—not whether a county has started reporting, whether precinct-level downloads exist, or whether a machine-readable feed can be automatically imported. <a href="./source_health.json" target="_blank" rel="noopener noreferrer">View dated connectivity audit ↗</a></p>
+</section>
 <section class="geography-grid" id="electionGeography" aria-label="Michigan county and precinct geography before and during returns">
  <div class="panel"><div class="geo-head"><div><div class="eyebrow">2026 Michigan geography</div><h2>County map · all 83</h2></div><button class="map-inline" type="button" id="countyAll" disabled>Show all counties</button></div>
  <div class="geo-viewport"><svg id="countyBoundaryMap" preserveAspectRatio="none" role="img" aria-label="Interactive map of all 83 Michigan counties, neutral until results are reported" viewBox="0 0 880 680"></svg></div>
@@ -75,7 +130,7 @@ small code{color:var(--gold)}.source-shortcuts{display:flex;gap:8px;flex-wrap:wr
 <section class="panel"><div class="split"><h2>County reporting board · 83 counties</h2><input class="filter" id="countySearch" aria-label="Search counties" placeholder="Search counties"></div>
 <p class="tiny">Projected votes are intentionally not mixed into this table. A dash means no precinct-level report ingested—not zero votes cast. The 2024 column is historical context only.</p>
 <div class="scroll"><table id="countyTable"><thead><tr><th>County</th><th>Reported D</th><th>Reported R</th><th>Precinct rows</th><th>2024 Senate margin</th></tr></thead><tbody id="countyRows"></tbody></table></div></section>
-<section class="panel"><div class="split"><h2>Precinct-level unofficial returns</h2><input class="filter" id="precinctSearch" aria-label="Search precincts" placeholder="County or precinct"></div>
+<section class="panel"><div class="split"><h2>Precinct-level unofficial returns</h2><div class="inline-actions"><input class="filter" id="precinctSearch" aria-label="Search precincts" placeholder="County or precinct"><button type="button" class="refresh-now" id="exportReturns" disabled>Export verified CSV ↓</button></div></div>
 <p class="tiny" id="precinctDescription">Only directly sourced precinct or absentee-counting-board returns appear here. Different municipalities may report absentee ballots separately, so rows must identify the counting unit.</p>
 <div class="scroll"><table id="precinctTable"><thead><tr><th>County</th><th>Precinct / reporting unit</th><th>D votes</th><th>R votes</th><th>Other</th><th>Publisher timestamp</th><th>Source</th></tr></thead><tbody id="precinctRows"><tr><td colspan="7">Awaiting election-night source data.</td></tr></tbody></table></div></section>
 <section class="panel sources-panel" id="officialSources">
