@@ -5,6 +5,7 @@ on:
     paths:
       - 'scripts/watch_michigan_clerks.py'
       - 'michigan/election-night/county_watch_sources.json'
+      - 'tests/test_clerk_watch.py'
       - '.github/workflows/watch-michigan-clerks.yml'
   schedule:
     - cron: '19 1,7,13,19 * * *'
@@ -14,12 +15,17 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  pages: write
+  id-token: write
 concurrency:
   group: michigan-clerk-watch
   cancel-in-progress: false
 jobs:
   check:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -54,3 +60,10 @@ jobs:
             git pull --rebase origin main
             git push
           fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy current county-check data to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
