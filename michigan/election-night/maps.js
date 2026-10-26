@@ -68,6 +68,11 @@ function chooseCounty(name){
  $("mapCountySelection").textContent=name||"Statewide";
  $("countyAll").disabled=!name;
  drawCounties();drawPrecincts();
+ try{
+  const url=new URL(location.href);
+  if(name)url.searchParams.set("county",name);else url.searchParams.delete("county");
+  history.replaceState(null,"",url.pathname+url.search+url.hash);
+ }catch{}
  window.dispatchEvent(new CustomEvent("ervin:county-select",{detail:{county:name}}));
 }
 function outlookFor(name){
@@ -221,6 +226,8 @@ async function start(){
   other.splice(insert,0,...saint);
   other.forEach((c,i)=>byFips.set(String(1+2*i).padStart(3,"0"),c.properties.name));
   drawCounties();drawPrecincts();
+  const countyParam=new URLSearchParams(location.search).get("county");
+  if(countyParam){const found=counties.find(c=>c.properties.name.toLowerCase()===countyParam.toLowerCase());if(found)chooseCounty(found.properties.name)}
   const idle=window.requestIdleCallback||((fn)=>setTimeout(fn,1200));
   idle(()=>fetchPrecinctGeography(),{timeout:4000});
  }catch(e){
