@@ -45,6 +45,19 @@
   check(!el("countyMapPanel").classList.contains("is-expanded"),
     "County map returns to standard size");
   check(el("countyLiveFeedStatus").textContent.length>15,"Source publication status is visible");
+  // A source-attributed county-wide tally must supersede its partial precinct
+  // subtotal, never be added to it. These figures exist only inside demo tests.
+  first.frame.contentWindow.dispatchEvent(new first.frame.contentWindow.CustomEvent("ervin:county-totals",{
+   detail:{counties:[{county:"Oakland",dem:1800,rep:1200,other:100,asOf:"2026-11-03T20:53:00-05:00",
+     sourceUrl:"https://www.michigan.gov/sos/elections/election-results-and-data",reportingStatus:"partial"}]}
+  }));
+  check(el("reportedD").textContent==="3,744"&&el("reportedR").textContent==="2,272",
+    "County-wide clerk totals replace, not double count, Oakland partial precinct votes");
+  check(d.querySelector('#countyBoundaryMap [data-county="Oakland"]').classList.contains("reported-d"),
+    "County map shading follows verified county-wide tally instead of older precinct subtotal");
+  first.frame.contentWindow.dispatchEvent(new first.frame.contentWindow.CustomEvent("ervin:county-totals",{detail:{counties:[]}}));
+  check(el("reportedD").textContent==="2,746"&&el("reportedR").textContent==="1,989",
+    "Reverting synthetic county-wide test source restores precinct fixture totals");
   el("countyAll").click();
   check(el("mapCountySelection").textContent==="Statewide","Statewide county map reset works");
   check(d.querySelectorAll("#officialSources .source-shortcuts a").length>=6,"Direct official Michigan results sources available");
