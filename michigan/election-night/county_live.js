@@ -12,7 +12,7 @@ const pretty=t=>{const x=new Date(t);return Number.isNaN(+x)?"Not available":x.t
 const isVote=n=>Number.isSafeInteger(n)&&n>=0&&n<=2_000_000;
 const isURL=u=>{try{const x=new URL(u);return x.protocol==="https:"&&!x.username&&!x.password}catch{return false}};
 const demo=new URLSearchParams(location.search).get("demo")==="1";
-let official=new Map(),precincts=new Map(),names=new Set(),selected="",hovered="",lastUpdate=null,lastPublished=null,lastRead=0,reading=false,clock=null;
+let official=new Map(),manual=new Map(),automatic=new Map(),precincts=new Map(),names=new Set(),selected="",hovered="",manualPublished=null,autoPublished=null,lastPublished=null,lastRead=0,reading=false,clock=null;
 let lastStatus="Awaiting verified county returns";
 const countySources=new Map();
 async function indexCounties(){
@@ -23,14 +23,14 @@ async function indexCounties(){
    names=new Set((data.counties||[]).map(c=>c.name));
  }catch(e){$("countyLiveFeedStatus").textContent="County index unavailable; county totals are not displayed";}
 }
-function accept(payload){
+function accept(payload,priorPublished){
  if(!payload||payload.version!==1||payload.election!==DATE||payload.office!=="US Senate"||!Array.isArray(payload.counties)||payload.counties.length>83)
    throw Error("Unexpected county election feed");
  if(payload.counties.length){
    if(!payload.updatedAt||!Number.isFinite(Date.parse(payload.updatedAt))||Date.parse(payload.updatedAt)>Date.now()+300000)
      throw Error("Invalid county feed publication timestamp");
  }
- if(lastPublished&&payload.updatedAt&&Date.parse(payload.updatedAt)<Date.parse(lastPublished))
+ if(priorPublished&&payload.updatedAt&&Date.parse(payload.updatedAt)<Date.parse(priorPublished))
    throw Error("Older county snapshot; retaining last validated data");
  const seen=new Set(),result=new Map();
  for(const x of payload.counties){
@@ -140,32 +140,49 @@ async function readCounty(force=false){
  if(!force&&!demo&&Date.now()<CLOSE_E)return;
  if(!force&&Date.now()-lastRead<25000)return;
  reading=true;lastRead=Date.now();
- try{
-   const ctrl=new AbortController(),timeout=setTimeout(()=>ctrl.abort(),10500);
-   let response;
-   try{response=await fetch("./county_totals.json?t="+Date.now(),{cache:"no-store",signal:ctrl.signal})}
-   finally{clearTimeout(timeout)}
-   if(!response.ok)throw Error("HTTP "+response.status);
-   const payload=await response.json(),next=accept(payload);
-   // Ensure later refreshes can't erase previously confirmed counties.
-   for(const [name,prior] of official){
-     if(!next.has(name))throw Error("County "+name+" disappeared from the published snapshot");
-     if(Date.parse(next.get(name).asOf)<Date.parse(prior.asOf))throw Error("Older "+name+" source was served");
+ const sourceList=[["manual","./county_totals.json",manual,manualPublished],
+                   ["automatic","./county_auto.json",automatic,autoPublished]];
+ let succeeded=0,failures=[];
+ for(const [key,path,old,oldPublished] of sourceList){
+   try{
+     const ctrl=new AbortController(),timeout=setTimeout(()=>ctrl.abort(),10500);
+     let response;
+     try{response=await fetch(path+"?t="+Date.now(),{cache:"no-store",signal:ctrl.signal})}
+     finally{clearTimeout(timeout)}
+     if(!response.ok)throw Error("HTTP "+response.status);
+     const payload=await response.json(),next=accept(payload,oldPublished);
+     for(const [name,prior] of old){
+       if(!next.has(name))throw Error(name+" disappeared from "+key+" source");
+       if(Date.parse(next.get(name).asOf)<Date.parse(prior.asOf))throw Error("Older "+name+" county report");
+     }
+     if(key==="manual"){manual=next;manualPublished=payload.updatedAt||null}
+     else{automatic=next;autoPublished=payload.updatedAt||null}
+     succeeded++;
+   }catch(e){failures.push(key+": "+e.message)}
+ }
+ if(succeeded){
+   const combined=new Map(manual);
+   for(const [name,record] of automatic){
+     if(!combined.has(name)||Date.parse(record.asOf)>Date.parse(combined.get(name).asOf))
+       combined.set(name,record);
    }
-   const changed=JSON.stringify([...next.values()])!==JSON.stringify([...official.values()]);
-   official=next;lastPublished=payload.updatedAt||null;
+   const changed=JSON.stringify([...combined.values()])!==JSON.stringify([...official.values()]);
+   official=combined;
+   lastPublished=[manualPublished,autoPublished].filter(Boolean).sort().at(-1)||null;
    lastStatus=official.size?
-     official.size+" of 83 counties have verified county-wide reports":
-     "Awaiting verified county-wide results; no county totals have been supplied";
-   $("countyLiveFeedStatus").textContent=(demo?"DEMONSTRATION · ":"")+lastStatus;
-   $("countyLiveFeedAge").textContent=lastPublished?"Feed published "+pretty(lastPublished):
-     "Checked "+pretty(new Date().toISOString())+" · updates need verified clerk reports";
+     official.size+" of 83 counties have directly attributed county-wide results":
+     "Awaiting county-wide reports · Kent automatic check and verified clerk imports ready";
+   $("countyLiveFeedStatus").textContent=(demo?"DEMONSTRATION · ":"")+lastStatus+(failures.length?" · one source delayed":"");
+   $("countyLiveFeedAge").textContent=lastPublished?
+     "Latest website feed "+pretty(lastPublished)+(failures.length?" · "+failures.join("; "):""):
+     "Checked "+pretty(new Date().toISOString())+" · no verified votes yet";
    if(changed)publish();else render();
- }catch(e){
+ }else{
    $("countyLiveFeedStatus").textContent=official.size?lastStatus+" · refresh interrupted":
-     "County feed unavailable or awaiting publication";
-   $("countyLiveFeedAge").textContent="Last check "+pretty(new Date().toISOString())+" · "+e.message;
- }finally{reading=false}
+     "County feeds unavailable · check official clerk sites";
+   $("countyLiveFeedAge").textContent="Last check "+pretty(new Date().toISOString())+" · "+failures.join("; ");
+ }
+ reading=false;
 }
 function init(){
  const svg=$("countyBoundaryMap");
