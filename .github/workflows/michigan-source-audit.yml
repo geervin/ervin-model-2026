@@ -1,0 +1,34 @@
+name: Audit Michigan election-night source readiness
+on:
+  schedule:
+    - cron: '41 1,7,13,19 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: michigan-source-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Probe external data contracts and local geography
+        run: python3 scripts/check_michigan_sources.py
+      - name: Validate public health report
+        run: python3 -c 'import json; d=json.load(open("michigan/election-night/source_health.json")); assert d["localCounties"]["count"]==83; assert all(x["status"] in ("reachable","indeterminate","unavailable") for x in d["sources"].values())'
+      - name: Publish current source readiness record
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add michigan/election-night/source_health.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Audit public Michigan election-night source connectivity"
+            git pull --rebase origin main
+            git push
+          fi
