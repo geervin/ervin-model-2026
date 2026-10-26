@@ -14,7 +14,8 @@ const isURL=u=>{try{const x=new URL(u);return x.protocol==="https:"&&!x.username
 const demo=new URLSearchParams(location.search).get("demo")==="1";
 let official=new Map(),manual=new Map(),automatic=new Map(),precincts=new Map(),names=new Set(),selected="",hovered="",manualPublished=null,autoPublished=null,lastPublished=null,lastRead=0,reading=false,clock=null;
 let lastStatus="Awaiting verified county returns";
-const countySources=new Map();
+const countySources=new Map(),countyOutlooks=new Map();
+let outlookAsOf="";
 async function indexCounties(){
  try{
    const response=await fetch("../county_history.json");
@@ -85,6 +86,10 @@ function render(){
  $("countyCardRepBar").style.width=rec?(100-share).toFixed(2)+"%":"0%";
  $("countyCardStatus").textContent=!rec?"Awaiting verified results":rec.scope==="county"?
    (rec.reportingStatus==="complete"?"County clerk · complete":"County clerk · partial"):"Partial precinct subtotal";
+ const model=countyOutlooks.get(label);
+ $("countyCardOutlook").textContent=model?
+   ("MODEL ONLY · Original Ervin 2026 county outlook: "+(model.demShare*100).toFixed(1)+"% El-Sayed / "+((1-model.demShare)*100).toFixed(1)+"% Rogers, two-party share · not actual precinct votes"+(outlookAsOf?" · "+outlookAsOf:"")):
+   (label==="Michigan"?"Choose a county to view its separate model outlook.":"County outlook unavailable; verified votes above remain independent.");
  $("countyCardContext").textContent=!rec?
    "No verified November 2026 Senate vote figures have been published to this site for this county. Unreported does not mean zero votes.":
    rec.scope==="county"?
@@ -200,6 +205,12 @@ function init(){
  svg.addEventListener("focusout",unhover);
  window.addEventListener("ervin:county-select",e=>{selected=e.detail?.county||"";hovered="";$("countyHoverTip").hidden=true;render()});
  window.addEventListener("ervin:results",e=>partialPrecincts(e.detail?.precincts||[]));
+ window.addEventListener("ervin:county-outlook",e=>{
+  countyOutlooks.clear();
+  for(const item of (e.detail?.counties||[]))countyOutlooks.set(item.county,item);
+  outlookAsOf=e.detail?.asOf||"";
+  render();
+ });
  $("refreshCountyTotals").addEventListener("click",()=>readCounty(true));
  indexCounties().then(()=>{loadClerkLinks();render();if(Date.now()>=CLOSE_E||demo)readCounty(true)});
  const next=()=>{if(Date.now()>=CLOSE_E)readCounty()};
