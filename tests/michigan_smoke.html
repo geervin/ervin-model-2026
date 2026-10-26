@@ -13,7 +13,7 @@
   check($('countyRows').querySelectorAll('tr[data-county]').length===83,'83 county rows loaded');
   check($('map').querySelectorAll('path[data-county]').length===83,'83 geographic county shapes loaded');
   check($('source').options.length===6,'All six model sources available');
-  check($('mode').value==='weighted','Pooled Ervin plus default');
+  check($('mode').value==='original','Original Ervin selected by default');
   check($('countyTrend').textContent.includes('2020 Senate')&&$('countyTrend').textContent.includes('2024 Senate'),'Five historical election series present');
   const numeric=s=>Number(String(s).replace(/[^0-9-]/g,'')),dVotes=numeric($('stateDem').textContent),rVotes=numeric($('stateRep').textContent),ballots=numeric($('stateVotes').textContent);
   check(dVotes>1000000&&rVotes>1000000&&ballots>4000000,'Reasonable statewide vote scenario generated');
@@ -21,7 +21,9 @@
   check(Math.abs(100*(dVotes-rVotes)/ballots-Number($('stateMargin').textContent.replace(/[^0-9.]/g,''))*(String($('stateMargin').textContent).startsWith('R')?-1:1))<.06,'County projected totals match stated statewide forecast');
   const initial=$('stateMargin').textContent;
   event('source','ddhq');check($('source').value==='ddhq','DDHQ switch works');
-  event('mode','original');check($('stateMargin').textContent!==initial,'Historical mode switch updates forecast');
+  event('mode','weighted');const plusMargin=$('stateMargin').textContent;
+  event('mode','original');check($('stateMargin').textContent!==plusMargin,'Historical mode switch updates forecast');
+  check($('mode').value==='original','Can return to Original Ervin');
   // Rapid slider interaction should collapse repeated redraws, while preserving
   // the last requested turnout and complete county/state vote consistency.
   for(const v of ['95','100','108','115'])event('turnout',v,'input');
