@@ -30,6 +30,21 @@
   const oakland=d.querySelector('#countyBoundaryMap [data-county="Oakland"]');
   oakland.dispatchEvent(new first.frame.contentWindow.MouseEvent("click",{bubbles:true}));
   check(el("mapCountySelection").textContent==="Oakland","County click zooms precinct geography to selected county");
+  for(let i=0;i<60&&el("countyCardDem").textContent==="—";i++)await new Promise(r=>setTimeout(r,80));
+  check(el("countyCardTitle").textContent==="Oakland County","Selecting county opens persistent county results card");
+  check(el("countyCardDem").textContent==="802"&&el("countyCardRep").textContent==="917",
+    "Candidate numbers show only verified test fixture precinct totals");
+  check(el("countyResultCard").textContent.includes("Abdul El-Sayed")&&el("countyResultCard").textContent.includes("Mike Rogers"),
+    "Candidate full names rendered in county inspector");
+  check(d.querySelectorAll(".county-card .candidate-portrait img").length===2,
+    "Candidate portraits have dedicated images");
+  el("expandCountyMap").click();
+  check(el("countyMapPanel").classList.contains("is-expanded")&&el("expandCountyMap").getAttribute("aria-expanded")==="true",
+    "County map expands into large overlay");
+  el("expandCountyMap").click();
+  check(!el("countyMapPanel").classList.contains("is-expanded"),
+    "County map returns to standard size");
+  check(el("countyLiveFeedStatus").textContent.length>15,"Source publication status is visible");
   el("countyAll").click();
   check(el("mapCountySelection").textContent==="Statewide","Statewide county map reset works");
   check(d.querySelectorAll("#officialSources .source-shortcuts a").length>=6,"Direct official Michigan results sources available");
@@ -63,6 +78,7 @@
   if(Date.now()<new Date("2026-11-03T20:00:00-05:00").getTime()){
    check(real.getElementById("statusHeading").textContent.includes("PRE-ELECTION"),"No live results presented before poll closing");
    check(real.getElementById("precinctCount").textContent==="—","No fabricated pre-election precinct counts");
+   check(real.getElementById("countyCardDem").textContent==="—"&&real.getElementById("countyCardRep").textContent==="—","No fabricated county totals before election");
    check(real.getElementById("refreshNow").disabled,"Pre-election refresh button correctly disabled");
   }
   let gisMessage="2026 precinct GIS: not tested";
