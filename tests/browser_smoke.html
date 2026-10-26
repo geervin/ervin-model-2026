@@ -23,7 +23,7 @@
   check(!!el('map')&&!!el('bars')&&!!el('rows'),'Map, bars and table rendered; title='+doc.title+'; state='+doc.readyState);
   check(doc.querySelectorAll('#tabs button').length===6,'All six polling tabs rendered');
   check(source('take')?.getAttribute('aria-selected')==='true','Ervin Take default selected');
-  check(el('biasMode').value==='weighted','Ervin plus default visible in select');
+  check(el('biasMode').value==='original','Original Ervin is the default bias mode');
   const ds=win.ERVIN_DATA.states.find(r=>r.code==='MI');
   const shares={rcp:.40,ddhq:.29,win270:.21,silver:.10};
   const considered=Object.entries(shares).filter(([k])=>!ds.sources[k].proxy);
@@ -48,8 +48,10 @@
   check(before===mapIdentity&&doc.querySelector('#map [data-code="AK"]')===before,'Race selection does not replace map elements');
   el('insightRace').value='OH';dispatch(el('insightRace'));
   check(doc.querySelector('#map .tile.active')?.dataset.code==='OH','Research Lab dropdown changes the active race');
+  el('biasMode').value='weighted';dispatch(el('biasMode'));
+  check(doc.querySelector('#map .tile.active')?.dataset.code==='OH','Switching to Ervin + preserves selected race');
   el('biasMode').value='original';dispatch(el('biasMode'));
-  check(doc.querySelector('#map .tile.active')?.dataset.code==='OH','Mode change preserves selected race');
+  check(el('biasMode').value==='original','Can return to Original Ervin mode');
   el('confidenceLevel').value='90';dispatch(el('confidenceLevel'));
   check(el('detail').textContent.includes('90% error scenario'),'Uncertainty control redraws selected range');
   source('ddhq').click();
