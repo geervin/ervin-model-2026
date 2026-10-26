@@ -1,5 +1,5 @@
 {
-  "source": "Michigan Secretary of State 83-county election website directory, with verified county result-page overrides; roots are not guaranteed direct report feeds",
+  "source": "Michigan Secretary of State election website directory, with verified 2026 county results-page overrides. County homepages do not necessarily provide an API.",
   "directory": "https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county",
   "counties": {
     "Alcona": "https://alconacountymi.com",
@@ -42,9 +42,9 @@
     "Jackson": "https://www.co.jackson.mi.us",
     "Kalamazoo": "https://www.kalcounty.gov",
     "Kalkaska": "https://www.kalkaskacounty.net",
-    "Kent": "https://www.kentcountymi.gov/elections",
+    "Kent": "https://app.enhancedvoting.com/results/public/kent-county-mi/elections/11032026_20261005115447",
     "Keweenaw": "https://keweenawcountyonline.org",
-    "Lake": "https://www.michigan.gov/sos/elections/election-results-and-data/candidate-listings-and-election-results-by-county",
+    "Lake": "https://lakecountymi.gov/clerk/",
     "Lapeer": "https://www.lapeercountymi.gov",
     "Leelanau": "https://www.leelanau.gov",
     "Lenawee": "https://www.electionlenawee.com",
@@ -64,7 +64,7 @@
     "Montmorency": "https://www.montcounty.org",
     "Muskegon": "https://co.muskegon.mi.us",
     "Newaygo": "https://www.newaygocountymi.gov",
-    "Oakland": "https://results.enr.clarityelections.com/MI/Oakland/127284/",
+    "Oakland": "https://elections.oaklandcountymi.gov/government/clerk-register-of-deeds/elections-voting",
     "Oceana": "https://oceana.mi.us",
     "Ogemaw": "https://www.ocmi.us",
     "Ontonagon": "https://ontonagoncounty.org",
