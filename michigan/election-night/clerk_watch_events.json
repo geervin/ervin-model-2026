@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-26T23:09:09.052429+00:00",
+  "updatedAt": "2026-10-27T06:18:45.998730+00:00",
   "events": [
     {
       "at": "2026-10-26T14:19:02.019910+00:00",
@@ -31,6 +31,14 @@
       "kind": "page_modified",
       "newLinks": [],
       "sourceUrl": "https://www.sanilaccounty.gov/",
+      "notice": "Source change is not an election return"
+    },
+    {
+      "at": "2026-10-27T06:18:45.998730+00:00",
+      "county": "Oceana",
+      "kind": "page_modified",
+      "newLinks": [],
+      "sourceUrl": "https://oceana.mi.us/",
       "notice": "Source change is not an election return"
     }
   ]
