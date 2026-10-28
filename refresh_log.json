@@ -1,87 +1,117 @@
 {
-  "checkedAt": "2026-10-28T12:50:30.114522+00:00",
+  "checkedAt": "2026-10-28T22:33:10.971537+00:00",
   "pagesParsed": 15,
-  "changes": 13,
+  "changes": 18,
   "observationsFound": 55,
   "errors": [],
   "updated": [
     {
-      "state": "OH",
+      "state": "ME",
       "source": "win270",
-      "margin": 3.7,
+      "margin": 2.2,
+      "published": "Oct 27"
+    },
+    {
+      "state": "ME",
+      "source": "ddhq",
+      "margin": 3.3,
+      "published": "Oct 27"
+    },
+    {
+      "state": "ME",
+      "source": "silver",
+      "margin": 2.4,
       "published": "Oct 27"
     },
     {
       "state": "OH",
-      "source": "ddhq",
+      "source": "win270",
       "margin": 3.5,
-      "published": "Oct 27"
+      "published": "Oct 28"
     },
     {
       "state": "OH",
-      "source": "silver",
-      "margin": 3.1,
-      "published": "Oct 27"
-    },
-    {
-      "state": "IA",
-      "source": "win270",
-      "margin": -0.8,
-      "published": "Oct 27"
-    },
-    {
-      "state": "IA",
       "source": "ddhq",
-      "margin": -0.2,
-      "published": "Oct 27"
+      "margin": 3.4,
+      "published": "Oct 28"
     },
     {
-      "state": "IA",
-      "source": "silver",
-      "margin": 0.9,
-      "published": "Oct 27"
-    },
-    {
-      "state": "NC",
-      "source": "win270",
-      "margin": 11.4,
-      "published": "Oct 25"
-    },
-    {
-      "state": "NC",
-      "source": "ddhq",
-      "margin": 9.5,
-      "published": "Oct 26"
-    },
-    {
-      "state": "NC",
+      "state": "OH",
       "source": "rcp",
-      "margin": 10.3,
-      "published": "Oct 26"
+      "margin": 3.3,
+      "published": "Oct 28"
     },
     {
-      "state": "NC",
+      "state": "MN",
+      "source": "win270",
+      "margin": 6.0,
+      "published": "Oct 28"
+    },
+    {
+      "state": "MN",
+      "source": "ddhq",
+      "margin": 6.8,
+      "published": "Oct 28"
+    },
+    {
+      "state": "MN",
+      "source": "rcp",
+      "margin": 5.1,
+      "published": "Oct 28"
+    },
+    {
+      "state": "MN",
       "source": "silver",
-      "margin": 9.8,
-      "published": "Oct 26"
+      "margin": 6.4,
+      "published": "Oct 28"
     },
     {
       "state": "SC",
       "source": "win270",
-      "margin": -1.6,
-      "published": "Oct 27"
+      "margin": -1.8,
+      "published": "Oct 28"
     },
     {
       "state": "SC",
       "source": "ddhq",
-      "margin": -1.3,
-      "published": "Oct 27"
+      "margin": -1.4,
+      "published": "Oct 28"
+    },
+    {
+      "state": "SC",
+      "source": "rcp",
+      "margin": -2.4,
+      "published": "Oct 28"
     },
     {
       "state": "SC",
       "source": "silver",
       "margin": -1.5,
-      "published": "Oct 26"
+      "published": "Oct 28"
+    },
+    {
+      "state": "FL",
+      "source": "win270",
+      "margin": -6.4,
+      "published": "Oct 28"
+    },
+    {
+      "state": "FL",
+      "source": "ddhq",
+      "margin": -6.5,
+      "published": "Oct 28"
+    },
+    {
+      "state": "FL",
+      "source": "rcp",
+      "margin": -6.3,
+      "published": "Oct 28"
+    },
+    {
+      "state": "FL",
+      "source": "silver",
+      "margin": -6.6,
+      "published": "Oct 28"
     }
   ],
   "sources": "Wikipedia 2026 general-election aggregate tables; matching candidate pair required"
