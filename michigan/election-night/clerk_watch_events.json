@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-28T14:03:29.931302+00:00",
+  "updatedAt": "2026-10-28T23:15:17.718664+00:00",
   "events": [
     {
       "at": "2026-10-26T14:19:02.019910+00:00",
@@ -71,6 +71,43 @@
       "kind": "page_modified",
       "newLinks": [],
       "sourceUrl": "https://milivcounty.gov/elections/election-results/",
+      "notice": "Source change is not an election return"
+    },
+    {
+      "at": "2026-10-28T23:15:17.718664+00:00",
+      "county": "Alger",
+      "kind": "page_modified",
+      "newLinks": [],
+      "sourceUrl": "https://www.algercounty.gov/",
+      "notice": "Source change is not an election return"
+    },
+    {
+      "at": "2026-10-28T23:15:17.718664+00:00",
+      "county": "Lake",
+      "kind": "page_modified",
+      "newLinks": [],
+      "sourceUrl": "https://lakecountymi.gov/clerk/",
+      "notice": "Source change is not an election return"
+    },
+    {
+      "at": "2026-10-28T23:15:17.718664+00:00",
+      "county": "Oceana",
+      "kind": "page_modified",
+      "newLinks": [],
+      "sourceUrl": "https://oceana.mi.us/",
+      "notice": "Source change is not an election return"
+    },
+    {
+      "at": "2026-10-28T23:15:17.718664+00:00",
+      "county": "Ogemaw",
+      "kind": "new_result_links",
+      "newLinks": [
+        {
+          "title": "November 3, 2026 Election Results",
+          "url": "https://drive.google.com/drive/folders/1r_JWFQ2XntQCXIrVlHDgBi53Pg0Ehm97?usp=drive_link"
+        }
+      ],
+      "sourceUrl": "https://www.ocmi.us/",
       "notice": "Source change is not an election return"
     }
   ]
