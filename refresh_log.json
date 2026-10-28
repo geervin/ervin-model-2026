@@ -1,63 +1,87 @@
 {
-  "checkedAt": "2026-10-28T05:38:46.478521+00:00",
+  "checkedAt": "2026-10-28T12:50:30.114522+00:00",
   "pagesParsed": 15,
-  "changes": 9,
+  "changes": 13,
   "observationsFound": 55,
   "errors": [],
   "updated": [
     {
-      "state": "TX",
+      "state": "OH",
       "source": "win270",
-      "margin": 2.9,
+      "margin": 3.7,
       "published": "Oct 27"
     },
     {
-      "state": "TX",
+      "state": "OH",
       "source": "ddhq",
+      "margin": 3.5,
+      "published": "Oct 27"
+    },
+    {
+      "state": "OH",
+      "source": "silver",
       "margin": 3.1,
       "published": "Oct 27"
     },
     {
-      "state": "TX",
-      "source": "rcp",
-      "margin": 1.8,
+      "state": "IA",
+      "source": "win270",
+      "margin": -0.8,
       "published": "Oct 27"
     },
     {
-      "state": "TX",
-      "source": "silver",
-      "margin": 2.6,
-      "published": "Oct 27"
-    },
-    {
-      "state": "KS",
+      "state": "IA",
       "source": "ddhq",
-      "margin": 0.0,
+      "margin": -0.2,
       "published": "Oct 27"
     },
     {
-      "state": "KS",
+      "state": "IA",
       "source": "silver",
       "margin": 0.9,
       "published": "Oct 27"
     },
     {
-      "state": "NE",
+      "state": "NC",
       "source": "win270",
-      "margin": -2.0,
-      "published": "Oct 27"
+      "margin": 11.4,
+      "published": "Oct 25"
     },
     {
-      "state": "NE",
+      "state": "NC",
       "source": "ddhq",
-      "margin": -0.7,
+      "margin": 9.5,
+      "published": "Oct 26"
+    },
+    {
+      "state": "NC",
+      "source": "rcp",
+      "margin": 10.3,
+      "published": "Oct 26"
+    },
+    {
+      "state": "NC",
+      "source": "silver",
+      "margin": 9.8,
+      "published": "Oct 26"
+    },
+    {
+      "state": "SC",
+      "source": "win270",
+      "margin": -1.6,
       "published": "Oct 27"
     },
     {
-      "state": "NE",
-      "source": "silver",
-      "margin": 0.2,
+      "state": "SC",
+      "source": "ddhq",
+      "margin": -1.3,
       "published": "Oct 27"
+    },
+    {
+      "state": "SC",
+      "source": "silver",
+      "margin": -1.5,
+      "published": "Oct 26"
     }
   ],
   "sources": "Wikipedia 2026 general-election aggregate tables; matching candidate pair required"
