@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-28T14:30:50.907559+00:00",
+  "checkedAt": "2026-10-28T23:32:12.468784+00:00",
   "purpose": "Public connectivity only; no automatic county return ingestion",
   "localCounties": {
     "status": "ready",
@@ -24,8 +24,8 @@
     "livingston": {
       "label": "Livingston · county results",
       "url": "https://milivcounty.gov/elections/election-results/",
-      "status": "reachable",
-      "note": "Portal responds; precinct feed and actual returns unverified",
+      "status": "indeterminate",
+      "note": "HTTP 202",
       "role": "page"
     },
     "state_directory": {
