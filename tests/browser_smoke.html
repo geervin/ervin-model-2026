@@ -24,6 +24,18 @@
   check(doc.querySelectorAll('#tabs button').length===6,'All six polling tabs rendered');
   check(source('take')?.getAttribute('aria-selected')==='true','Ervin Take default selected');
   check(el('biasMode').value==='original','Original Ervin is the default bias mode');
+  check(!!el('senate-control')&&el('controlDemChance').textContent.endsWith('%')&&el('controlRepChance').textContent.endsWith('%'),
+    'Senate-control probability dashboard renders both parties');
+  check(el('controlDemSeats').textContent.includes('seats')&&el('controlRepSeats').textContent.includes('seats'),
+    'Senate-control dashboard displays rough seat counts');
+  const startControl=el('controlDemChance').textContent,originalSeats=el('controlDemSeats').textContent;
+  el('controlUncertainty').value='1.3';dispatch(el('controlUncertainty'));
+  check(el('controlUncertainty').value==='1.3'&&el('controlRange').textContent.includes('80% seat ranges'),
+    'Senate-control uncertainty selector recalculates and shows ranges');
+  el('controlUncertainty').value='1';dispatch(el('controlUncertainty'));
+  check(el('controlDemChance').textContent===startControl&&el('controlDemSeats').textContent===originalSeats,
+    'Original Senate-control scenario is deterministic when returning to standard uncertainty');
+  check(doc.querySelectorAll('#rows tr[data-id] td').length===170,'Race table exposes a publisher date column for every watched state');
   const ds=win.ERVIN_DATA.states.find(r=>r.code==='MI');
   const shares={rcp:.40,ddhq:.29,win270:.21,silver:.10};
   const considered=Object.entries(shares).filter(([k])=>!ds.sources[k].proxy);
