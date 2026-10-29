@@ -108,12 +108,13 @@ def main():
     b=contents.index(ENDING,a)
     data=json.loads(contents[a:b])
     checked=dt.datetime.now(dt.timezone.utc)
-    report={"checkedAt":checked.isoformat(),"pagesParsed":0,"changes":0,"observationsFound":0,"errors":[],"updated":[],"sources":"Wikipedia 2026 general-election aggregate tables; matching candidate pair required"}
+    report={"checkedAt":checked.isoformat(),"pagesParsed":0,"checkedRaceCount":len(data["states"]),"changes":0,"observationsFound":0,"errors":[],"updated":[],"sourceCoverage":[],"stalePublisherRaces":[],"sources":"Wikipedia 2026 general-election aggregate tables; matching candidate pair required"}
     for race in data["states"]:
         try:
             html,url=page_html(race["state"])
             rows=parse_state(html,race)
             if rows: report["pagesParsed"]+=1
+            report["sourceCoverage"].append({"state":race["code"],"verifiedPublisherRows":len(rows),"result":"matched" if rows else "no matching current-year aggregate"})
             report["observationsFound"]+=len(rows)
             for key,entry in rows.items():
                 old=race["sources"][key]
@@ -134,6 +135,20 @@ def main():
                     report["updated"].append({"state":race["code"],"source":key,"margin":entry["value"],"published":entry["date"]})
         except Exception as exc:
             report["errors"].append(race["code"]+": "+str(exc)[:180])
+            report["sourceCoverage"].append({"state":race["code"],"verifiedPublisherRows":0,"result":"source check failed"})
+    # The source-check time and actual published-aggregate dates are different.
+    # Expose stale rows and missing sources without silently assigning current dates.
+    for race in data["states"]:
+        eligible=[]
+        for key,entry in race["sources"].items():
+            if key not in ("rcp","ddhq","win270","silver") or entry.get("proxy"):continue
+            try: stamp=dt.datetime.strptime(str(entry.get("date","")).strip()+" 2026","%b %d %Y").date()
+            except ValueError:continue
+            eligible.append(stamp)
+        if eligible:
+            days=(checked.date()-max(eligible)).days
+            if days>7:report["stalePublisherRaces"].append({"state":race["code"],"daysOld":days,"latestDate":max(eligible).isoformat()})
+        else:report["stalePublisherRaces"].append({"state":race["code"],"daysOld":None,"latestDate":None,"reason":"No independently attributed publisher averages"})
     # Count successful checks, never report zero parsed as successful freshness.
     data["liveMeta"]=report
     if report["changes"]:
