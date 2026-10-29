@@ -31,3 +31,6 @@
 @media(max-width:750px){.senate-control{padding:19px 15px}.control-summary{grid-template-columns:1fr 1fr;gap:10px}.control-mid{grid-row:2;grid-column:1/-1;padding:10px}.control-side{padding:13px}.control-seats{padding-top:10px}.control-party{font-size:9px}}
 @media(max-width:390px){.control-side>strong{font-size:31px}.control-seats span{font-size:20px}}
 @media(prefers-reduced-motion:reduce){.control-win-bar span{transition:none!important}}
+
+#copyControlForecast{align-self:end;min-height:40px;white-space:nowrap}
+@media(max-width:750px){#copyControlForecast{margin-top:0;align-self:auto}}
