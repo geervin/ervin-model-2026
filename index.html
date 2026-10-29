@@ -64,7 +64,7 @@
 </aside>
 <section class="stat-grid" id="stats" aria-label="Summary metrics"></section>
 <section id="senate-control" class="panel senate-control" aria-labelledby="controlTitle">
-<div class="control-heading"><div><div class="section-label">02 · THE BALANCE OF POWER</div><h2 id="controlTitle">Who will control the Senate?</h2><p class="micro">Live polling snapshot · 100-seat chamber estimate · updates with source and bias mode</p></div><label for="controlUncertainty" class="control-select-label">SIMULATION UNCERTAINTY<select class="select" id="controlUncertainty"><option value="1">Standard</option><option value="1.3">Wider</option><option value=".7">Narrower</option></select></label></div>
+<div class="control-heading"><div><div class="section-label">02 · THE BALANCE OF POWER</div><h2 id="controlTitle">Who will control the Senate?</h2><p class="micro">Live polling snapshot · 100-seat chamber estimate · updates with source and bias mode</p></div><label for="controlUncertainty" class="control-select-label">SIMULATION UNCERTAINTY<select class="select" id="controlUncertainty"><option value="1">Standard</option><option value="1.3">Wider</option><option value=".7">Narrower</option></select></label><button class="button ghost" id="copyControlForecast" type="button" aria-label="Copy shareable Senate control forecast link">Copy forecast link</button></div>
 <div class="control-summary" aria-live="polite"><div class="control-side democratic"><span class="control-party">DEMOCRATIC-ALIGNED</span><strong id="controlDemChance">—</strong><span>Chance of control</span><div class="control-seats"><span id="controlDemSeats">—</span><small>Expected caucus seats, including Sanders &amp; King</small></div></div>
 <div class="control-mid"><div class="section-label">SIMULATED OUTCOMES</div><div class="control-win-bar" role="img" id="controlBar" aria-label="Simulated party-control frequencies"><span class="control-dem" id="controlDemBar"></span><span class="control-unknown" id="controlUnknownBar"></span><span class="control-rep" id="controlRepBar"></span></div><div class="control-win-legend"><span><b class="key-dem"></b>D-aligned</span><span><b class="key-neutral"></b>Undetermined</span><span><b class="key-rep"></b>Republican</span></div><div class="control-majority">51 seats for an outright majority · a 50–50 tie goes to the Republican vice president</div><strong class="control-point-seats" id="controlPointSeats">—</strong><span class="micro" id="controlUnmodeled">Untracked seats assumed unchanged</span></div>
 <div class="control-side republican"><span class="control-party">REPUBLICAN</span><strong id="controlRepChance">—</strong><span>Chance of control</span><div class="control-seats"><span id="controlRepSeats">—</span><small>Expected Republican seats</small></div></div></div>
@@ -3292,6 +3292,15 @@ function render(){renderTabs();renderStats();renderControl();renderMap();detail(
 function snack(msg){const box=$('snack');box.textContent=msg;box.classList.add('show');setTimeout(()=>box.classList.remove('show'),2700)}
 function exportCSV(){const headers=['State','Party of non-R candidate','Source tab','Input margin non-R-minus-R','Input origin','Source date','Proxy flag','Applied R shift','Historical polling errors N','Historical MAE','Evidence grade','Adjusted non-R-minus-R','Lower scenario bound','Upper scenario bound','Confidence statement'];let csv=[headers,...states.map(r=>{let v=evaluate(r);return [r.state,r.party,state.source,v.poll.value,v.poll.origin,v.poll.date,v.poll.proxy,v.correction,v.h.n,round(v.h.mae),v.grade,round(v.adjusted),round(v.lo),round(v.hi),v.support]})].map(a=>a.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf8;'}));a.download=`Ervin-Model-${state.source}-${new Date().toISOString().slice(0,10)}.csv`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);snack(`CSV exported with ${states.length} races and source flags`)}
 $('controlUncertainty').onchange=()=>renderControl();
+$('copyControlForecast').onclick=async()=>{
+ const url=new URL(location.href);
+ url.searchParams.set('source',state.source);
+ url.searchParams.set('bias',state.biasMode);
+ url.searchParams.set('controlU',$('controlUncertainty').value);
+ url.hash='senate-control';
+ try{await navigator.clipboard.writeText(url.toString());snack('Senate-control forecast link copied')}
+ catch{snack('Copy unavailable in this browser')}
+};
 $('confidenceLevel').onchange=e=>{state.level=Number(e.target.value);render()};$('biasMode').onchange=e=>{state.biasMode=e.target.value;render()};$('raceFilter').onchange=e=>{state.filter=e.target.value;renderTable()};$('sort').onchange=e=>{state.sort=e.target.value;renderTable()};$('search').oninput=e=>{state.search=e.target.value;renderTable()};$('exportCSV').onclick=exportCSV;
 $('themeToggle').onclick=()=>{document.documentElement.classList.toggle('light');snack(document.documentElement.classList.contains('light')?'Light theme':'Dark theme')};
 function setFreshness(){
@@ -3321,6 +3330,10 @@ function setFreshness(){
   link.hidden=true;
  }
 }
+const controlQuery=new URLSearchParams(location.search);
+if(CONFIG.sourceList.some(s=>s.key===controlQuery.get('source')))state.source=controlQuery.get('source');
+if(['original','shrink','weighted'].includes(controlQuery.get('bias')))state.biasMode=controlQuery.get('bias');
+if(['1','1.3','.7'].includes(controlQuery.get('controlU')))$('controlUncertainty').value=controlQuery.get('controlU');
 const requested=new URLSearchParams(location.search).get('race');if(requested&&states.some(r=>r.code===requested.toUpperCase()))state.selected=requested.toUpperCase();
 $('biasMode').value=state.biasMode;$('confidenceLevel').value=String(state.level);
 setFreshness();
