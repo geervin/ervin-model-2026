@@ -1,51 +1,33 @@
 {
-  "checkedAt": "2026-10-29T05:44:42.873949+00:00",
+  "checkedAt": "2026-10-29T12:57:15.294395+00:00",
   "pagesParsed": 15,
-  "changes": 7,
+  "changes": 4,
   "observationsFound": 55,
   "errors": [],
   "updated": [
     {
-      "state": "OH",
+      "state": "TX",
       "source": "ddhq",
-      "margin": 3.2,
+      "margin": 4.2,
       "published": "Oct 28"
     },
     {
-      "state": "AK",
-      "source": "ddhq",
-      "margin": 1.6,
-      "published": "Oct 28"
-    },
-    {
-      "state": "AK",
+      "state": "TX",
       "source": "rcp",
-      "margin": 2.5,
-      "published": "Oct 28"
+      "margin": 2.2,
+      "published": "Oct 29"
     },
     {
-      "state": "AK",
+      "state": "KS",
+      "source": "rcp",
+      "margin": 0.2,
+      "published": "Oct 29"
+    },
+    {
+      "state": "KS",
       "source": "silver",
-      "margin": 3.6,
-      "published": "Oct 28"
-    },
-    {
-      "state": "NC",
-      "source": "win270",
-      "margin": 11.4,
-      "published": "Oct 26"
-    },
-    {
-      "state": "MT",
-      "source": "ddhq",
-      "margin": -7.2,
-      "published": "Oct 28"
-    },
-    {
-      "state": "MT",
-      "source": "silver",
-      "margin": -11.2,
-      "published": "Oct 28"
+      "margin": 0.8,
+      "published": "Oct 27"
     }
   ],
   "sources": "Wikipedia 2026 general-election aggregate tables; matching candidate pair required"
