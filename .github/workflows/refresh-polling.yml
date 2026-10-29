@@ -6,7 +6,7 @@ on:
       - 'scripts/refresh_polling.py'
       - '.github/workflows/refresh-polling.yml'
   schedule:
-    - cron: '17 */6 * * *'
+    - cron: '17 */3 * * *'
   workflow_dispatch:
 permissions:
   contents: write
@@ -34,11 +34,31 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html source_snapshot.csv refresh_log.json
-          if ! git diff --cached --quiet; then
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+              # Recreate the audited polling data from the NEWEST state of the
+              # website. Never rebase two generated data snapshots together.
+              git reset --hard origin/main
+              python scripts/refresh_polling.py
+              python scripts/validate_data.py
+            fi
+            git add index.html source_snapshot.csv refresh_log.json
+            if git diff --cached --quiet; then
+              echo "No polling audit or source updates to publish"
+              break
+            fi
             git commit -m "Automatic 2026 Senate polling check"
-            git push
-          fi
+            if git push origin HEAD:main; then
+              echo "Polling update committed"
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "Polling update could not be published after retries" >&2
+              exit 1
+            fi
+            sleep 3
+          done
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload refreshed website
