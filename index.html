@@ -50,7 +50,7 @@
 <header class="topbar"><div class="shell navinner"><div class="logo"><div class="logo-symbol" aria-hidden="true">E</div><span>ERVIN <b>MODEL</b></span></div><nav class="navend" aria-label="Page sections"><a href="#senate-control">SENATE CONTROL</a><a href="#map-area">THE MAP</a><a href="#races">17 RACES</a><a href="michigan/" title="Michigan county-by-county Senate projection">MICHIGAN · 83 COUNTIES</a><a href="michigan/election-night/" title="Michigan 2026 precinct election-night reporting">MI ELECTION NIGHT</a><a href="#methodology">METHODOLOGY</a><span class="badge"><span class="dot-live"></span><span id="freshnessLabel">OCT 23 RESEARCH SNAPSHOT</span></span><button class="button ghost" id="themeToggle" aria-label="Toggle light or dark appearance">☀ / ☾</button></nav></div></header>
 <main class="shell">
 <section class="hero"><div><div class="kicker">2026 U.S. Senate • Election intelligence dashboard</div><h1>Past polling errors.<br><em>Present predictions.</em></h1><p class="lede">The Ervin Model adjusts today's Senate poll averages by each state's historical polling error. Compare five source views, examine the evidence behind each correction, and explore uncertainty rather than guess at certainty.</p></div><div class="hero-right"><div class="eyebrow">Countdown to Election Day</div><strong id="countdown">11 days</strong><small id="countdownFoot">Tuesday, November 3, 2026 · Archived research snapshot</small><button class="button primary" id="exportCSV">↓ Export current calculations</button></div></section>
-<div class="refresh-strip" role="status" aria-live="polite"><span class="refresh-symbol" aria-hidden="true">↻</span><span id="refreshDetails">This downloaded edition is a dated polling snapshot. An authorized GitHub Pages deployment enables scheduled checks every six hours.</span><a href="refresh_log.json" id="refreshAuditLink" hidden target="_blank" rel="noopener noreferrer">Refresh audit ↗</a></div><div class="divider"></div>
+<div class="refresh-strip" role="status" aria-live="polite"><span class="refresh-symbol" aria-hidden="true">↻</span><span id="refreshDetails">This downloaded edition is a dated polling snapshot. An authorized GitHub Pages deployment enables scheduled checks every three hours.</span><a href="refresh_log.json" id="refreshAuditLink" hidden target="_blank" rel="noopener noreferrer">Refresh audit ↗</a></div><div class="divider"></div>
 <section aria-label="Polling data sources"><div class="section-label">01 &nbsp; SELECT THE POLLING SOURCE</div><div class="toolbar"><div class="tabs" id="tabs" role="tablist" aria-label="Polling source"></div><div class="controls"><label class="fine" for="confidenceLevel">Uncertainty band</label><select class="select" id="confidenceLevel" aria-label="Choose uncertainty level"><option value="80">80% scenario</option><option value="90">90% scenario</option></select><label class="fine" for="biasMode">Bias</label><select class="select" id="biasMode" aria-label="Choose historical bias mode"><option value="original">Original Ervin</option><option value="shrink">Shrink small samples</option><option value="weighted">Ervin +</option></select></div></div><div class="subbar"><span><span class="source-brand" id="sourceName">Average of averages</span> <span id="sourceDescription">Wikipedia aggregator consensus, not extra individual polls.</span></span><span id="verifiedCount">17 races • Source provenance shown per race</span></div></section>
 <aside class="mode-explainer" aria-label="How to read the forecasting controls">
  <div class="mode-explainer-heading"><span class="mode-explainer-mark">?</span><div><strong>How to read this model</strong><span>What the uncertainty and adjustment settings mean</span></div></div>
@@ -94,7 +94,7 @@ window.ERVIN_DATA = {
     {
       "key": "take",
       "title": "Ervin’s Take ★",
-      "desc": "Overall picture: provisional blended polling averages (RCP 40%, DDHQ 29%, 270toWin 21%, Silver Bulletin 10%). Silver is intentionally downweighted because its comparable historical Senate-polling backlog is limited. Distinct named publisher averages remain eligible even when the same page cites them; proxy filtering and freshness safeguards remain; Ervin + correction follows the blend."
+      "desc": "Overall picture: provisional blended polling averages (RCP 40%, DDHQ 29%, 270toWin 21%, Silver Bulletin 10%). Silver is intentionally downweighted because its comparable historical Senate-polling backlog is limited. Distinct named publisher averages remain eligible even when the same page cites them; proxy filtering and freshness safeguards remain; Original Ervin correction is the default; Ervin + remains an option."
     },
     {
       "key": "rcp",
@@ -3309,13 +3309,14 @@ function setFreshness(){
   const pages=Number(m.pagesParsed)||0;
   const partial=pages<states.length;
   const stale=(!Number.isFinite(ageHours)||ageHours>24);
-  badge.textContent=stale?'DATA CHECK OVERDUE':partial?'PARTIAL POLL REFRESH':'POLLING REFRESH ACTIVE';
-  details.textContent=`Last attempted source check: ${show(checked)} · ${pages}/${states.length} state pages parsed · ${m.changes||0} changed published averages. ${partial?'Other states retain their previously verified snapshots. ':''}${stale?'The last successful check was over 24 hours ago. ':''}Underlying aggregators may publish on different schedules.`;
-  foot.textContent=`Most recent hosted source check ${show(checked)} · ${pages}/${states.length} states verified`;
+  const sourceAge=(m.stalePublisherRaces||[]).map(r=>r.state+(r.daysOld==null?' no independent publisher average':' '+r.daysOld+'d old')).join(', ');
+  badge.textContent=stale?'AUDIT OVERDUE':partial?'PARTIAL POLL COVERAGE':'POLL AUDIT CURRENT';
+  details.textContent=`Last source audit: ${show(checked)} · ${pages}/${states.length} tracked states had matching general-election aggregate tables · ${m.changes||0} publisher inputs changed. ${partial?'Other states retain their previous data. ':''}${stale?'Automated audit is overdue by more than 24 hours. ':''}${sourceAge?'Older or proxy-only inputs: '+sourceAge+'. ':''}Publisher dates—not audit times—determine freshness.`;
+  foot.textContent=`Source audit ${show(checked)} · ${pages}/${states.length} state aggregate tables matched · ${sourceAge?sourceAge+' need fresher poll inputs':'Publisher dates shown per race'}`;
   link.hidden=false;
  }else{
   badge.textContent='OCT 23 RESEARCH SNAPSHOT';
-  details.textContent='Dated October 23, 2026. Automated polling checks are configured for every six hours once this repository is published with GitHub Pages; no host is connected in this local copy.';
+  details.textContent='Dated October 23, 2026. Automated polling checks are configured for every three hours once this repository is published with GitHub Pages; no host is connected in this local copy.';
   foot.textContent='Source snapshot October 23, 2026 · Automatic refreshing requires published GitHub Pages site';
   link.hidden=true;
  }
