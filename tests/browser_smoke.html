@@ -26,6 +26,8 @@
   check(el('biasMode').value==='original','Original Ervin is the default bias mode');
   check(!!el('senate-control')&&el('controlDemChance').textContent.endsWith('%')&&el('controlRepChance').textContent.endsWith('%'),
     'Senate-control probability dashboard renders both parties');
+  check(!!el('copyControlForecast')&&el('copyControlForecast').textContent.includes('Copy forecast'),
+    'Readers can share Senate forecast assumptions via a copied link');
   check(el('controlDemSeats').textContent.includes('seats')&&el('controlRepSeats').textContent.includes('seats'),
     'Senate-control dashboard displays rough seat counts');
   const startControl=el('controlDemChance').textContent,originalSeats=el('controlDemSeats').textContent;
