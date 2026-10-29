@@ -86,7 +86,7 @@
  </details>
 </section>
 <footer class="foot"><span>THE ERVIN MODEL <span style="color:var(--accent)">/</span> 2026 RESEARCH EDITION</span><span><span id="siteVisitCount" aria-live="polite" title="Approximate page visits since counter installation">SITE VISITS —</span> · <span id="footerFreshness">Source snapshot October 23, 2026 · Automatic refreshing activates after GitHub Pages deployment</span> · Mechanical, experimental predictions</span></footer>
-</main><div class="snack" id="snack" role="status"></div><script src="scripts/calibration_engine.js"></script><script>
+</main><div class="snack" id="snack" role="status"></div><script src="scripts/calibration_engine.js"></script><script src="scripts/senate_control.js"></script><script>
 window.ERVIN_DATA = {
   "asof": "October 29, 2026",
   "election": "November 3, 2026",
@@ -2962,7 +2962,7 @@ const state={source:'take',selected:'MI',level:80,biasMode:'original',search:'',
 // Historical and polling inputs do not change during a page session.
 // Cache the four-source blend and expensive historical corrections so clicking
 // between races never recomputes a 17-state model dozens of times.
-const pollingCache=new Map(),historyCache=new Map(),calibrationCache=new Map(),evaluationCache=new Map();
+const pollingCache=new Map(),historyCache=new Map(),calibrationCache=new Map(),evaluationCache=new Map(),controlCache=new Map();
 
 const cartogram={AK:[0,7],HI:[1,7],WA:[1,0],OR:[1,1],CA:[1,2],NV:[2,2],ID:[2,1],MT:[3,0],WY:[3,1],UT:[3,2],AZ:[3,3],NM:[4,3],CO:[4,2],ND:[4,0],SD:[4,1],NE:[5,1],KS:[5,2],OK:[5,3],TX:[5,4],MN:[5,0],IA:[6,1],MO:[6,2],AR:[6,3],LA:[6,4],WI:[6,0],IL:[7,1],MS:[7,4],MI:[7,0],IN:[8,1],KY:[8,2],TN:[8,3],AL:[8,4],FL:[9,5],GA:[9,4],SC:[10,4],NC:[10,3],VA:[10,2],WV:[9,2],OH:[9,1],PA:[10,1],NY:[10,0],VT:[11,0],NH:[11,1],ME:[11,2],MA:[11,3],CT:[11,4],RI:[11,5],NJ:[10,5],DE:[10,6],MD:[9,3]};
 const esc=(a)=>String(a??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -3111,9 +3111,37 @@ function renderInsights(){
  $('calibrationDetail').textContent=`Ervin + for ${r.state}: ${calibration.cycles} historical state election cycles · pooled baseline ${Number(calibration.pooled||0).toFixed(2)} points R-oriented error · final guarded correction ${Number(calibration.correction).toFixed(2)} points. ${calibration.method||''} Positive corrections are subtracted from the non-Republican polling lead.`;
  $('insightContext').textContent=`Historical error is subtracted from the raw non-Republican margin. ${candidateSpecific?'Candidate-specific comparison; the full shift is based on prior contests involving the same candidate. ':''}The shrinkage option retains ${Math.round(shrink*100)}% of the correction. Ervin + now uses a 2016–2024 Senate/presidential archive and partially pools state-year polling errors toward regional and national patterns; repeat-candidate scenarios remain separate. The Cook rating is a separate published assessment, not a numerical probability or an additional poll.`;
 }
-function render(){renderTabs();renderStats();renderMap();detail();renderBars();renderTable();renderInsights();}
+function renderControl(){
+ const node=$("controlDemChance");if(!node||!window.ERVIN_SENATE_CONTROL)return;
+ const uncertainty=Number($("controlUncertainty").value),cacheKey=state.source+"|"+state.biasMode+"|"+uncertainty;
+ let result=controlCache.get(cacheKey);
+ if(!result){
+  const entries=states.map(r=>{
+   const v=evaluate(r);
+   const z=state.level===90?1.645:1.282;
+   return {code:r.code,margin:v.adjusted,sigma:v.half/z};
+  });
+  result=window.ERVIN_SENATE_CONTROL.project(entries,{uncertaintyMultiplier:uncertainty,sourceSeed:["take","rcp","ddhq","win270","average","silver"].indexOf(state.source)*157});
+  controlCache.set(cacheKey,result);
+ }
+ const pc=x=>Math.round(x*100)+"%",seats=x=>x.toFixed(1);
+ $("controlDemChance").textContent=pc(result.partyD);
+ $("controlRepChance").textContent=pc(result.partyR);
+ $("controlDemSeats").textContent="~"+seats(result.demSeats)+" seats";
+ $("controlRepSeats").textContent="~"+seats(result.repSeats)+" seats";
+ $("controlDemBar").style.width=(result.partyD*100).toFixed(2)+"%";
+ $("controlRepBar").style.width=(result.partyR*100).toFixed(2)+"%";
+ $("controlUnknownBar").style.width=(result.uncertain*100).toFixed(2)+"%";
+ $("controlBar").setAttribute("aria-label","Democratic-aligned control "+pc(result.partyD)+", Republican control "+pc(result.partyR)+", unresolved independent outcomes "+pc(result.uncertain));
+ $("controlPointSeats").textContent="Rough balance: "+Math.round(result.demSeats)+" D-aligned · "+Math.round(result.repSeats)+" R"+(result.otherSeats>=.05?" · "+result.otherSeats.toFixed(1)+" new independent":"");
+ $("controlRange").textContent="Illustrative 80% seat ranges: D-aligned "+result.demRange.join("–")+" · Republican "+result.repRange.join("–");
+ $("controlOther").textContent="Additional independent seats: "+result.otherSeats.toFixed(1)+" expected · unresolved control "+pc(result.uncertain);
+ $("controlUnmodeled").textContent="17 modeled Senate races · 18 other elections assumed held · "+sourceTitle().title+" · "+$("biasMode").selectedOptions[0].textContent;
+}
+function render(){renderTabs();renderStats();renderControl();renderMap();detail();renderBars();renderTable();renderInsights();}
 function snack(msg){const box=$('snack');box.textContent=msg;box.classList.add('show');setTimeout(()=>box.classList.remove('show'),2700)}
 function exportCSV(){const headers=['State','Party of non-R candidate','Source tab','Input margin non-R-minus-R','Input origin','Source date','Proxy flag','Applied R shift','Historical polling errors N','Historical MAE','Evidence grade','Adjusted non-R-minus-R','Lower scenario bound','Upper scenario bound','Confidence statement'];let csv=[headers,...states.map(r=>{let v=evaluate(r);return [r.state,r.party,state.source,v.poll.value,v.poll.origin,v.poll.date,v.poll.proxy,v.correction,v.h.n,round(v.h.mae),v.grade,round(v.adjusted),round(v.lo),round(v.hi),v.support]})].map(a=>a.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf8;'}));a.download=`Ervin-Model-${state.source}-${new Date().toISOString().slice(0,10)}.csv`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);snack(`CSV exported with ${states.length} races and source flags`)}
+$('controlUncertainty').onchange=()=>renderControl();
 $('confidenceLevel').onchange=e=>{state.level=Number(e.target.value);render()};$('biasMode').onchange=e=>{state.biasMode=e.target.value;render()};$('raceFilter').onchange=e=>{state.filter=e.target.value;renderTable()};$('sort').onchange=e=>{state.sort=e.target.value;renderTable()};$('search').oninput=e=>{state.search=e.target.value;renderTable()};$('exportCSV').onclick=exportCSV;
 $('themeToggle').onclick=()=>{document.documentElement.classList.toggle('light');snack(document.documentElement.classList.contains('light')?'Light theme':'Dark theme')};
 function setFreshness(){
