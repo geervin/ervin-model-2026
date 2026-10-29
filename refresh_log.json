@@ -1,116 +1,50 @@
 {
-  "checkedAt": "2026-10-28T22:33:10.971537+00:00",
+  "checkedAt": "2026-10-29T05:44:42.873949+00:00",
   "pagesParsed": 15,
-  "changes": 18,
+  "changes": 7,
   "observationsFound": 55,
   "errors": [],
   "updated": [
     {
-      "state": "ME",
-      "source": "win270",
-      "margin": 2.2,
-      "published": "Oct 27"
-    },
-    {
-      "state": "ME",
-      "source": "ddhq",
-      "margin": 3.3,
-      "published": "Oct 27"
-    },
-    {
-      "state": "ME",
-      "source": "silver",
-      "margin": 2.4,
-      "published": "Oct 27"
-    },
-    {
-      "state": "OH",
-      "source": "win270",
-      "margin": 3.5,
-      "published": "Oct 28"
-    },
-    {
       "state": "OH",
       "source": "ddhq",
-      "margin": 3.4,
+      "margin": 3.2,
       "published": "Oct 28"
     },
     {
-      "state": "OH",
-      "source": "rcp",
-      "margin": 3.3,
-      "published": "Oct 28"
-    },
-    {
-      "state": "MN",
-      "source": "win270",
-      "margin": 6.0,
-      "published": "Oct 28"
-    },
-    {
-      "state": "MN",
+      "state": "AK",
       "source": "ddhq",
-      "margin": 6.8,
+      "margin": 1.6,
       "published": "Oct 28"
     },
     {
-      "state": "MN",
+      "state": "AK",
       "source": "rcp",
-      "margin": 5.1,
+      "margin": 2.5,
       "published": "Oct 28"
     },
     {
-      "state": "MN",
+      "state": "AK",
       "source": "silver",
-      "margin": 6.4,
+      "margin": 3.6,
       "published": "Oct 28"
     },
     {
-      "state": "SC",
+      "state": "NC",
       "source": "win270",
-      "margin": -1.8,
-      "published": "Oct 28"
+      "margin": 11.4,
+      "published": "Oct 26"
     },
     {
-      "state": "SC",
+      "state": "MT",
       "source": "ddhq",
-      "margin": -1.4,
+      "margin": -7.2,
       "published": "Oct 28"
     },
     {
-      "state": "SC",
-      "source": "rcp",
-      "margin": -2.4,
-      "published": "Oct 28"
-    },
-    {
-      "state": "SC",
+      "state": "MT",
       "source": "silver",
-      "margin": -1.5,
-      "published": "Oct 28"
-    },
-    {
-      "state": "FL",
-      "source": "win270",
-      "margin": -6.4,
-      "published": "Oct 28"
-    },
-    {
-      "state": "FL",
-      "source": "ddhq",
-      "margin": -6.5,
-      "published": "Oct 28"
-    },
-    {
-      "state": "FL",
-      "source": "rcp",
-      "margin": -6.3,
-      "published": "Oct 28"
-    },
-    {
-      "state": "FL",
-      "source": "silver",
-      "margin": -6.6,
+      "margin": -11.2,
       "published": "Oct 28"
     }
   ],
