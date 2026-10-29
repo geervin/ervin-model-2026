@@ -14,7 +14,7 @@ function project(entries,opts={}){
  const N=opts.trials||14000, common=opts.commonSigma??2.8, uncertain=opts.uncertaintyMultiplier??1;
  if(!Array.isArray(entries)||entries.length!==17)throw Error("The 17-state race board is required for the seat forecast");
  const codes=entries.map(x=>x.code);
- if(new Set(codes).size!==17||codes.some(x=>!Number.isFinite(x.margin)))throw Error("Missing or invalid Senate race inputs");
+ if(new Set(codes).size!==17||entries.some(x=>!Number.isFinite(x.margin)))throw Error("Missing or invalid Senate race inputs");
  const races=entries.map(e=>({code:e.code,margin:e.margin,
    residual:Math.sqrt(Math.max(1,Math.pow(Math.min(11.5,Math.max(5.2,e.sigma||7))*uncertain,2)-Math.pow(common*uncertain,2)))}));
  const next=randomGenerator(1772026+Math.round(uncertain*100)+(opts.sourceSeed||0));
