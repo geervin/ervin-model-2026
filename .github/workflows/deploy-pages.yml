@@ -29,6 +29,8 @@ jobs:
       - name: Test multi-cycle calibration and past-only backtest
         run: |
           node --check scripts/calibration_engine.js
+          node --check scripts/senate_control.js
+          node tests/test_senate_control.js
           node --check scripts/backtest_calibration.js
           node scripts/validate_calibration.js
           node scripts/backtest_calibration.js
