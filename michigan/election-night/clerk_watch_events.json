@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-29T07:09:20.434016+00:00",
+  "updatedAt": "2026-10-29T14:23:44.390885+00:00",
   "events": [
     {
       "at": "2026-10-26T14:19:02.019910+00:00",
@@ -112,6 +112,14 @@
     },
     {
       "at": "2026-10-29T07:09:20.434016+00:00",
+      "county": "Livingston",
+      "kind": "page_modified",
+      "newLinks": [],
+      "sourceUrl": "https://milivcounty.gov/elections/election-results/",
+      "notice": "Source change is not an election return"
+    },
+    {
+      "at": "2026-10-29T14:23:44.390885+00:00",
       "county": "Livingston",
       "kind": "page_modified",
       "newLinks": [],
