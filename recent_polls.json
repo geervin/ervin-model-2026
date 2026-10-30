@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-30T18:20:35.391846+00:00",
+  "checkedAt": "2026-10-30T22:19:40.176964+00:00",
   "source": "Original releases, RCP individual poll listings, and candidate-matched Wikipedia general-election survey tables; source type disclosed per row",
   "polls": {
     "ME": [
@@ -149,6 +149,17 @@
         "sourceKind": "RealClearPolling individual-poll listing (not original release)"
       },
       {
+        "pollster": "Rasmussen Reports (R)",
+        "dates": "October 28–29, 2026",
+        "fieldEnd": "2026-10-29",
+        "sample": "745 (LV)",
+        "dem": 49.0,
+        "rep": 44.0,
+        "margin": 5.0,
+        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
+        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
+      },
+      {
         "pollster": "CBS News / Mitchell Research",
         "publishedAt": "2026-10-28",
         "dates": "Published 2026-10-28 (field dates not verified)",
@@ -255,17 +266,6 @@
         "dem": 47.0,
         "rep": 46.0,
         "margin": 1.0,
-        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
-        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
-      },
-      {
-        "pollster": "Glengariff Group",
-        "dates": "October 19–22, 2026",
-        "fieldEnd": "2026-10-22",
-        "sample": "600 (LV)",
-        "dem": 51.0,
-        "rep": 45.0,
-        "margin": 6.0,
         "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Michigan",
         "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
       }
@@ -1642,6 +1642,17 @@
         "sourceKind": "RealClearPolling individual-poll listing (not original release)"
       },
       {
+        "pollster": "Patinkin Research Strategies (D)",
+        "dates": "October 29–27, 2026",
+        "fieldEnd": "2026-10-27",
+        "sample": "500 (LV)",
+        "dem": 48.0,
+        "rep": 43.0,
+        "margin": 5.0,
+        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
+        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
+      },
+      {
         "pollster": "New York Times / Siena University",
         "dates": "October 19–26, 2026",
         "fieldEnd": "2026-10-26",
@@ -1737,17 +1748,6 @@
         "dem": 42.0,
         "rep": 43.0,
         "margin": -1.0,
-        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
-        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
-      },
-      {
-        "pollster": "Rasmussen Reports (R)",
-        "dates": "September 14, 2026",
-        "fieldEnd": "2026-09-14",
-        "sample": "1,006 (LV)",
-        "dem": 43.0,
-        "rep": 48.0,
-        "margin": -5.0,
         "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
         "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
       }

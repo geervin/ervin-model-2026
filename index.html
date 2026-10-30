@@ -163,9 +163,9 @@ window.ERVIN_DATA = {
           "note": ""
         },
         "silver": {
-          "value": 2.4,
+          "value": 2.5,
           "origin": "Silver Bulletin",
-          "date": "Oct 29",
+          "date": "Oct 30",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
           "proxy": false,
           "note": "Verified from Wikipedia general-election aggregator table; individual underlying polls may overlap."
@@ -1590,12 +1590,12 @@ window.ERVIN_DATA = {
           "note": "RCP shows individual polls but no comparable aggregate; 270toWin two-poll average used."
         },
         "ddhq": {
-          "value": -15,
-          "origin": "270toWin reference proxy",
-          "date": "Oct 23",
-          "url": "https://www.270towin.com/2026-senate-polls/south-dakota",
-          "proxy": true,
-          "note": "No matching DDHQ average verified; 270toWin two-poll average used."
+          "value": -10.2,
+          "origin": "Decision Desk HQ",
+          "date": "Oct 30",
+          "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Dakota",
+          "proxy": false,
+          "note": "Verified from Wikipedia general-election aggregator table; individual underlying polls may overlap."
         },
         "win270": {
           "value": -15,
@@ -1614,9 +1614,9 @@ window.ERVIN_DATA = {
           "note": "Wikipedia contains one aggregator, Silver Bulletin, not a multi-aggregator Average; carried as single aggregator."
         },
         "silver": {
-          "value": -12.4,
+          "value": -10.7,
           "origin": "Silver Bulletin",
-          "date": "Oct 26",
+          "date": "Oct 30",
           "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Dakota",
           "proxy": false,
           "note": "Verified from Wikipedia general-election aggregator table; individual underlying polls may overlap."
@@ -1771,13 +1771,32 @@ window.ERVIN_DATA = {
   "ratings": "https://www.cookpolitical.com/ratings/senate-race-ratings?check_logged_in=1",
   "errorResearch": "https://www.pollingforecast.com/research/us-polling-error",
   "liveMeta": {
-    "checkedAt": "2026-10-30T18:20:35.391846+00:00",
+    "checkedAt": "2026-10-30T22:19:40.176964+00:00",
     "pagesParsed": 15,
     "checkedRaceCount": 17,
-    "changes": 0,
-    "observationsFound": 55,
+    "changes": 3,
+    "observationsFound": 56,
     "errors": [],
-    "updated": [],
+    "updated": [
+      {
+        "state": "ME",
+        "source": "silver",
+        "margin": 2.5,
+        "published": "Oct 30"
+      },
+      {
+        "state": "SD",
+        "source": "ddhq",
+        "margin": -10.2,
+        "published": "Oct 30"
+      },
+      {
+        "state": "SD",
+        "source": "silver",
+        "margin": -10.7,
+        "published": "Oct 30"
+      }
+    ],
     "sourceCoverage": [
       {
         "state": "ME",
@@ -1856,7 +1875,7 @@ window.ERVIN_DATA = {
       },
       {
         "state": "SD",
-        "verifiedPublisherRows": 1,
+        "verifiedPublisherRows": 2,
         "result": "matched"
       },
       {

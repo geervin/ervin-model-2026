@@ -1,11 +1,30 @@
 {
-  "checkedAt": "2026-10-30T18:20:35.391846+00:00",
+  "checkedAt": "2026-10-30T22:19:40.176964+00:00",
   "pagesParsed": 15,
   "checkedRaceCount": 17,
-  "changes": 0,
-  "observationsFound": 55,
+  "changes": 3,
+  "observationsFound": 56,
   "errors": [],
-  "updated": [],
+  "updated": [
+    {
+      "state": "ME",
+      "source": "silver",
+      "margin": 2.5,
+      "published": "Oct 30"
+    },
+    {
+      "state": "SD",
+      "source": "ddhq",
+      "margin": -10.2,
+      "published": "Oct 30"
+    },
+    {
+      "state": "SD",
+      "source": "silver",
+      "margin": -10.7,
+      "published": "Oct 30"
+    }
+  ],
   "sourceCoverage": [
     {
       "state": "ME",
@@ -84,7 +103,7 @@
     },
     {
       "state": "SD",
-      "verifiedPublisherRows": 1,
+      "verifiedPublisherRows": 2,
       "result": "matched"
     },
     {
