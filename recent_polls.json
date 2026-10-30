@@ -12,7 +12,7 @@
         "rep": 49,
         "margin": -1,
         "url": "https://quantusinsights.org/polling/f/texas-survey-paxton-up-one-abbott-ahead-by-five",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "CNN / SSRS",
@@ -103,7 +103,7 @@
         "rep": 47,
         "margin": 3,
         "url": "https://emersoncollegepolling.com/october-2026-kansas-poll-hamilton-maintains-edge-over-marshall/",
-        "sourceKind": "Original pollster / report link",
+        "sourceKind": "Pollster release or directly linked reporting",
         "note": "Leaned result; initial ballot 49–45"
       },
       {
@@ -139,7 +139,7 @@
         "rep": 47,
         "margin": 2,
         "url": "https://maristpoll.marist.edu/polls/the-midterm-elections-in-maine-october-2026/",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "Trafalgar Group",
@@ -185,7 +185,7 @@
         "rep": 44,
         "margin": 7,
         "url": "https://www.cbsnews.com/detroit/news/el-sayed-widens-lead-rogers-michigan-senate-poll/",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "Detroit News / Glengariff",
@@ -196,7 +196,7 @@
         "rep": 45,
         "margin": 6,
         "url": "https://www.clickondetroit.com/news/local/2026/10/27/democratic-candidate-el-sayed-leads-michigan-us-senate-race-new-poll-finds/",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "Michigan State University / YouGov",
@@ -207,7 +207,7 @@
         "rep": 46,
         "margin": 2,
         "url": "https://ippsr.msu.edu/news/msu-poll-shows-benson-large-lead-while-el-sayed-roger-race-tight",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "InsiderAdvantage",
@@ -278,7 +278,7 @@
         "rep": 48,
         "margin": -2,
         "url": "https://battlegrounds.coefficient.org/ia/",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "InsiderAdvantage",
@@ -348,7 +348,7 @@
         "rep": 49,
         "margin": 2,
         "url": "https://www.filesforprogress.org/datasets/2026/10/dfp_alaska_oct_2026.pdf",
-        "sourceKind": "Original pollster / report link",
+        "sourceKind": "Pollster release or directly linked reporting",
         "note": "Final two-candidate comparison; not first-choice RCV ballot"
       }
     ],
@@ -375,7 +375,7 @@
         "rep": 40,
         "margin": 14,
         "url": "https://www.highpoint.edu/blog/2026/10/hpu-yougov-poll-north-carolina-likely-voters-weigh-in-on-u-s-senate-race-and-more/",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "Quantus Insights",
@@ -386,7 +386,7 @@
         "rep": 43,
         "margin": 8,
         "url": "https://quantusinsights.org/polling/f/north-carolina-senate-cooper-holds-a-9-point-lead-over-whatley",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "Elon University",
@@ -433,7 +433,7 @@
         "rep": 41,
         "margin": 7,
         "url": "https://www.uml.edu/news/press-releases/2026/102826-new-england-polls.aspx",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       }
     ],
     "FL": [
@@ -481,7 +481,7 @@
         "rep": 56,
         "margin": -19,
         "url": "https://www.kotatv.com/2026/10/26/poll-sen-rounds-leads-challenger-bengs-56-37/",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "Emerson College Polling",
@@ -539,7 +539,7 @@
         "rep": 51,
         "margin": -4,
         "url": "https://www.callthemap.com/polls/SEN-SC",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       }
     ],
     "MT": [
@@ -553,7 +553,7 @@
         "rep": 38,
         "margin": 1,
         "url": "https://www.mtpolling.com/",
-        "sourceKind": "Original pollster / report link",
+        "sourceKind": "Pollster release or directly linked reporting",
         "note": "Four-way ballot; Bodnar independent, Alme Republican"
       },
       {
@@ -566,7 +566,7 @@
         "rep": 45,
         "margin": -12,
         "url": "https://www.mtpolling.com/",
-        "sourceKind": "Original pollster / report link",
+        "sourceKind": "Pollster release or directly linked reporting",
         "note": "Four-way ballot"
       },
       {
@@ -579,7 +579,7 @@
         "rep": 35,
         "margin": 2,
         "url": "https://concordpublicopinionpartners.org/polls/montana-ge-2026",
-        "sourceKind": "Original pollster / report link",
+        "sourceKind": "Pollster release or directly linked reporting",
         "note": "Four-way ballot"
       }
     ],
@@ -594,7 +594,7 @@
         "rep": 47,
         "margin": -1,
         "url": "https://www.callthemap.com/polls/SEN-NE",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "GBAO / Working Class Majority (D-sponsored)",
@@ -606,7 +606,7 @@
         "rep": 45,
         "margin": 1,
         "url": "https://www.callthemap.com/polls/SEN-NE",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "Concord Public Opinion Partners (D-sponsored)",
@@ -618,7 +618,7 @@
         "rep": 41,
         "margin": 7,
         "url": "https://www.callthemap.com/polls/SEN-NE",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       }
     ],
     "MS": [
@@ -632,7 +632,7 @@
         "rep": 43,
         "margin": -3,
         "url": "https://www.callthemap.com/polls/SEN-MS",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       },
       {
         "pollster": "Wedgewood Polls",
@@ -644,7 +644,7 @@
         "rep": 52,
         "margin": -4,
         "url": "https://publicmandatemag.com/race/ms-sen-2026",
-        "sourceKind": "Original pollster / report link"
+        "sourceKind": "Pollster release or directly linked reporting"
       }
     ]
   }
