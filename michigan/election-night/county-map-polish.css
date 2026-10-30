@@ -1,0 +1,62 @@
+/* County-first election night improvements (Oct 2026).
+   Do not force portrait dimensions over the SVG geographic viewBox. */
+.geography-grid{display:block;max-width:1280px;margin:22px auto 0}
+.geography-grid>.county-map-panel{margin:0}
+#countyMapPanel{background:linear-gradient(160deg,#11283d,#0d1c2c);border:1px solid #405a72;padding:clamp(16px,2.8vw,30px)}
+#countyMapPanel .geo-head{display:flex;gap:14px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+#countyMapPanel .geo-head h2{font-size:clamp(21px,2.6vw,27px);line-height:1.2}
+#countyMapPanel .geo-viewport,
+#countyMapPanel .geo-viewport:has(#countyBoundaryMap),
+#countyMapPanel .county-map-viewport{
+ aspect-ratio:auto!important;height:auto!important;
+ width:100%!important;max-width:880px!important;margin:8px auto 13px;
+ min-height:0;cursor:default;overflow:visible;
+}
+#countyBoundaryMap{
+ display:block!important;width:100%!important;height:auto!important;
+ aspect-ratio:880/650!important;max-height:none!important;
+ border:1px solid #39536a;border-radius:13px;
+ background:radial-gradient(ellipse at 47% 52%,#1a3249 0%,#0e2032 75%);
+}
+.county-shape{fill:#263d50;stroke:#8198aa;stroke-width:1.25;stroke-linejoin:round;vector-effect:non-scaling-stroke;cursor:pointer;transition:fill .1s,stroke .1s}
+.county-shape:focus-visible,.county-shape:hover{outline:none;stroke:#f0ca8e;stroke-width:2.4;fill:#356385;filter:brightness(1.12)}
+.county-shape.selected{stroke:#f3cc81;stroke-width:3.6;filter:drop-shadow(0 0 5px #f3cc8155)}
+.county-shape.reported-d{fill:#236ca6}.county-shape.reported-r{fill:#ad4557}.county-shape.reported-tie{fill:#6e6681}
+.county-shape.selected.reported-d{fill:#236ca6}.county-shape.selected.reported-r{fill:#ad4557}
+#countyMapPanel .county-card{max-width:900px;margin:22px auto 0;border-top:1px solid #3e5670;padding-top:20px}
+#countyMapPanel .county-candidates{gap:14px}
+#countyMapPanel .county-candidate{background:#132b42;padding:13px 16px}
+#countyMapPanel .county-card-heading h3{font-size:23px}
+#countyMapPanel .county-map-viewport + .county-card{scroll-margin-top:95px}
+#countyMapPanel .geo-status{font-size:12px;line-height:1.55;min-height:0;text-align:center;color:#c5d4e2}
+#countyMapPanel .geo-key{justify-content:center;gap:10px 22px;margin:15px 0}
+#countyMapPanel .geo-key span{font-size:12px}
+.county-feed-explainer{margin-top:17px;border-left:3px solid #c6a065}
+.county-feed-explainer p{line-height:1.7;color:#c8d6e4;max-width:900px}
+body{line-height:1.65}
+.hero p{font-size:15px;line-height:1.7;max-width:900px}
+.panel h2{letter-spacing:-.02em}
+.tiny,.geo-status,.source-status-item p{font-size:12px;line-height:1.6;color:#c3d1df}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f1ca85;outline-offset:3px}
+.scroll{max-width:100%;overscroll-behavior-inline:contain}
+.scroll td{font-size:13px;line-height:1.5;padding:12px}
+.scroll th{font-size:11px;line-height:1.4;padding:12px;color:#cad8e5}
+.scroll tbody tr:hover{background:#203b52}
+.county-map-panel.is-expanded{inset:10px!important;overflow:auto;padding:24px max(18px,calc((100% - 1170px)/2))}
+.county-map-panel.is-expanded .county-map-viewport{max-width:930px!important}
+.county-map-panel.is-expanded .county-card{max-width:900px}
+.county-map-panel.is-expanded #countyBoundaryMap{max-height:calc(100vh - 240px)!important;aspect-ratio:880/650}
+.county-hover-tip{width:min(285px,calc(100vw - 26px));padding:15px}
+@media(max-width:740px){
+ #countyMapPanel{padding:15px}
+ #countyMapPanel .geo-viewport,#countyMapPanel .geo-viewport:has(#countyBoundaryMap),#countyMapPanel .county-map-viewport{width:100%!important}
+ #countyBoundaryMap{border-radius:9px}
+ #countyMapPanel .county-candidates{grid-template-columns:1fr}
+ #countyMapPanel .county-candidate{padding:9px 11px}
+ .stat,.panel{padding:15px}
+ .scroll td,.scroll th{padding:11px 9px}
+ .county-map-panel.is-expanded{inset:0!important;padding:15px}
+ .county-map-panel.is-expanded #countyBoundaryMap{max-height:none!important}
+ .geo-key{gap:9px}
+}
+@media(prefers-reduced-motion:reduce){.county-shape{transition:none!important}}
