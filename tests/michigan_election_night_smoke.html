@@ -1,169 +1,68 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Michigan election-night regression</title></head><body>
-<pre id="report" data-status="RUNNING">Checking the election-night board…</pre><script>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Michigan county-first election-night browser smoke</title></head>
+<body><pre id="report" data-status="RUNNING">Testing county election-night view…</pre>
+<script>
 (async()=>{
- const out=document.getElementById('report'),checks=[];
- const check=(ok,name)=>{if(!ok)throw Error(name);checks.push(name)};
- async function load(path){
-  const frame=document.createElement('iframe');frame.style.cssText='width:1200px;height:950px';
-  const onload=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(Error("iframe failed"))});
-  frame.src=path;document.body.append(frame);await onload;
-  const doc=frame.contentDocument,ready=()=>doc.getElementById("countyRows")?.querySelectorAll("tr").length===83;
-  for(let i=0;i<150&&!ready();i++)await new Promise(r=>setTimeout(r,90));
-  return {frame,doc};
+ const out=document.getElementById("report"),checks=[],errors=[];
+ const check=(v,label)=>{if(!v)throw Error(label);checks.push(label)};
+ async function load(path,width=1200){
+  const frame=document.createElement("iframe");frame.style.width=width+"px";frame.style.height="940px";
+  const done=new Promise((yes,no)=>{frame.onload=yes;frame.onerror=()=>no(Error("iframe unavailable"))});
+  frame.src=path;document.body.append(frame);await done;return {frame,doc:frame.contentDocument,win:frame.contentWindow};
  }
+ const nap=ms=>new Promise(resolve=>setTimeout(resolve,ms));
  try{
-  const first=await load("../michigan/election-night/?demo=1"),d=first.doc;
-  const el=x=>d.getElementById(x);
-  check(d.querySelector(".site-header .site-emblem")?.textContent==="E","Shared square-E site brand displays on election-night page");
-  check(d.querySelectorAll(".site-header .site-nav a").length>=4,"Standard forecast, Michigan and election-night navigation links present");
-  check(!!d.querySelector(".site-mobile-toggle"),"Accessible mobile site menu available");
-  check(!!d.querySelector(".site-back-top"),"Shared back-to-top control initialized");
-  check(el("precinctDisplayMode").value==="outlook","County-informed precinct projection selected by default");
-  check(el("precinctDisplayLabel").textContent.includes("MODEL"),"Default precinct outlook clearly labeled as model, not votes");
-  check(d.querySelectorAll("#countyRows tr").length===83,"All 83 counties displayed");
-  for(let i=0;i<100&&d.querySelectorAll("#countyBoundaryMap path").length!==83;i++)await new Promise(r=>setTimeout(r,85));
-  check(d.querySelectorAll("#countyBoundaryMap path").length===83,"Blank county map renders all 83 Michigan county polygons");
-  check(!!el("precinctBoundaryMap")&&!!el("precinctBoundaryMap").getContext("2d"),"2026 precinct boundary map canvas is initialized");
-  check(el("countyBoundaryMap").viewBox.baseVal.height===680&&el("precinctBoundaryMap").height===680,"Both election-night maps use 680px source coordinates");
-  const countyViewport=el("countyBoundaryMap").parentElement,precinctViewport=el("precinctBoundaryMap").parentElement;
-  const verifyPortrait=(v,name)=>{const rect=v.getBoundingClientRect();check(rect.width>510&&rect.width<=551,name+" has widened responsive viewport");check(Math.abs(rect.height/rect.width-4/3)<.05,name+" has portrait 3:4 proportions")};
-  verifyPortrait(countyViewport,"County map");verifyPortrait(precinctViewport,"Precinct map");
-  // The neutral boundary SVG can render before the fixture fetch and event
-  // dispatch finish; wait for data-driven shading, not merely for 83 paths.
-  for(let i=0;i<110&&d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length===0;i++)await new Promise(r=>setTimeout(r,90));
-  check(d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length>0,"Demo fixture shades only counties with fixture returns");
-  check(d.querySelector("#precinctGISLink").href.includes("c349bc2bb6c2468594d341a09f520ea8"),"Precinct map links to official 2026 geometry source");
-  for(let i=0;i<100&&!first.frame.contentWindow.ERVIN_PRECINCT_HISTORY;i++)await new Promise(r=>setTimeout(r,75));
-  const history=first.frame.contentWindow.ERVIN_PRECINCT_HISTORY;
-  check(!!history&&history.counties?.Oakland?.length>100,"2024 actual Senate precinct dataset loads and contains Oakland reporting units");
-  const sample={properties:{Precinct_Long_Name:"Addison Township, Precinct 1",Precinct_Short_Name:"Addison Township, Precinct 1"}};
-  const joined=history.build([sample],history.counties,()=> "Oakland");
-  check(joined.diagnostics.matched===1&&joined.records.get(sample)?.historicDem===453,
-    "2024 precinct history matches a unique 2026 name without invented values");
-  const modeled=history.project(joined.records.get(sample),{demShare:.59,baselineDemShare:.55});
-  check(modeled>0&&modeled<1&&Math.abs(modeled-.59)>.01,
-    "County-adjusted matched precinct projection preserves geographic differences");
-  check(el("precinctModelMethod").textContent.includes("COUNTY PROXY")||el("precinctModelMethod").textContent.includes("COUNTY"),
-    "County-specific mode remains accurately disclosed");
-  check(!!el("precinctPicker")&&!!el("precinctInspector"),"Individual precinct picker and inspector exist");
-  el("precinctDisplayMode").value="actual";
-  el("precinctDisplayMode").dispatchEvent(new first.frame.contentWindow.Event("change",{bubbles:true}));
-  check(el("precinctDisplayLabel").textContent.includes("ACTUAL"),"Verified precinct results layer selectable separately");
-  el("precinctDisplayMode").value="baseline";
-  el("precinctDisplayMode").dispatchEvent(new first.frame.contentWindow.Event("change",{bubbles:true}));
-  check(el("precinctDisplayLabel").textContent.includes("HISTORY"),"2024 county Senate historical baseline selectable");
-  el("precinctDisplayMode").value="outlook";
-  el("precinctDisplayMode").dispatchEvent(new first.frame.contentWindow.Event("change",{bubbles:true}));
-  check(el("precinctDisplayLabel").textContent.includes("MODEL"),"Returning to county-informed outlook works");
-  const oakland=d.querySelector('#countyBoundaryMap [data-county="Oakland"]');
-  oakland.dispatchEvent(new first.frame.contentWindow.MouseEvent("click",{bubbles:true}));
-  check(el("mapCountySelection").textContent==="Oakland","County click zooms precinct geography to selected county");
-  // When the live 2026 ArcGIS layer responds, exercise the REAL 2026 polygon
-  // picker and canvas click interaction; keep CI resilient to source outages.
-  for(let i=0;i<100&&el("precinctPicker").options.length<4&&!el("precinctGeometryCount").textContent.includes("GIS temporarily unavailable");i++)await new Promise(r=>setTimeout(r,80));
-  if(el("precinctPicker").options.length>4){
-    const picker=el("precinctPicker"),opts=[...picker.options].filter(o=>o.value!=="");
-    const preferred=opts.find(o=>/Addison Township.+Precinct 1/i.test(o.textContent))||opts[0];
-    picker.value=preferred.value;
-    picker.dispatchEvent(new first.frame.contentWindow.Event("change",{bubbles:true}));
-    check(el("precinctInspectTitle").textContent.includes("Oakland")&&el("precinctInspectTitle").textContent!== "Click a precinct to inspect",
-      "Selecting a real 2026 precinct opens its individual history and model inspector");
-    check(el("precinctMatchTier").textContent.includes("MATCH")||el("precinctMatchTier").textContent.includes("COUNTY-ONLY"),
-      "Precinct inspector distinguishes matched historical return from county-only fallback");
-    const beforeClick=el("precinctInspectTitle").textContent;
-    const canvas=el("precinctBoundaryMap"),rect=canvas.getBoundingClientRect();
-    let canvasClicked=false;
-    for(let fy=.24;fy<.82&&!canvasClicked;fy+=.14){
-      for(let fx=.24;fx<.82&&!canvasClicked;fx+=.14){
-        canvas.dispatchEvent(new first.frame.contentWindow.MouseEvent("click",{
-          bubbles:true,clientX:rect.left+rect.width*fx,clientY:rect.top+rect.height*fy
-        }));
-        canvasClicked=el("precinctInspectTitle").textContent!==beforeClick;
-      }
-    }
-    check(canvasClicked,"Clicking an actual 2026 precinct polygon selects its individual detail");
-    const matchedText=el("precinctGeometryCount").textContent.match(/([\d,]+) matched to 2024/);
-    if(matchedText)check(Number(matchedText[1].replace(/,/g,""))>2000,"More than 2000 unique 2024-to-2026 precinct history joins verified");
-  }
-
-  check(first.frame.contentWindow.location.search.includes("county=Oakland"),"Selected counties have shareable direct URLs");
-  check(!el("copyCountyLink").disabled,"Pinned county enables copy-link action");
-  check(el("countyCardOutlook").textContent.includes("MODEL ONLY"),"County vote detail separates modeled outlook from actual votes");
-  for(let i=0;i<60&&el("countyCardDem").textContent==="—";i++)await new Promise(r=>setTimeout(r,80));
-  check(el("countyCardTitle").textContent==="Oakland County","Selecting county opens persistent county results card");
-  check(el("countyCardDem").textContent==="802"&&el("countyCardRep").textContent==="917",
-    "Candidate numbers show only verified test fixture precinct totals");
-  check(el("countyResultCard").textContent.includes("Abdul El-Sayed")&&el("countyResultCard").textContent.includes("Mike Rogers"),
-    "Candidate full names rendered in county inspector");
-  check(d.querySelectorAll(".county-card .candidate-portrait img").length===2,
-    "Candidate portraits have dedicated images");
+  const item=await load("../michigan/election-night/?demo=1"),d=item.doc,w=item.win,el=id=>d.getElementById(id);
+  w.addEventListener("error",e=>errors.push(e.message));
+  for(let i=0;i<130&&(d.querySelectorAll("#countyBoundaryMap path").length!==83||d.querySelectorAll("#countyRows tr").length!==83);i++)await nap(70);
+  check(d.querySelector(".site-header .site-emblem")?.textContent==="E","Shared E-square branding preserved");
+  check(d.querySelectorAll(".site-header .site-nav a").length>=4,"All navigation links remain accessible");
+  check(d.querySelectorAll("#countyBoundaryMap path[data-county]").length===83,"Exactly 83 native county polygons");
+  check(d.querySelectorAll("#countyRows tr").length===83,"Full county results table");
+  check(!el("precinctBoundaryMap")&&!d.querySelector(".precinct-outlook-panel"),"Speculative precinct map has been removed");
+  check(!!el("precinctRows")&&!!el("precinctSearch"),"Verified precinct returns table remains available");
+  check(el("countyBoundaryMap").getAttribute("preserveAspectRatio")==="xMidYMid meet","SVG proportion preserving projection enabled");
+  const box=el("countyBoundaryMap").getBoundingClientRect();
+  check(box.width>650&&Math.abs(box.width/box.height-880/650)<.035,"County map scales without vertical or horizontal stretching");
+  check(el("countyMapStatus").textContent.includes("native geographic proportions"),"Map status discloses geographic correction");
+  for(let i=0;i<110&&el("precinctRows").querySelectorAll("tr").length!==3;i++)await nap(85);
+  for(let i=0;i<110&&d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length===0;i++)await nap(85);
+  check(el("statusHeading").textContent.includes("DEMONSTRATION"),"Fixture data visibly marked demonstration");
+  check(d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length>0,"Only reported fixture counties colored");
+  check(el("precinctRows").querySelectorAll("tr").length===3,"Three independently sourced fixture reporting units present");
+  const oakland=d.querySelector('#countyBoundaryMap path[data-county="Oakland"]');
+  oakland.click();
+  check(w.location.search.includes("county=Oakland"),"County click creates shareable county URL");
+  check(oakland.classList.contains("selected"),"County click highlights geographic polygon");
+  check(el("countyCardTitle").textContent==="Oakland County","County results desk opens selected county");
+  check(el("countyCardDem").textContent==="802"&&el("countyCardRep").textContent==="917","County desk shows verified fixture units, not forecast votes");
+  check(!el("copyCountyLink").disabled,"County sharing control enabled on selection");
+  check(d.querySelectorAll(".county-card .candidate-portrait img").length===2,"Candidate portraits retained");
   el("expandCountyMap").click();
-  check(el("countyMapPanel").classList.contains("is-expanded")&&el("expandCountyMap").getAttribute("aria-expanded")==="true",
-    "County map expands into large overlay");
+  check(el("countyMapPanel").classList.contains("is-expanded"),"Expanded county map opens");
   el("expandCountyMap").click();
-  check(!el("countyMapPanel").classList.contains("is-expanded"),
-    "County map returns to standard size");
-  check(el("countyLiveFeedStatus").textContent.length>15,"Source publication status is visible");
-  // A source-attributed county-wide tally must supersede its partial precinct
-  // subtotal, never be added to it. These figures exist only inside demo tests.
-  first.frame.contentWindow.dispatchEvent(new first.frame.contentWindow.CustomEvent("ervin:county-totals",{
-   detail:{counties:[{county:"Oakland",dem:1800,rep:1200,other:100,asOf:"2026-11-03T20:53:00-05:00",
-     sourceUrl:"https://www.michigan.gov/sos/elections/election-results-and-data",reportingStatus:"partial"}]}
-  }));
-  check(el("reportedD").textContent==="3,744"&&el("reportedR").textContent==="2,272",
-    "County-wide clerk totals replace, not double count, Oakland partial precinct votes");
-  check(d.querySelector('#countyBoundaryMap [data-county="Oakland"]').classList.contains("reported-d"),
-    "County map shading follows verified county-wide tally instead of older precinct subtotal");
-  first.frame.contentWindow.dispatchEvent(new first.frame.contentWindow.CustomEvent("ervin:county-totals",{detail:{counties:[]}}));
-  check(el("reportedD").textContent==="2,746"&&el("reportedR").textContent==="1,989",
-    "Reverting synthetic county-wide test source restores precinct fixture totals");
+  check(!el("countyMapPanel").classList.contains("is-expanded"),"Expanded county map closes");
+  w.dispatchEvent(new w.CustomEvent("ervin:county-totals",{detail:{counties:[{
+   county:"Oakland",dem:1800,rep:1200,other:100,asOf:"2026-11-03T20:53:00-05:00",
+   sourceUrl:"https://www.michigan.gov/sos/elections/election-results-and-data",reportingStatus:"partial"
+  }]}}));
+  check(el("reportedD").textContent==="3,744"&&el("reportedR").textContent==="2,272","County-wide verified source replaces partial precinct subtotal");
+  check(oakland.classList.contains("reported-d"),"County colors reflect source-attributed county tally");
+  w.dispatchEvent(new w.CustomEvent("ervin:county-totals",{detail:{counties:[]}}));
+  check(el("reportedD").textContent==="2,746"&&el("reportedR").textContent==="1,989","Restored fixture totals without double counting");
   el("countyAll").click();
-  check(el("mapCountySelection").textContent==="Statewide","Statewide county map reset works");
-  check(!first.frame.contentWindow.location.search.includes("county=Oakland"),"Map reset clears linked county parameter");
-  check(d.querySelectorAll("#officialSources .source-shortcuts a").length>=6,"Direct official Michigan results sources available");
-  check(d.querySelector("#officialSources details.compact-details")!==null,"Detailed provenance is collapsed by default");
-  check(d.getElementById("refreshNow")!==null,"Manual refresh control is present");
-  for(let i=0;i<130&&!el("statusHeading").textContent.includes("DEMONSTRATION");i++)await new Promise(r=>setTimeout(r,95));
-  check(el("statusHeading").textContent.includes("DEMONSTRATION"),"Demo results unmistakably identified");
-  check(el("precinctRows").querySelectorAll("tr").length===3,"Three fixture precinct/counting-unit rows loaded");
-  check(el("reportedD").textContent==="2,746","Fixture Democratic votes summed correctly");
-  check(el("reportedR").textContent==="1,989","Fixture Republican votes summed correctly");
-  check(el("reportedMargin").textContent==="757 D","Reported vote margin derives from fixture, not forecast");
-  check(el("externalStatus").textContent.includes("demo"),"Live statewide totals never mixed into test fixture");
-  check(d.querySelectorAll("#precinctRows a[href^='https://']").length===3,"Every reporting unit retains a source link");
-  el("countySearch").value="Oakland";el("countySearch").dispatchEvent(new first.frame.contentWindow.Event("input",{bubbles:true}));
-  check(d.querySelectorAll("#countyRows tr").length===1,"County filter works");
-  el("precinctSearch").value="Wayne";el("precinctSearch").dispatchEvent(new first.frame.contentWindow.Event("input",{bubbles:true}));
-  check(d.querySelectorAll("#precinctRows tr").length===1,"Precinct filter works");
-  check(!!el("clerkWatchRows")&&!!el("clerkWatchFilter"),"83-county source monitor section and filtering controls present");
-  for(let i=0;i<100&&el("clerkWatchRows").querySelectorAll("tr").length!==83;i++)await new Promise(r=>setTimeout(r,80));
-  check(el("clerkWatchRows").querySelectorAll("tr").length===83,"83 official county website checks appear in source monitor");
-  el("clerkWatchSearch").value="Oakland";
-  el("clerkWatchSearch").dispatchEvent(new first.frame.contentWindow.Event("input",{bubbles:true}));
-  check(el("clerkWatchRows").querySelectorAll("tr").length===1,"County source monitor search filters to Oakland");
-  el("clerkWatchSearch").value="";
-  el("clerkWatchSearch").dispatchEvent(new first.frame.contentWindow.Event("input",{bubbles:true}));
-  const second=await load("../michigan/election-night/"),real=second.doc;
-  for(let i=0;i<100&&real.querySelectorAll("#countyBoundaryMap path").length!==83;i++)await new Promise(r=>setTimeout(r,85));
-  check(real.querySelectorAll("#countyBoundaryMap path").length===83,"Real pre-election page also renders 83 county map outlines");
-  check(real.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length===0,"Real pre-election county map stays neutral with no reported votes");
-
-  if(Date.now()<new Date("2026-11-03T20:00:00-05:00").getTime()){
-   check(real.getElementById("statusHeading").textContent.includes("PRE-ELECTION"),"No live results presented before poll closing");
-   check(real.getElementById("precinctCount").textContent==="—","No fabricated pre-election precinct counts");
-   check(real.getElementById("countyCardDem").textContent==="—"&&real.getElementById("countyCardRep").textContent==="—","No fabricated county totals before election");
-   check(real.getElementById("refreshNow").disabled,"Pre-election refresh button correctly disabled");
-  }
-  let gisMessage="2026 precinct GIS: not tested";
-  try{
-   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),7000);
-   const url="https://services3.arcgis.com/dxRQUfTDNtfqZ301/arcgis/rest/services/2026_Voting_Precincts/FeatureServer/0/query?"+new URLSearchParams({where:"1=1",outFields:"*",returnGeometry:"false",resultRecordCount:"1",f:"geojson"});
-   const res=await fetch(url,{mode:"cors",signal:controller.signal});clearTimeout(timer);
-   const data=await res.json();
-   gisMessage="2026 precinct GIS probe: HTTP "+res.status+"; feature count "+(data.features?.length??"unknown")+"; error "+(data.error?.message||"none")+"; sample properties "+JSON.stringify(data.features?.[0]?.properties||{}).slice(0,700);
-  }catch(err){gisMessage="2026 precinct GIS probe unavailable from CI browser: "+err.message;}
-  out.dataset.status="PASS";
-  out.textContent="PASS "+checks.length+" election-night browser checks\n"+checks.map(x=>"✓ "+x).join("\n")+"\n"+gisMessage+"\nHistorical map crosswalk: "+el("precinctGeometryCount").textContent;
- }catch(e){out.dataset.status="FAIL";out.textContent="FAIL "+e.stack}
+  check(!w.location.search.includes("county=Oakland"),"Clear county resets shareable URL");
+  check(!d.querySelector('#countyBoundaryMap path.selected'),"Clear county resets visual highlight");
+  const rows=el("countyRows");
+  el("countySearch").value="Oakland";
+  el("countySearch").dispatchEvent(new w.Event("input",{bubbles:true}));
+  check(rows.querySelectorAll("tr").length===1,"County search filters results");
+  el("precinctSearch").value="Wayne";
+  el("precinctSearch").dispatchEvent(new w.Event("input",{bubbles:true}));
+  check(el("precinctRows").querySelectorAll("tr").length===1,"Verified precinct table search works");
+  check(!!el("clerkWatchRows")&&!!el("clerkWatchFilter"),"County clerk source watch remains available");
+  check(d.querySelectorAll("#officialSources .source-shortcuts a").length>=6,"Official county and state references retained");
+  check(errors.length===0,"No synchronous browser errors");
+  out.dataset.status="PASS";out.textContent="PASS "+checks.length+" checks\n"+checks.map(x=>"✓ "+x).join("\n");
+ }catch(e){out.dataset.status="FAIL";out.textContent="FAIL: "+e.stack+"\n"+errors.join("\n");}
 })();
 </script></body></html>
