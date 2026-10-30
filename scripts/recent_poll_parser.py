@@ -43,8 +43,8 @@ def parse_recent_polls(html,race,today=None):
    if not cells or "poll source" not in norm(cells[0]):continue
    ns=[norm(c) for c in cells]
    if "sample" not in " ".join(ns):continue
-   di=next((i for i,c in enumerate(ns) if dem in c.split()),None)
-   ri=next((i for i,c in enumerate(ns) if rep in c.split()),None)
+   di=next((i for i,c in enumerate(ns) if (" "+dem+" ") in (" "+c+" ")),None)
+   ri=next((i for i,c in enumerate(ns) if (" "+rep+" ") in (" "+c+" ")),None)
    ti=next((i for i,c in enumerate(ns) if "administered" in c or c.startswith("dates")),None)
    si=next((i for i,c in enumerate(ns) if "sample" in c),None)
    if None not in (di,ri,ti,si) and di!=ri:header=(j,len(cells),di,ri,ti,si);break
