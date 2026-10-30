@@ -22,6 +22,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate historical polling audit
         run: python3 scripts/validate_data.py
+      - name: Validate geographic state data, survey parser and survey archive
+        run: |
+          node --check scripts/us-geography.js
+          python -m json.tool recent_polls.json >/dev/null
+          python -m py_compile scripts/refresh_polling.py scripts/recent_poll_parser.py
+          python -m unittest discover -s tests -p test_recent_poll_parser.py -v
       - name: Check dashboard JavaScript syntax
         run: |
           python3 -c 'from pathlib import Path; h=Path("index.html").read_text(); scripts=[x.split("</script>",1)[0] for x in h.split("<script>")[1:]]; Path("/tmp/dashboard-script.js").write_text(chr(10).join(scripts)); assert len(scripts)>=2'
