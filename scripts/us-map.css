@@ -1,0 +1,41 @@
+/* Geographic Senate map: 50 genuine state boundaries, with AK and HI insets. */
+.geographic-map{display:block;width:100%;height:auto;aspect-ratio:1080/625;max-height:560px;margin:0 auto}
+.geo-region{cursor:pointer;outline:none}
+.geo-region .geo-shape{fill:var(--geo-neutral,#263a4d);stroke:#7990a3;stroke-width:1.1;stroke-linejoin:round;vector-effect:non-scaling-stroke;transition:fill .14s,stroke .14s,filter .14s;opacity:.76}
+.geo-region.tracked .geo-shape{opacity:1;stroke:#b6c7d8;stroke-width:1.15}
+.geo-region.dem .geo-shape{fill:#28659e}
+.geo-region.rep .geo-shape{fill:#91434e}
+.geo-region.close .geo-shape{fill:#776080}
+.geo-region.tracked:hover .geo-shape,.geo-region:focus-visible .geo-shape{filter:brightness(1.25);stroke:var(--accent);stroke-width:2.1}
+.geo-region.active .geo-shape{stroke:var(--accent);stroke-width:3.4;filter:drop-shadow(0 0 5px #e6bc7d80)}
+.geo-label{pointer-events:none;fill:#eaf0f6;font-size:12px;font-weight:800;font-family:'DM Sans',system-ui,sans-serif;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#08111cbb;stroke-width:2.5;letter-spacing:.02em}
+.geo-region:not(.tracked) .geo-label{fill:#c2cfdb;font-size:10.5px}
+.geo-region .geo-label.tiny{display:none}
+.geo-region.tracked .geo-label.tiny{display:block;font-size:9px}
+.geo-map-caption{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin:0 0 12px;color:var(--muted);font-size:11px}
+.geo-map-status{color:var(--accent);font-weight:750}
+.geo-map-legend{padding-top:7px;border-top:1px solid var(--edge)}
+.poll-audit{margin-top:17px;border-top:1px solid var(--edge);padding-top:14px}
+.poll-audit h4{font:700 14px 'Space Grotesk',sans-serif;margin:0 0 5px}
+.poll-audit .poll-intro{font-size:11px;color:var(--muted);line-height:1.5;margin:0 0 11px}
+.poll-inputs{display:grid;gap:7px}
+.poll-input-row{display:grid;grid-template-columns:minmax(88px,1.2fr) minmax(75px,.85fr) minmax(76px,.9fr);gap:8px;align-items:center;border:1px solid var(--edge);background:var(--surface2);border-radius:8px;padding:8px 9px;font-size:11px}
+.poll-input-row.included{border-left:3px solid var(--accent)}
+.poll-input-row a{color:var(--text);font-weight:800;text-decoration:none}
+.poll-input-row a:hover{text-decoration:underline}
+.poll-input-row .source-status{color:var(--muted);font-size:10px;display:block;line-height:1.35}
+.poll-input-row .source-margin{font-weight:800;font-variant-numeric:tabular-nums}
+.poll-input-row .source-date{font-size:10px;color:var(--muted);text-align:right}
+.poll-input-row .source-date b{color:var(--accent);display:block;font-size:10px}
+.poll-subhead{font:750 12px 'DM Sans',sans-serif;margin:16px 0 5px}
+.survey-list{display:grid;gap:7px;margin-top:9px}
+.survey-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:9px 10px;background:var(--surface2);border:1px solid var(--edge);border-radius:8px}
+.survey-item .survey-name{font-size:11px;font-weight:750;color:var(--text)}
+.survey-item .survey-meta{font-size:10px;color:var(--muted)}
+.survey-item .survey-result{font-size:12px;font-weight:800;text-align:right;white-space:nowrap}
+.survey-item .survey-result small{font-size:10px;color:var(--muted);font-weight:500;display:block}
+.poll-unavailable{font-size:11px;color:var(--muted);padding:10px 11px;background:var(--surface2);border-radius:8px}
+.poll-unavailable a,.poll-footer a{color:var(--blue)}
+.poll-footer{color:var(--subtle);font-size:10px;margin:10px 0 0}
+@media(max-width:670px){.geographic-map{max-height:none}.geo-label{font-size:15px}.geo-region:not(.tracked) .geo-label{display:none}.geo-region.tracked .geo-label.tiny{display:block;font-size:10px}.poll-input-row{grid-template-columns:minmax(85px,1fr) 80px 82px;gap:4px;padding:8px 6px;font-size:10px}.poll-input-row .source-date{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.geo-region .geo-shape{transition:none}}
