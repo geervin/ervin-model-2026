@@ -19,6 +19,7 @@ ROOT=Path(__file__).resolve().parent.parent
 HTML=ROOT/"index.html"
 AUDIT=ROOT/"refresh_log.json"
 RECENT=ROOT/"recent_polls.json"
+CURATED=ROOT/"research/curated_individual_polls_2026.json"
 CSV=ROOT/"source_snapshot.csv"
 PREFIX="window.ERVIN_DATA = "
 ENDING=";\n\n</script><script>"
@@ -104,6 +105,29 @@ def parse_state(html,race):
         if updates:break
     return updates
 
+def merge_survey_evidence(curated, verified):
+    """Keep source-linked publication snapshots and newly parsed fieldwork separate.
+
+    The poll archive is presentation-only, never a new numerical model input.
+    Deduplicate near-identical releases without assuming two publishers are
+    distinct polls based only on their names.
+    """
+    combined={}
+    for item in list(curated)+list(verified):
+        if not isinstance(item,dict):continue
+        pollster=str(item.get("pollster","")).strip()
+        try:
+            d=float(item["dem"]);r=float(item["rep"])
+        except (KeyError,ValueError,TypeError):continue
+        if not pollster or d<0 or r<0 or d+r>102:continue
+        identity=(norm(pollster),round(d,1),round(r,1),str(item.get("fieldEnd") or item.get("publishedAt") or ""))
+        if identity not in combined or item.get("url"):
+            combined[identity]=item
+    # Preserve up to 12 per state, most recently fielded or released first.
+    return sorted(combined.values(),
+                  key=lambda p:str(p.get("fieldEnd") or p.get("publishedAt") or ""),
+                  reverse=True)[:12]
+
 def main():
     contents=HTML.read_text(encoding="utf-8")
     a=contents.index(PREFIX)+len(PREFIX)
@@ -116,11 +140,18 @@ def main():
         try:previous_polls=json.loads(RECENT.read_text(encoding="utf-8")).get("polls",{})
         except (ValueError,OSError):pass
     recent_polls={}
+    try:
+        curated_polls=json.loads(CURATED.read_text(encoding="utf-8")).get("polls",{})
+    except (OSError,ValueError):curated_polls={}
     for race in data["states"]:
         try:
             html,url=page_html(race["state"])
             rows=parse_state(html,race)
-            recent_polls[race["code"]]=parse_recent_polls(html,race,checked.date())
+            verified=parse_recent_polls(html,race,checked.date())
+            for item in verified:
+                item["url"]=url
+                item["sourceKind"]="Wikipedia general-election survey table (candidate-matched)"
+            recent_polls[race["code"]]=merge_survey_evidence(curated_polls.get(race["code"],[]),verified)
             if rows: report["pagesParsed"]+=1
             report["sourceCoverage"].append({"state":race["code"],"verifiedPublisherRows":len(rows),"result":"matched" if rows else "no matching current-year aggregate"})
             report["observationsFound"]+=len(rows)
@@ -142,7 +173,7 @@ def main():
                     report["changes"]+=1
                     report["updated"].append({"state":race["code"],"source":key,"margin":entry["value"],"published":entry["date"]})
         except Exception as exc:
-            recent_polls[race["code"]]=previous_polls.get(race["code"],[])
+            recent_polls[race["code"]]=merge_survey_evidence(curated_polls.get(race["code"],[]),previous_polls.get(race["code"],[]))
             report["errors"].append(race["code"]+": "+str(exc)[:180])
             report["sourceCoverage"].append({"state":race["code"],"verifiedPublisherRows":0,"result":"source check failed"})
     # The source-check time and actual published-aggregate dates are different.
@@ -173,7 +204,7 @@ def main():
                 writer.writerow([data["asof"],r["state"],r["code"],r["dem"],r["rep"],key,v["value"],v["origin"],v["date"],v["proxy"],v.get("note",""),v["url"]])
     AUDIT.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     RECENT.write_text(json.dumps({"checkedAt":checked.isoformat(),
-        "source":"Wikipedia 2026 general-election individual survey tables; candidate pair matched",
+        "source":"Original releases, RCP individual poll listings, and candidate-matched Wikipedia general-election survey tables; source type disclosed per row",
         "polls":recent_polls},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(f"Checked {len(data['states'])} states; parsed {report['pagesParsed']} matching aggregates; changed {report['changes']} inputs; errors {len(report['errors'])}")
 if __name__=="__main__":main()
