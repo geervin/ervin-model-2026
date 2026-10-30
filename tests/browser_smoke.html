@@ -20,6 +20,7 @@
   const el=id=>doc.getElementById(id);
   const dispatch=(node,type='change')=>node.dispatchEvent(new win.Event(type,{bubbles:true}));
   const source=k=>doc.querySelector('#tabs button[data-source="'+k+'"]');
+  const clickSVG=node=>node.dispatchEvent(new win.MouseEvent('click',{bubbles:true}));
   check(!!el('map')&&!!el('bars')&&!!el('rows'),'Map, bars and table rendered; title='+doc.title+'; state='+doc.readyState);
   check(doc.querySelectorAll('#tabs button').length===6,'All six polling tabs rendered');
   check(source('take')?.getAttribute('aria-selected')==='true','Ervin Take default selected');
@@ -61,11 +62,11 @@
     'Map uses actual geography paths, not cartogram buttons');
   const before=el('map').querySelector('[data-code="AK"]');
   const mapIdentity=before;
-  before.click();
+  clickSVG(before);
   check(doc.querySelector('#map g.geo-region.active')?.dataset.code==='AK','Clicking Alaska highlights Alaska');
   check(el('insightRace').value==='AK','Clicking a map state syncs Research Lab selector');
   check(before===mapIdentity&&doc.querySelector('#map [data-code="AK"]')===before,'Race selection does not replace map elements');
-  doc.querySelector('#map [data-code="WA"]').click();
+  clickSVG(doc.querySelector('#map [data-code="WA"]'));
   check(el('detail').textContent.includes('not one of the 17 Senate contests'),'Untracked state shows explanation rather than invented projection');
   check(doc.querySelector('#map g.geo-region.active')?.dataset.code==='WA','Untracked map selection can be inspected');
     el('insightRace').value='OH';dispatch(el('insightRace'));
@@ -94,7 +95,7 @@
   check(doc.documentElement.classList.contains('light'),'Light theme toggle works');
   let start=performance.now();
   for(const code of ['MI','OH','TX','ME','AK','GA','NC','MI','FL','NH']){
-   doc.querySelector('#map [data-code="'+code+'"]').click();
+   clickSVG(doc.querySelector('#map [data-code="'+code+'"]'));
   }
   const duration=Math.round(performance.now()-start);
   check(duration<4000,'Ten race selections stay responsive in browser');
