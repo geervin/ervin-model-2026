@@ -13,10 +13,12 @@ import re
 import urllib.request
 from pathlib import Path
 from bs4 import BeautifulSoup
+from recent_poll_parser import parse_recent_polls
 
 ROOT=Path(__file__).resolve().parent.parent
 HTML=ROOT/"index.html"
 AUDIT=ROOT/"refresh_log.json"
+RECENT=ROOT/"recent_polls.json"
 CSV=ROOT/"source_snapshot.csv"
 PREFIX="window.ERVIN_DATA = "
 ENDING=";\n\n</script><script>"
@@ -109,10 +111,16 @@ def main():
     data=json.loads(contents[a:b])
     checked=dt.datetime.now(dt.timezone.utc)
     report={"checkedAt":checked.isoformat(),"pagesParsed":0,"checkedRaceCount":len(data["states"]),"changes":0,"observationsFound":0,"errors":[],"updated":[],"sourceCoverage":[],"stalePublisherRaces":[],"sources":"Wikipedia 2026 general-election aggregate tables; matching candidate pair required"}
+    previous_polls={}
+    if RECENT.exists():
+        try:previous_polls=json.loads(RECENT.read_text(encoding="utf-8")).get("polls",{})
+        except (ValueError,OSError):pass
+    recent_polls={}
     for race in data["states"]:
         try:
             html,url=page_html(race["state"])
             rows=parse_state(html,race)
+            recent_polls[race["code"]]=parse_recent_polls(html,race,checked.date())
             if rows: report["pagesParsed"]+=1
             report["sourceCoverage"].append({"state":race["code"],"verifiedPublisherRows":len(rows),"result":"matched" if rows else "no matching current-year aggregate"})
             report["observationsFound"]+=len(rows)
@@ -134,6 +142,7 @@ def main():
                     report["changes"]+=1
                     report["updated"].append({"state":race["code"],"source":key,"margin":entry["value"],"published":entry["date"]})
         except Exception as exc:
+            recent_polls[race["code"]]=previous_polls.get(race["code"],[])
             report["errors"].append(race["code"]+": "+str(exc)[:180])
             report["sourceCoverage"].append({"state":race["code"],"verifiedPublisherRows":0,"result":"source check failed"})
     # The source-check time and actual published-aggregate dates are different.
@@ -163,5 +172,8 @@ def main():
             for key,v in r["sources"].items():
                 writer.writerow([data["asof"],r["state"],r["code"],r["dem"],r["rep"],key,v["value"],v["origin"],v["date"],v["proxy"],v.get("note",""),v["url"]])
     AUDIT.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
+    RECENT.write_text(json.dumps({"checkedAt":checked.isoformat(),
+        "source":"Wikipedia 2026 general-election individual survey tables; candidate pair matched",
+        "polls":recent_polls},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(f"Checked {len(data['states'])} states; parsed {report['pagesParsed']} matching aggregates; changed {report['changes']} inputs; errors {len(report['errors'])}")
 if __name__=="__main__":main()
