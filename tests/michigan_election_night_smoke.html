@@ -30,7 +30,7 @@
   check(d.querySelectorAll("#countyBoundaryMap .reported-d,#countyBoundaryMap .reported-r").length>0,"Only reported fixture counties colored");
   check(el("precinctRows").querySelectorAll("tr").length===3,"Three independently sourced fixture reporting units present");
   const oakland=d.querySelector('#countyBoundaryMap path[data-county="Oakland"]');
-  oakland.click();
+  oakland.dispatchEvent(new w.MouseEvent("click",{bubbles:true}));
   check(w.location.search.includes("county=Oakland"),"County click creates shareable county URL");
   check(oakland.classList.contains("selected"),"County click highlights geographic polygon");
   check(el("countyCardTitle").textContent==="Oakland County","County results desk opens selected county");
