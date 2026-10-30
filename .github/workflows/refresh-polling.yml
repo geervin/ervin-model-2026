@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'scripts/refresh_polling.py'
+      - 'scripts/recent_poll_parser.py'
+      - 'research/curated_individual_polls_2026.json'
+      - 'tests/test_recent_poll_parser.py'
       - '.github/workflows/refresh-polling.yml'
   schedule:
     - cron: '17 */3 * * *'
