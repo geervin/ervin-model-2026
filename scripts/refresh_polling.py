@@ -105,6 +105,17 @@ def parse_state(html,race):
         if updates:break
     return updates
 
+def attributed_source_type(item):
+    """Explicit provenance tiers: a poll listing is NOT an original release."""
+    url=str(item.get("url") or "").lower()
+    if "callthemap.com" in url or "mtpolling.com" in url or "publicmandatemag.com" in url:
+        return "Independent third-party poll listing (not original release)"
+    if "realclearpolling.com" in url or "realclearpolitics.com" in url:
+        return "RealClearPolling individual-poll listing (not original release)"
+    if "wikipedia.org" in url:
+        return "Wikipedia candidate-matched survey table (not original release)"
+    return "Pollster release or directly linked news reporting"
+
 def merge_survey_evidence(curated, verified):
     """Keep source-linked publication snapshots and newly parsed fieldwork separate.
 
@@ -122,7 +133,7 @@ def merge_survey_evidence(curated, verified):
         if not pollster or d<0 or r<0 or d+r>102:continue
         identity=(norm(pollster),round(d,1),round(r,1),str(item.get("fieldEnd") or item.get("publishedAt") or ""))
         if identity not in combined or item.get("url"):
-            combined[identity]=item
+            combined[identity]={**item,"sourceKind":attributed_source_type(item)}
     # Preserve up to 12 per state, most recently fielded or released first.
     return sorted(combined.values(),
                   key=lambda p:str(p.get("fieldEnd") or p.get("publishedAt") or ""),
