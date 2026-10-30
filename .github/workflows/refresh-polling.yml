@@ -1,4 +1,4 @@
-name: Refresh 2026 polling averages
+name: Refresh 2026 polling averages and poll archive
 on:
   push:
     branches: [main]
@@ -13,8 +13,6 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-  pages: write
-  id-token: write
 concurrency:
   group: polling-refresh
   cancel-in-progress: false
@@ -64,12 +62,6 @@ jobs:
             fi
             sleep 3
           done
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-      - name: Upload refreshed website
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-      - name: Deploy refreshed website
-        id: deployment
-        uses: actions/deploy-pages@v4
+      # A push of generated snapshots to main automatically triggers the
+      # single Pages publisher workflow. Do not deploy from this refresh job:
+      # concurrent Pages deployments can conflict and fail despite valid data.
