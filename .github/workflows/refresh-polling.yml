@@ -26,6 +26,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install beautifulsoup4
+      - name: Test strict individual-poll extraction
+        run: python -m unittest discover -s tests -p test_recent_poll_parser.py -v
       - name: Check verified general-election aggregates
         run: python scripts/refresh_polling.py
       - name: Validate and preserve audit
@@ -43,7 +45,7 @@ jobs:
               python scripts/refresh_polling.py
               python scripts/validate_data.py
             fi
-            git add index.html source_snapshot.csv refresh_log.json
+            git add index.html source_snapshot.csv refresh_log.json recent_polls.json
             if git diff --cached --quiet; then
               echo "No polling audit or source updates to publish"
               break
