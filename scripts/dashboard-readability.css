@@ -1,0 +1,45 @@
+/* Readability and polling-source clarity */
+:root{--readable-muted:#bccbd9}
+.micro,.fine{font-size:12px;line-height:1.65}
+.panel{line-height:1.58}
+.panel h2{font-size:19px;line-height:1.3}
+.panel h3{line-height:1.3}
+.detail .candidate{font-size:13px;line-height:1.6}
+.detail-note,.detail-note .grade-row{font-size:12px;line-height:1.6}
+.poll-audit{margin-top:20px;padding-top:18px}
+.poll-audit h4{font-size:15px;line-height:1.35}
+.poll-audit .poll-intro{font-size:12px;line-height:1.7;color:var(--muted)}
+.poll-inputs{gap:9px}
+.poll-input-row{padding:12px 10px;grid-template-columns:minmax(118px,1.25fr) minmax(72px,.65fr) minmax(92px,.8fr);font-size:12px}
+.poll-input-row a{font-size:12px;line-height:1.4}
+.poll-input-row .source-status{font-size:11px;line-height:1.55}
+.poll-input-row .source-date{font-size:11px;line-height:1.5}
+.poll-input-row .source-margin{font-size:14px}
+.survey-list{gap:9px}
+.survey-item{padding:12px 13px;gap:9px 15px;align-items:start;grid-template-columns:minmax(0,1fr) auto}
+.survey-name{font-size:13px;line-height:1.45}
+.survey-source-link{color:var(--blue);font-size:13px;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px}
+.survey-source-link:hover,.survey-source-link:focus-visible{text-decoration-color:currentColor}
+.survey-meta{font-size:11px;line-height:1.6}
+.survey-kind{font-size:10px;font-weight:750;color:var(--accent);letter-spacing:.02em;margin-top:2px}
+.survey-item .survey-result{font-size:15px;line-height:1.45}
+.survey-item .survey-result small{font-size:11px;line-height:1.5}
+.poll-unavailable,.poll-footer{font-size:11px;line-height:1.6}
+.geo-map-caption{font-size:12px;line-height:1.5}
+.geographic-map{touch-action:manipulation}
+.geo-region:focus-visible .geo-shape{stroke:var(--accent);stroke-width:3}
+.table-scroll td{font-size:12px;line-height:1.55}
+.table-scroll th{font-size:11px;line-height:1.5}
+.source-links a,.detail-refs a{line-height:1.55}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:670px){
+ .panel h2{font-size:18px}
+ .poll-input-row{grid-template-columns:minmax(85px,1fr) 66px 80px;padding:9px 7px;gap:5px}
+ .poll-input-row a{font-size:11px}
+ .poll-input-row .source-status,.poll-input-row .source-date{font-size:10px}
+ .poll-input-row .source-margin{font-size:12px}
+ .survey-item{padding:10px}
+ .survey-name,.survey-source-link{font-size:12px}
+ .survey-item .survey-result{font-size:13px}
+ .poll-audit .poll-intro{font-size:11px}
+}
