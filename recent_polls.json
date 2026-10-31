@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-31T12:28:38.732196+00:00",
+  "checkedAt": "2026-10-31T19:17:04.835997+00:00",
   "source": "Original releases, RCP individual poll listings, and candidate-matched Wikipedia general-election survey tables; source type disclosed per row",
   "polls": {
     "ME": [
@@ -24,6 +24,17 @@
         "margin": 2,
         "url": "https://maristpoll.marist.edu/polls/the-midterm-elections-in-maine-october-2026/",
         "sourceKind": "Pollster release or directly linked news reporting"
+      },
+      {
+        "pollster": "Data for Progress (D)",
+        "dates": "October 23–27, 2026",
+        "fieldEnd": "2026-10-27",
+        "sample": "652 (LV)",
+        "dem": 50.0,
+        "rep": 45.0,
+        "margin": 5.0,
+        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
+        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
       },
       {
         "pollster": "SSRS",
@@ -121,17 +132,6 @@
         "dem": 49.0,
         "rep": 47.0,
         "margin": 2.0,
-        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
-        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
-      },
-      {
-        "pollster": "The Washington Post / SSPG",
-        "dates": "September 30 – October 5, 2026",
-        "fieldEnd": "2026-10-05",
-        "sample": "800 (LV)",
-        "dem": 50.0,
-        "rep": 46.0,
-        "margin": 4.0,
         "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Maine",
         "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
       }
@@ -417,6 +417,17 @@
         "sourceKind": "Pollster release or directly linked news reporting"
       },
       {
+        "pollster": "KStrat",
+        "dates": "October 27–30, 2026",
+        "fieldEnd": "2026-10-30",
+        "sample": "900 (LV)",
+        "dem": 48.0,
+        "rep": 45.0,
+        "margin": 3.0,
+        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
+        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
+      },
+      {
         "pollster": "CNN / SSRS",
         "publishedAt": "2026-10-29",
         "dates": "Published 2026-10-29 (field dates not verified)",
@@ -525,17 +536,6 @@
         "margin": 2.0,
         "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
         "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
-      },
-      {
-        "pollster": "FOX News",
-        "publishedAt": "2026-10-22",
-        "dates": "Published 2026-10-22 (field dates not verified)",
-        "sample": "Sample not independently verified",
-        "dem": 49,
-        "rep": 49,
-        "margin": 0,
-        "url": "https://www.realclearpolling.com/latest-polls/senate",
-        "sourceKind": "RealClearPolling individual-poll listing (not original release)"
       }
     ],
     "IA": [
