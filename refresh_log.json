@@ -1,27 +1,21 @@
 {
-  "checkedAt": "2026-10-30T22:19:40.176964+00:00",
+  "checkedAt": "2026-10-31T05:39:45.979053+00:00",
   "pagesParsed": 15,
   "checkedRaceCount": 17,
-  "changes": 3,
+  "changes": 2,
   "observationsFound": 56,
   "errors": [],
   "updated": [
     {
-      "state": "ME",
-      "source": "silver",
-      "margin": 2.5,
-      "published": "Oct 30"
-    },
-    {
-      "state": "SD",
+      "state": "SC",
       "source": "ddhq",
-      "margin": -10.2,
+      "margin": -0.1,
       "published": "Oct 30"
     },
     {
-      "state": "SD",
+      "state": "SC",
       "source": "silver",
-      "margin": -10.7,
+      "margin": -1.5,
       "published": "Oct 30"
     }
   ],
@@ -115,17 +109,17 @@
   "stalePublisherRaces": [
     {
       "state": "MI",
-      "daysOld": 9,
+      "daysOld": 10,
       "latestDate": "2026-10-21"
     },
     {
       "state": "GA",
-      "daysOld": 9,
+      "daysOld": 10,
       "latestDate": "2026-10-21"
     },
     {
       "state": "NH",
-      "daysOld": 8,
+      "daysOld": 9,
       "latestDate": "2026-10-22"
     },
     {

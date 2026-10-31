@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-30T22:19:40.176964+00:00",
+  "checkedAt": "2026-10-31T05:39:45.979053+00:00",
   "source": "Original releases, RCP individual poll listings, and candidate-matched Wikipedia general-election survey tables; source type disclosed per row",
   "polls": {
     "ME": [
@@ -494,6 +494,17 @@
         "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
       },
       {
+        "pollster": "Data for Progress (D)",
+        "dates": "October 23–26, 2026",
+        "fieldEnd": "2026-10-26",
+        "sample": "712 (LV)",
+        "dem": 49.0,
+        "rep": 45.0,
+        "margin": 4.0,
+        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Texas",
+        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
+      },
+      {
         "pollster": "YouGov Blue (D)",
         "dates": "October 21–26, 2026",
         "fieldEnd": "2026-10-26",
@@ -523,17 +534,6 @@
         "dem": 49,
         "rep": 49,
         "margin": 0,
-        "url": "https://www.realclearpolling.com/latest-polls/senate",
-        "sourceKind": "RealClearPolling individual-poll listing (not original release)"
-      },
-      {
-        "pollster": "Emerson College Polling",
-        "publishedAt": "2026-10-22",
-        "dates": "Published 2026-10-22 (field dates not verified)",
-        "sample": "Sample not independently verified",
-        "dem": 49,
-        "rep": 48,
-        "margin": 1,
         "url": "https://www.realclearpolling.com/latest-polls/senate",
         "sourceKind": "RealClearPolling individual-poll listing (not original release)"
       }
@@ -822,6 +822,17 @@
         "sourceKind": "RealClearPolling individual-poll listing (not original release)"
       },
       {
+        "pollster": "KSTP / SurveyUSA",
+        "dates": "October 24–28, 2026",
+        "fieldEnd": "2026-10-28",
+        "sample": "714 (LV)",
+        "dem": 48.0,
+        "rep": 41.0,
+        "margin": 7.0,
+        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
+        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
+      },
+      {
         "pollster": "New York Times / Siena University",
         "dates": "October 19–26, 2026",
         "fieldEnd": "2026-10-26",
@@ -928,17 +939,6 @@
         "dem": 45.0,
         "rep": 41.0,
         "margin": 4.0,
-        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
-        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
-      },
-      {
-        "pollster": "GQR (D)",
-        "dates": "October 1–4, 2026",
-        "fieldEnd": "2026-10-04",
-        "sample": "800 (LV)",
-        "dem": 53.0,
-        "rep": 44.0,
-        "margin": 9.0,
         "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Minnesota",
         "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
       }
@@ -1620,6 +1620,17 @@
     ],
     "SC": [
       {
+        "pollster": "Patinkin Research Strategies (D)",
+        "dates": "October 27–29, 2026",
+        "fieldEnd": "2026-10-29",
+        "sample": "500 (LV)",
+        "dem": 48.0,
+        "rep": 43.0,
+        "margin": 5.0,
+        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
+        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
+      },
+      {
         "pollster": "New York Times / Siena",
         "publishedAt": "2026-10-28",
         "dates": "Published 2026-10-28 (field dates not verified)",
@@ -1640,17 +1651,6 @@
         "margin": -4,
         "url": "https://www.realclearpolling.com/latest-polls/senate",
         "sourceKind": "RealClearPolling individual-poll listing (not original release)"
-      },
-      {
-        "pollster": "Patinkin Research Strategies (D)",
-        "dates": "October 29–27, 2026",
-        "fieldEnd": "2026-10-27",
-        "sample": "500 (LV)",
-        "dem": 48.0,
-        "rep": 43.0,
-        "margin": 5.0,
-        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_South_Carolina",
-        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
       },
       {
         "pollster": "New York Times / Siena University",
@@ -1947,7 +1947,7 @@
         "sourceKind": "Pollster release or directly linked news reporting"
       },
       {
-        "pollster": "Concord Public Opinion Partners",
+        "pollster": "Concord Public Opinion Partners (D)",
         "dates": "October 22–26, 2026",
         "fieldEnd": "2026-10-26",
         "sample": "448 (LV)",
