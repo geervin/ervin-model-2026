@@ -1,24 +1,11 @@
 {
-  "checkedAt": "2026-10-31T05:39:45.979053+00:00",
+  "checkedAt": "2026-10-31T12:28:38.732196+00:00",
   "pagesParsed": 15,
   "checkedRaceCount": 17,
-  "changes": 2,
+  "changes": 0,
   "observationsFound": 56,
   "errors": [],
-  "updated": [
-    {
-      "state": "SC",
-      "source": "ddhq",
-      "margin": -0.1,
-      "published": "Oct 30"
-    },
-    {
-      "state": "SC",
-      "source": "silver",
-      "margin": -1.5,
-      "published": "Oct 30"
-    }
-  ],
+  "updated": [],
   "sourceCoverage": [
     {
       "state": "ME",

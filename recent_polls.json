@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-31T05:39:45.979053+00:00",
+  "checkedAt": "2026-10-31T12:28:38.732196+00:00",
   "source": "Original releases, RCP individual poll listings, and candidate-matched Wikipedia general-election survey tables; source type disclosed per row",
   "polls": {
     "ME": [
@@ -1483,6 +1483,17 @@
     ],
     "NE": [
       {
+        "pollster": "New York Times / Siena University",
+        "dates": "October 23–29, 2026",
+        "fieldEnd": "2026-10-29",
+        "sample": "809 (LV)",
+        "dem": 43.0,
+        "rep": 49.0,
+        "margin": -6.0,
+        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
+        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
+      },
+      {
         "pollster": "Echelon Insights / NetChoice",
         "publishedAt": "2026-10-27",
         "dates": "Fieldwork ending 2026-10-23",
@@ -1603,17 +1614,6 @@
         "dem": 40.0,
         "rep": 45.0,
         "margin": -5.0,
-        "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
-        "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
-      },
-      {
-        "pollster": "SurveyUSA",
-        "dates": "September 8–13, 2026",
-        "fieldEnd": "2026-09-13",
-        "sample": "503 (LV)",
-        "dem": 46.0,
-        "rep": 42.0,
-        "margin": 4.0,
         "url": "https://en.wikipedia.org/wiki/2026_United_States_Senate_election_in_Nebraska",
         "sourceKind": "Wikipedia candidate-matched survey table (not original release)"
       }
